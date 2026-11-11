@@ -1,4 +1,4 @@
-# Mon premier projet — DigiMarket (API REST Flask)
+# Mon projet handson — DigiMarket (API REST Flask)
 
 📖 **Méthode suivie** : ce projet suit la méthode décrite dans **[methodologie.md](docs/methodologie.md)** (étapes 0–6 + niveaux 🥉🥈🥇). Chaque fichier ci-dessous est **le résultat d'une étape** de cette méthode (conception puis code) :
 
