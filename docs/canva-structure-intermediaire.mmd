@@ -1,0 +1,57 @@
+%% Canva structure de fichiers - mon-projet-handson-python - NIVEAU INTERMEDIAIRE
+%% Rendu : copier ce bloc sur https://mermaid.live
+%% Legende : fleche pleine = arborescence ; fleche pointillee + texte = import Python (le texte = le nom importe)
+%% Niveau precedent conserve tel quel dans docs/canva-structure-debutant.mmd (jamais ecrase)
+flowchart TB
+    ROOT["mon-projet-handson-python - niveau intermediaire"]
+
+    ROOT --> README["README.md"]
+    ROOT --> REQ["requirements.txt - flask sqlalchemy pytest PyJWT"]
+    ROOT --> ENV[".env - SECRET_KEY jamais commit"]
+    ROOT --> DBFILE["digimarket.db - base SQLite cree au lancement"]
+
+    subgraph APP["app - code API"]
+        A_APP["app.py - Flask blueprints run"]
+        A_DB["db.py - engine session"]
+        A_SEC["security.py - JWT hachage decorateurs (4.11)"]
+        A_MODELS["modelsSQLAlchemy.py - User Category Product Order OrderItem (4.4 4.6)"]
+        A_AUTH["routes/auth.py - register login"]
+        A_PROD["routes/produits.py - CRUD /api/produits (F2)"]
+    end
+
+    subgraph TESTS["tests - tests"]
+        T_AUTH["test_auth.py"]
+        T_SEC["test_security.py - token 401 403"]
+        T_PROD["test_produits.py - CRUD + roles"]
+    end
+
+    subgraph DOCS["docs - documentation"]
+        D_ET4["etape4-intermediaire.md"]
+        D_CANVA_B["canva-structure-debutant.mmd - niveau bronze fige"]
+        D_CANVA_I["canva-structure-intermediaire.mmd - ce canva"]
+    end
+
+    ROOT --> APP
+    ROOT --> TESTS
+    ROOT --> DOCS
+
+    A_APP -.->|auth_bp produits_bp| A_AUTH
+    A_APP -.->|auth_bp produits_bp| A_PROD
+    A_APP -.->|session| A_DB
+    A_APP -.->|models| A_MODELS
+    A_DB -.->|Base| A_MODELS
+    A_DB -.->|"ecrit lit"| DBFILE
+    A_AUTH -.->|session User| A_DB
+    A_AUTH -.->|User creer_token verifier| A_MODELS
+    A_AUTH -.->|security| A_SEC
+    A_PROD -.->|session Product| A_DB
+    A_PROD -.->|Product Category| A_MODELS
+    A_PROD -.->|admin_required login_required| A_SEC
+    A_SEC -.->|User check_password_hash| A_MODELS
+    T_AUTH -.->|app models auth_module| A_APP
+    T_SEC -.->|security app| A_SEC
+    T_PROD -.->|app models produits| A_PROD
+
+    style APP fill:#e8f4ff,stroke:#3b82f6
+    style TESTS fill:#f0fdf4,stroke:#22c55e
+    style DOCS fill:#fdf2f8,stroke:#ec4899
