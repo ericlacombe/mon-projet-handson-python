@@ -44,7 +44,7 @@
 Liens : Utilisateur 1—N Commande · Categorie 1—N Produit · Produit 1—N LigneCommande · Commande 1—N LigneCommande
 (détail complet dans `etape3-objets.md`, schéma ER + PK/FK/UK)
 
-## Structure du projet (étape 4 → code étape 6, niveau 🥉)
+## Structure du projet (étape 4 → code étape 6, niveaux 🥉 fait / 🥈 en cours)
 ```
 mon-premier-projet/
 ├── README.md                   # ce fichier (page d'entrée)
@@ -69,7 +69,7 @@ mon-premier-projet/
 ```
 (digimarket.db est créée automatiquement au lancement, à la racine)
 
-📊 Cette structure est illustrée dans le canva **[docs/canva-structure-debutant.mmd](docs/canva-structure-debutant.mmd)** (niveau 🥉 débutant).
+📊 Cette structure est illustrée dans les canva : 🥉 **[docs/canva-structure-debutant.mmd](docs/canva-structure-debutant.mmd)** (figé) · 🥈 **[docs/canva-structure-intermediaire.mmd](docs/canva-structure-intermediaire.mmd)** (en cours).
 
 ## Fonctionnement d'une requête (exemple : POST /api/auth/register)
 ```
