@@ -39,7 +39,18 @@ class Category(Base):
     __tablename__ = "categories"
     id = Column(Integer, primary_key=True)
     name = Column(String(100), unique=True, nullable=False)   # UK : nom de catégorie unique
-    products = relationship("Product", backref="category")     # 1 catégorie a plusieurs produits
+
+    # ------------------------------------------------------------------
+    # RELATION 1—N : Categorie 1—N Produit (une catégorie a plusieurs produits)
+    # ------------------------------------------------------------------
+    # relationship("Product") dans Category définit la relation ORM entre Category et Product.
+    # - backref="category" : crée automatiquement product.category (accès inverse :
+    #   depuis un produit, on atteint sa catégorie — ex. mon_produit.category.name)
+    # - lazy=True (défaut) : les produits sont chargés UNIQUEMENT quand on y accède
+    #   (chargement différé, pas tout en mémoire d'un coup)
+    # - cascade="all, delete-orphan" : supprimer une catégorie supprime aussi ses produits
+    #   (sinon ils resteraient "orphelins", sans catégorie)
+    products = relationship("Product", backref="category", lazy=True, cascade="all, delete-orphan")
 
 class Product(Base):
     __tablename__ = "products"
@@ -48,7 +59,12 @@ class Product(Base):
     description = Column(Text)
     price = Column(Float, nullable=False)      # 4.3 : validé >= 0 côté route (400 sinon)
     stock = Column(Integer, nullable=False, default=0)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)  # FK → categories
+    # ------------------------------------------------------------------
+    # Côté "N" de la relation : la clé étrangère
+    # - ForeignKey("categories.id") : ce champ référence la PK de categories
+    # - nullable=False : un produit DOIT appartenir à une catégorie (obligatoire)
+    # ------------------------------------------------------------------
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 ```
 
 ## 4.6 — Transitions d'état simples (condition : objet avec états ✅ → ACTION)
