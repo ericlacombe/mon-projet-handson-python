@@ -46,7 +46,7 @@ Liens : Utilisateur 1—N Commande · Categorie 1—N Produit · Produit 1—N L
 
 ## Structure du projet (étape 4 → code étape 6, niveaux 🥉 fait / 🥈 en cours)
 ```
-mon-premier-projet/
+mon-projet-handson-python/
 ├── README.md                   # ce fichier (page d'entrée)
 ├── requirements.txt            # flask, sqlalchemy, pytest (+ PyJWT au 🥈)
 ├── .env                        # 🥈 à venir : SECRET_KEY (jamais commité)
@@ -65,31 +65,13 @@ mon-premier-projet/
     ├── attentes.md             # cahier des charges
     ├── methodologie.md         # la méthode (étapes 0–6 + niveaux)
     ├── methodologie-canva.mmd  # schéma visuel (Mermaid)
-    └── etape0-AFB.md … etape6-backlog-debutant.md   # résultat de chaque étape
+    ├── etape0-AFB.md … etape6-backlog-debutant.md   # résultat de chaque étape (🥉)
+    ├── etape4-intermediaire.md, etape5-tests-intermediaire.md   # 🥈
+    └── canva-structure-debutant.mmd / canva-structure-intermediaire.mmd   # canva par niveau
 ```
 (digimarket.db est créée automatiquement au lancement, à la racine)
 
 📊 Cette structure est illustrée dans les canva : 🥉 **[docs/canva-structure-debutant.mmd](docs/canva-structure-debutant.mmd)** (figé) · 🥈 **[docs/canva-structure-intermediaire.mmd](docs/canva-structure-intermediaire.mmd)** (en cours).
-
-## Fonctionnement d'une requête (exemple : POST /api/auth/register)
-```
-client HTTP
-  POST /api/auth/register
-        │
-        ▼
-app/app.py        Flask + blueprint enregistré
-        │
-        ▼
-routes/auth.py    endpoint register()  ──►  400 si champs manquants
-        │                                  409 si email déjà pris
-        ▼
-db.py             session SQLAlchemy
-        │
-        ▼
-digimarket.db     table users  (modèle User défini dans modelsSQLAlchemy.py)
-        │
-        └── retour ──► réponse JSON 201
-```
 
 ## Installation et lancement (étape 6)
 ```bash
@@ -97,6 +79,7 @@ python -m venv venv                # crée un environnement virtuel isolé (doss
 source venv/bin/activate           # active cet environnement (Windows : venv\Scripts\activate) — toutes les commandes suivantes (pip, python) l'utilisent
 pip install -r requirements.txt    # installe toutes les bibliothèques listées dans requirements.txt (flask, sqlalchemy, pytest) — la "liste de courses" du projet : mêmes versions pour tout le monde
 python -m app.app               # lance l'API sur http://127.0.0.1:5000 (depuis la racine)
+# 💡 au niveau 🥈 : créer d'abord un fichier .env avec SECRET_KEY=... (jamais commité)
 ```
 
 ## Comment tester (étape 5)
