@@ -7,6 +7,10 @@
 **Niveau 🥈 = niveau 🥉 + parties 4.3 (contraintes), 4.4 (relations), 4.6 (transitions simples), 4.11 (sécurité de base)**.
 Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + **« un utilisateur se connecte (JWT) »**.
 
+> 📌 **Répartition des fonctions métier** (règle de complexité dans `methodologie.md`) :
+> 🥈 = **F2 (catalogue) + F4 (sécurité JWT)** — objets avec relation 1—N, CRUD protégé par rôle.
+> **F3 « Gérer les commandes » est réservée au niveau 🥇 confirmé** (changement d'état, cycle de vie, logique stock) — on ne la traite PAS ici.
+
 ---
 
 ## 4.3 — Contraintes & validations (condition : règle de validité sur un attribut ✅ → ACTION)
