@@ -42,6 +42,73 @@ class Product(Base):
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)  # FK → categories
 ```
 
+## 4.4 — Relations entre objets (condition : deux objets liés ✅ → ACTION)
+
+Du schéma ER (étape 3) :
+
+| Relation | Clé étrangère créée | `relationship` dans la classe |
+|---|---|---|
+| Categorie 1—N Produit | `products.category_id → categories.id` | `Category.products`, `Product.category` |
+| Utilisateur 1—N Commande | `orders.user_id → users.id` | `User.orders`, `Order.user` |
+| Commande 1—N LigneCommande | `order_items.order_id → orders.id` | `Order.items` (cascade delete-orphan) |
+| Produit 1—N LigneCommande | `order_items.product_id → products.id` | `Product.order_items`, `OrderItem.product` |
+
+```python
+# modelsSQLAlchemy.py (extrait 🥈) — ForeignKey et relationship
+# Pourquoi ForeignKey maintenant ? Parce qu'il y a des RELATIONS entre tables (4.4)
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy.orm import relationship
+
+class Category(Base):
+    __tablename__ = "categories"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=True, nullable=False)   # UK : nom de catégorie unique
+    products = relationship("Product", backref="category")     # 1 catégorie a plusieurs produits
+
+class Product(Base):
+    __tablename__ = "products"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    price = Column(Float, nullable=False)      # 4.3 : validé >= 0 côté route (400 sinon)
+    stock = Column(Integer, nullable=False, default=0)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)  # FK → categories
+```
+
+## 4.3 — Contraintes & validations (condition : règle de validité sur un attribut ✅ → ACTION)
+
+| Attribut | Règle | Où | Erreur |
+|---|---|---|---|
+| `users.email` | unique | contrainte base `unique=True` (déjà fait 🥉) | 409 |
+| `categories.name` | unique | `unique=True` | 409 |
+| `products.price` | >= 0 | validation dans la route | 400 |
+| `products.stock` | >= 0 | validation dans la route | 400 |
+
+mande | `order_items.order_id → orders.id` | `Order.items` (cascade delete-orphan) |
+| Produit 1—N LigneCommande | `order_items.product_id → products.id` | `Product.order_items`, `OrderItem.product` |
+
+```python
+# modelsSQLAlchemy.py (extrait 🥈) — ForeignKey et relationship
+# Pourquoi ForeignKey maintenant ? Parce qu'il y a des RELATIONS entre tables (4.4)
+from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
+from sqlalchemy.orm import relationship
+
+class Category(Base):
+    __tablename__ = "categories"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=True, nullable=False)   # UK : nom de catégorie unique
+    products = relationship("Product", backref="category")     # 1 catégorie a plusieurs produits
+
+class Product(Base):
+    __tablename__ = "products"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    price = Column(Float, nullable=False)      # 4.3 : validé >= 0 côté route (400 sinon)
+    stock = Column(Integer, nullable=False, default=0)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)  # FK → categories
+```
+
 ## 4.3 — Contraintes & validations (condition : règle de validité sur un attribut ✅ → ACTION)
 
 | Attribut | Règle | Où | Erreur |
