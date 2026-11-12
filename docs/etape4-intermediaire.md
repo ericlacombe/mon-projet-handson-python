@@ -71,32 +71,9 @@ class Product(Base):
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 ```
 
-## 4.6 — Transitions d'état simples (condition : objet avec états ✅ → ACTION)
+## 4.6 — Transitions d'état → niveau 🥇 confirmé
 
-Objet `Order` (états du cycle de vie, étape 3) :
-
-```python
-# Constantes nommées pour les états (pas de "magic strings")
-STATUT_EN_ATTENTE = "en_attente"
-STATUT_VALIDEE   = "validee"
-STATUT_EXPEDIEE  = "expediee"
-STATUT_ANNULEE   = "annulee"
-
-class Order(Base):
-    __tablename__ = "orders"
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)  # FK
-    adresse_livraison = Column(Text, nullable=False)
-    statut = Column(String(20), nullable=False, default=STATUT_EN_ATTENTE)
-    date_creation = Column(DateTime, default=datetime.utcnow)
-
-    # Une méthode PAR transition (4.6) + contrôle de la transition autorisée
-    def valider(self):
-        """Transition en_attente → validée (déclenchée par F3, contrôle par rôle en 4.11)."""
-        if self.statut != STATUT_EN_ATTENTE:
-            raise ValueError("seule une commande en_attente peut être validée")
-        self.statut = STATUT_VALIDEE
-```
+> ⚠️ La partie 4.6 (transitions d'état, ex. `Order.valider()`) concerne **F3 « Gérer les commandes »** : selon la règle de répartition par complexité (changement d'état = logique complexe), elle est traitée au **niveau 🥇 confirmé**, pas ici.
 
 ## 4.11 — Sécurité de base (condition : authentification/autorisation requise ✅ → ACTION)
 
@@ -148,7 +125,7 @@ app/
 
 ---
 
-✅ **Checklist étape 4 (niveau 🥈)** : 4.3 contraintes ✅ · 4.4 FK/relations ✅ · 4.6 transitions ✅ · 4.11 sécurité ✅ · contrat d'API 🥈 ✅ · arborescence 🥈 ✅.
+✅ **Checklist étape 4 (niveau 🥈)** : 4.3 contraintes ✅ · 4.4 FK/relations ✅ · 4.11 sécurité ✅ · contrat d'API 🥈 ✅ · arborescence 🥈 ✅ (4.6 → niveau 🥇 avec F3).
 
 ⚠️ **Piège évité** : pas de classe pour le token JWT (donnée temporaire, 4.2 — un `dict` suffit).
 
