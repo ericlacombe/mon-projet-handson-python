@@ -1,14 +1,14 @@
 # Mon projet handson — DigiMarket (API REST Flask)
 
-📖 **Méthode suivie** : ce projet suit la méthode décrite dans **[methodologie.md](docs/methodologie.md)** (étapes 0–6 + niveaux 🥉🥈🥇). Chaque fichier ci-dessous est **le résultat d'une étape** de cette méthode (conception puis code) :
+📖 **Méthode suivie** : ce projet suit la méthode décrite dans **[methodologie.md](docs/methodologie.md)** (étapes 0–6 + niveaux 🥉🥈🥇). Chaque fichier ci-dessous est **le résultat d'une étape, par niveau** (conception puis code) :
 
 - Étape 0 — AFB (besoins) → [docs/etape0-AFB.md](docs/etape0-AFB.md)
 - Étape 1 — use cases → [docs/etape1-use-cases.md](docs/etape1-use-cases.md)
 - Étape 2 — fonctions métier → [docs/etape2-fonctions-metier.md](docs/etape2-fonctions-metier.md)
 - Étape 3 — objets (schéma ER) → [docs/etape3-objets.md](docs/etape3-objets.md)
-- Étape 4 — conception 🥉 → [docs/etape4-conception-debutant.md](docs/etape4-conception-debutant.md)
-- Étape 5 — tests 🥉 → [docs/etape5-tests-debutant.md](docs/etape5-tests-debutant.md)
-- Étape 6 — backlog + code 🥉 → [docs/etape6-backlog-debutant.md](docs/etape6-backlog-debutant.md)
+- Étape 4 — conception → 🥉 [docs/etape4-conception-debutant.md](docs/etape4-conception-debutant.md) · 🥈 [docs/etape4-intermediaire.md](docs/etape4-intermediaire.md)
+- Étape 5 — tests → 🥉 [docs/etape5-tests-debutant.md](docs/etape5-tests-debutant.md) · 🥈 [docs/etape5-tests-intermediaire.md](docs/etape5-tests-intermediaire.md)
+- Étape 6 — backlog + code → 🥉 [docs/etape6-backlog-debutant.md](docs/etape6-backlog-debutant.md) · 🥈 etape6-backlog-intermediaire.md (à venir)
 
 ## Niveaux de réalisation (répartition par complexité — règle dans methodologie.md)
 
