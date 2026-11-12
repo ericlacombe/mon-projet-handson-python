@@ -24,14 +24,11 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 
 ## 4.4 — Relations entre objets (condition : deux objets liés ✅ → ACTION)
 
-Du schéma ER (étape 3) :
+Du schéma ER (étape 3) — niveau 🥈 on ne garde que la relation utile à F2 (les relations Commande/LigneCommande = F3, réservées au 🥇) :
 
 | Relation | Clé étrangère créée | `relationship` dans la classe |
 |---|---|---|
 | Categorie 1—N Produit | `products.category_id → categories.id` | `Category.products`, `Product.category` |
-| Utilisateur 1—N Commande | `orders.user_id → users.id` | `User.orders`, `Order.user` |
-| Commande 1—N LigneCommande | `order_items.order_id → orders.id` | `Order.items` (cascade delete-orphan) |
-| Produit 1—N LigneCommande | `order_items.product_id → products.id` | `Product.order_items`, `OrderItem.product` |
 
 ```python
 # modelsSQLAlchemy.py (extrait 🥈) — ForeignKey et relationship
@@ -119,8 +116,8 @@ app/
 ├── modelsSQLAlchemy.py  # + Category, Product, Order, OrderItem (4.4, 4.6)
 └── routes/
     ├── auth.py          # + POST /api/auth/login
-    ├── produits.py      # NOUVEAU (F2) : CRUD /api/produits
-    └── commandes.py     # NOUVEAU (F3) : /api/commandes (plus tard)
+    └── produits.py      # NOUVEAU (F2) : CRUD /api/produits
+    # (routes/commandes.py sera ajouté au niveau 🥇 avec F3)
 ```
 
 ---
