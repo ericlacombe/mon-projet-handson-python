@@ -2,7 +2,7 @@
 
 > **Changelog** — v1.0 : première version (étapes 0–6). v1.1 : niveaux 🥉🥈🥇 dès l'étape 4 ; bonnes pratiques intégrées dans chaque étape ; glossaire, schéma Mermaid, Definition of Ready, signaux d'alerte. v1.2 : pédagogie — fil rouge concret, analogies, auto-évaluation (3 questions/étape), « à retenir en 3 lignes », temps estimés, pré-requis, faux bons résultats.
 
-> ⚠️ **Ne pas confondre** : les *étapes du projet* (dans `attentes.md` : 1 = utilisateurs/auth, 2 = produits, 3 = commandes) ≠ les *étapes de la méthode* (0–6, dans ce fichier). Correspondance : niveau 🥉 = étape projet 1 (auth), 🥈 = étape projet 2 (produits), 🥇 = étape projet 3 (commandes).
+> ⚠️ **Ne pas confondre** : les *étapes du projet* (dans `attentes.md` : 1 = utilisateurs/auth, 2 = produits, 3 = commandes) ≠ les *étapes de la méthode* (0–6, dans ce fichier). Correspondance : niveau 🥉 = **F1 Gérer les comptes** (figé), 🥈 = **F2 Gérer le catalogue + F4 Sécuriser les accès**, 🥇 = **F3 Gérer les commandes** (étapes projet 1/2/3).
 
 ## Pré-requis (à savoir avant de commencer)
 - **Python de base** : variables, fonctions, classes, `import` ;
@@ -157,6 +157,14 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 └────────────────────────────────────────────────────────┘
 ```
 
+### Règle de répartition par complexité (quoi va dans quel niveau)
+
+| Complexité | Niveau |
+|---|---|
+| Fonction métier SANS changement d'état, 1 objet simple, 1 route (ex. F1 comptes) | 🥉 débutant |
+| Objet avec **relation 1—N** (clé étrangère), CRUD protégé par rôle, sécurité de base (JWT, hachage, .env) | 🥈 intermédiaire |
+| Fonction métier **AVEC changement d'état** (cycle de vie, transitions), plusieurs relations entre objets, logique complexe (stock, totaux, historique) | 🥇 confirmé |
+
 **Règle** : on ne passe au niveau suivant que quand le niveau courant respecte sa **Definition of Done** (code ✅ + test ✅ + doc ✅ + commit ✅). Le code d'un niveau **reste fonctionnel** quand on ajoute le suivant.
 
 > Les étapes 4, 5, 6 ci-dessous sont les **références** : à chaque boucle, on applique la version du niveau courant (voir leurs tableaux de niveaux).
@@ -291,7 +299,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 
 ### 🥉 Niveau DÉBUTANT — l'essentiel uniquement
 Objectif : un petit code fonctionnel rapidement, sans que les fonctions essentielles soient noyées dans des contraintes secondaires.
-- Une seule **fonction métier** (ex. F1) et un seul **objet simple**.
+- Une seule **fonction métier** (F1 « Gérer les comptes » — niveau figé) et un seul **objet simple** (`User`), avec hachage du mot de passe.
 - Sous-étapes suivies : 0 (besoins limités) → 1 (un seul acteur, les cas essentiels) → 2 (la fonction métier + flux simple) → 3 (un objet, sans cycle de vie) → 4 avec seulement **4.1, 4.5, 4.7 (1 route), 4.8, 4.10 basique** → 5 (1 test unitaire).
 - Laissé de côté : 4.2, 4.3, 4.4, 4.6, 4.9, 4.11, matrice des rôles complète, régression/intégration.
 
