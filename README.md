@@ -10,6 +10,14 @@
 - Étape 5 — tests 🥉 → [docs/etape5-tests-debutant.md](docs/etape5-tests-debutant.md)
 - Étape 6 — backlog + code 🥉 → [docs/etape6-backlog-debutant.md](docs/etape6-backlog-debutant.md)
 
+## Niveaux de réalisation (répartition par complexité — règle dans methodologie.md)
+
+| Niveau | Fonctions métier | État |
+|---|---|---|
+| 🥉 débutant | **F1 — Gérer les comptes** (register + hachage) | ✅ fait et testé (`pytest` = 1 passed) — aussi figé dans `mon-premier-projet` |
+| 🥈 intermédiaire | **F2 — catalogue** + **F4 — sécurité JWT** | 🚧 en cours — conception faite (`docs/etape4-intermediaire.md`, `docs/etape5-tests-intermediaire.md`) |
+| 🥇 confirmé | **F3 — Gérer les commandes** (états, stock, historique) | ⏳ à venir |
+
 ## Conventions (étape 0)
 - snake_case pour les variables et fonctions
 - PascalCase pour les classes
@@ -40,14 +48,17 @@ Liens : Utilisateur 1—N Commande · Categorie 1—N Produit · Produit 1—N L
 ```
 mon-premier-projet/
 ├── README.md                   # ce fichier (page d'entrée)
-├── requirements.txt            # flask, sqlalchemy, pytest
+├── requirements.txt            # flask, sqlalchemy, pytest (+ PyJWT au 🥈)
+├── .env                        # 🥈 à venir : SECRET_KEY (jamais commité)
 ├── app/                        # 💻 code de l'API (package Python)
+│   └── security.py             # 🥈 à venir (F4 : JWT, hachage, décorateurs)
 │   ├── __init__.py           # rend app/ importable comme package Python
 │   ├── app.py                  # point d'entrée Flask (app, blueprints, app.run)
 │   ├── db.py                   # engine SQLite + session partagée (SQLAlchemy pur)
-│   ├── modelsSQLAlchemy.py     # Base + classe User (table users)
+│   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 + Category, Product (à venir)
 │   └── routes/
-│       └── auth.py             # blueprint auth_bp : POST /api/auth/register
+│       ├── auth.py             # 🥉 register · 🥈 + login (à venir)
+│       └── produits.py       # 🥈 à venir (F2 : CRUD /api/produits)
 ├── tests/                      # 🧪 dossier dédié aux tests
 │   └── test_auth.py            # test_register_email_deja_utilise (409)
 └── docs/                       # 📚 toute la documentation
@@ -93,24 +104,27 @@ python -m app.app               # lance l'API sur http://127.0.0.1:5000 (depuis 
 pytest            # depuis la racine : lance tous les tests (ici : tests/test_auth.py → 409)
 ```
 
-## Fichiers du projet (étapes 0–6, niveau 🥉)
-| Fichier | Description |
-|---|---|
-| `docs/attentes.md` | Cahier des charges de l'exercice (DigiMarket) |
-| `docs/methodologie.md` | Méthode de travail en 6 étapes + 3 niveaux (🥉🥈🥇) — voir le lien en haut de ce README |
-| `docs/methodologie-canva.mmd` | Schéma visuel (Mermaid) de la méthode |
-| `docs/etape0-AFB.md` | Étape 0 : liste des besoins 🔵 et contraintes 🟠 |
-| `docs/etape1-use-cases.md` | Étape 1 : acteurs, cas d'utilisation, matrice des rôles |
-| `docs/etape2-fonctions-metier.md` | Étape 2 : fonctions métier F1–F4 + flux « Passer une commande » |
-| `docs/etape3-objets.md` | Étape 3 : schéma ER (5 objets, PK/FK/UK), cycle de vie de Commande |
-| `docs/etape4-conception-debutant.md` | Étape 4 niveau 🥉 : base, classe, route, module, erreurs (fil rouge) |
-| `docs/etape5-tests-debutant.md` | Étape 5 niveau 🥉 : 1 test unitaire (409 email déjà pris) |
-| `docs/etape6-backlog-debutant.md` | Étape 6 niveau 🥉 : backlog cochée, code fonctionnel (register + test) |
-| `requirements.txt` | Dépendances (flask, sqlalchemy, pytest) |
-| `app/__init__.py` | Package Python (rend app/ importable depuis la racine) |
-| `app/app.py` | Point d'entrée Flask |
-| `app/db.py` | Moteur SQLite + session partagée |
-| `app/modelsSQLAlchemy.py` | Modèle User (table users) |
-| `app/routes/auth.py` | Route POST /api/auth/register |
-| `tests/test_auth.py` | 🧪 Test 409 email déjà pris |
-| `README.md` | Ce fichier |
+## Fichiers du projet (avec niveau)
+| Fichier | Niveau | Description |
+|---|---|---|
+| 🥉 | `docs/attentes.md` | Cahier des charges de l'exercice (DigiMarket) |
+| 🥉 | `docs/methodologie.md` | Méthode de travail en 6 étapes + 3 niveaux (🥉🥈🥇) — voir le lien en haut de ce README |
+| 🥉 | `docs/methodologie-canva.mmd` | Schéma visuel (Mermaid) de la méthode |
+| 🥉 | `docs/etape0-AFB.md` | Étape 0 : liste des besoins 🔵 et contraintes 🟠 |
+| 🥉 | `docs/etape1-use-cases.md` | Étape 1 : acteurs, cas d'utilisation, matrice des rôles |
+| 🥉 | `docs/etape2-fonctions-metier.md` | Étape 2 : fonctions métier F1–F4 + flux « Passer une commande » |
+| 🥉 | `docs/etape3-objets.md` | Étape 3 : schéma ER (5 objets, PK/FK/UK), cycle de vie de Commande |
+| 🥉 | `docs/etape4-conception-debutant.md` | Étape 4 niveau 🥉 : base, classe, route, module, erreurs (fil rouge) |
+| 🥉 | `docs/etape5-tests-debutant.md` | Étape 5 niveau 🥉 : 1 test unitaire (409 email déjà pris) |
+| 🥉 | `docs/etape6-backlog-debutant.md` | Étape 6 niveau 🥉 : backlog cochée, code fonctionnel (register + test) |
+| 🥈 | `docs/etape4-intermediaire.md` | Étape 4 niveau 🥈 : conception F2+F4 (contraintes, relations, sécurité JWT) |
+| 🥈 | `docs/etape5-tests-intermediaire.md` | Étape 5 niveau 🥈 : tests unitaires + intégration + 401/403 |
+| 🥈 | `docs/canva-structure-intermediaire.mmd` | Canva de la structure niveau 🥈 (🥉 figé dans canva-structure-debutant.mmd) |
+| 🥉 | `requirements.txt` | Dépendances (flask, sqlalchemy, pytest) |
+| 🥉 | `app/__init__.py` | Package Python (rend app/ importable depuis la racine) |
+| 🥉 | `app/app.py` | Point d'entrée Flask |
+| 🥉 | `app/db.py` | Moteur SQLite + session partagée |
+| 🥉 | `app/modelsSQLAlchemy.py` | Modèle User (table users) |
+| 🥉 | `app/routes/auth.py` | Route POST /api/auth/register |
+| 🥉 | `tests/test_auth.py` | 🧪 Test 409 email déjà pris |
+| 🥉 | `README.md` | Ce fichier |
