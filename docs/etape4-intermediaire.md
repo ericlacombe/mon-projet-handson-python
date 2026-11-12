@@ -72,6 +72,43 @@ class Product(Base):
 
 > ⚠️ La partie 4.6 (transitions d'état, ex. `Order.valider()`) concerne **F3 « Gérer les commandes »** : selon la règle de répartition par complexité (changement d'état = logique complexe), elle est traitée au **niveau 🥇 confirmé**, pas ici.
 
+## 4.7 — Contrat d'API niveau 🥈 (les nouvelles routes)
+
+> 💡 Rappel : une route = **URL + méthode HTTP** (le « panneau du guichet ») reliée à un
+> **endpoint** (la fonction Python exécutée). Le contrat ci-dessous dit, pour chaque
+> route : qui a le droit d'y accéder, quoi envoyer (entrées JSON), quoi on reçoit
+> (sorties JSON + codes HTTP). Les routes protégées exigent le header
+> `Authorization: Bearer <token JWT>` (obtenu via `/api/auth/login`).
+
+
+| Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
+|---|---|---|---|---|
+| POST | `/api/auth/login` | Public | `{email, password}` | `200` + token JWT · `401` mauvais identifiants |
+| GET | `/api/produits` | Public | query `?q=` (recherche) | `200` liste JSON |
+| GET | `/api/produits/<id>` | Public | — | `200` · `404` |
+| POST | `/api/produits` | **Admin** (token + rôle) | `{name, description, price, stock, category_id}` | `201` · `400` (prix<0…) · `401`/`403` |
+| PUT | `/api/produits/<id>` | Admin | idem | `200` · `404` · `401`/`403` |
+| DELETE | `/api/produits/<id>` | Admin | — | `204` · `404` · `401`/`403` |
+
+- `200` = OK · `201` = ressource créée · `204` = supprimé (corps vide) ;
+- `400` = entrées invalides (ex. prix < 0, champs manquants) · `401` = pas de token ou token invalide ;
+- `403` = token valide mais rôle insuffisant (client au lieu d'admin) · `404` = ressource introuvable ;
+- `GET /api/produits` est **public** (Visiteur) : catalogue consultable sans compte, avec recherche `?q=texte`.
+
+## 4.8 — Modules niveau 🥈 (un par fonction métier)
+
+```
+app/
+├── app.py               # + enregistre les nouveaux blueprints
+├── db.py                # inchangé
+├── security.py          # NOUVEAU (4.11) : JWT, hachage, décorateurs
+├── modelsSQLAlchemy.py  # + Category, Product (Order, OrderItem au 🥇 avec F3)
+└── routes/
+    ├── auth.py          # + POST /api/auth/login
+    └── produits.py      # NOUVEAU (F2) : CRUD /api/produits
+    # (routes/commandes.py sera ajouté au niveau 🥇 avec F3)
+```
+
 ## 4.11 — Sécurité de base (condition : authentification/autorisation requise ✅ → ACTION)
 
 Nouveau module `app/security.py` + bibliothèque **PyJWT** + fichier **`.env`** (jamais commité) :
@@ -121,43 +158,6 @@ def admin_required(f):
 ```
 
 Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/login`** → renvoie `{ "token": "..." }` (vérifie le hash avec `check_password_hash`).
-
-## 4.7 — Contrat d'API niveau 🥈 (les nouvelles routes)
-
-> 💡 Rappel : une route = **URL + méthode HTTP** (le « panneau du guichet ») reliée à un
-> **endpoint** (la fonction Python exécutée). Le contrat ci-dessous dit, pour chaque
-> route : qui a le droit d'y accéder, quoi envoyer (entrées JSON), quoi on reçoit
-> (sorties JSON + codes HTTP). Les routes protégées exigent le header
-> `Authorization: Bearer <token JWT>` (obtenu via `/api/auth/login`).
-
-
-| Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
-|---|---|---|---|---|
-| POST | `/api/auth/login` | Public | `{email, password}` | `200` + token JWT · `401` mauvais identifiants |
-| GET | `/api/produits` | Public | query `?q=` (recherche) | `200` liste JSON |
-| GET | `/api/produits/<id>` | Public | — | `200` · `404` |
-| POST | `/api/produits` | **Admin** (token + rôle) | `{name, description, price, stock, category_id}` | `201` · `400` (prix<0…) · `401`/`403` |
-| PUT | `/api/produits/<id>` | Admin | idem | `200` · `404` · `401`/`403` |
-| DELETE | `/api/produits/<id>` | Admin | — | `204` · `404` · `401`/`403` |
-
-- `200` = OK · `201` = ressource créée · `204` = supprimé (corps vide) ;
-- `400` = entrées invalides (ex. prix < 0, champs manquants) · `401` = pas de token ou token invalide ;
-- `403` = token valide mais rôle insuffisant (client au lieu d'admin) · `404` = ressource introuvable ;
-- `GET /api/produits` est **public** (Visiteur) : catalogue consultable sans compte, avec recherche `?q=texte`.
-
-## 4.8 — Modules niveau 🥈 (un par fonction métier)
-
-```
-app/
-├── app.py               # + enregistre les nouveaux blueprints
-├── db.py                # inchangé
-├── security.py          # NOUVEAU (4.11) : JWT, hachage, décorateurs
-├── modelsSQLAlchemy.py  # + Category, Product (Order, OrderItem au 🥇 avec F3)
-└── routes/
-    ├── auth.py          # + POST /api/auth/login
-    └── produits.py      # NOUVEAU (F2) : CRUD /api/produits
-    # (routes/commandes.py sera ajouté au niveau 🥇 avec F3)
-```
 
 ---
 
