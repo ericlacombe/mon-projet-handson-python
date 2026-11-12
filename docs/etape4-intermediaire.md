@@ -77,20 +77,47 @@ class Product(Base):
 Nouveau module `app/security.py` + bibliothèque **PyJWT** + fichier **`.env`** (jamais commité) :
 
 ```python
-# app/security.py (extrait 🥈)
-# Pourquoi un module séparé ? Toute la sécurité est regroupée ici (4.11) :
-# hachage, création/vérification du token JWT, décorateurs de rôle.
-import os, jwt                      # PyJWT ; os pour lire .env
+# ------------------------------------------------------------------
+# app/security.py — TOUTE la sécurité regroupée ici (4.11)
+# ------------------------------------------------------------------
+# os  : lire les variables d'environnement (le fichier .env, JAMAIS commité)
+# jwt : bibliothèque PyJWT — créer et vérifier les tokens JWT
+import os
+import jwt
+# functools.wraps : conserve le nom de la fonction décorée (indispensable à Flask)
 from functools import wraps
+# request : lire le header "Authorization: Bearer <token>" de la requête entrante
+# jsonify : renvoyer les erreurs (401/403) en JSON
 from flask import request, jsonify
+# werkzeug.security (inclus avec Flask) :
+# - generate_password_hash : hache un mot de passe (à l'inscription)
+# - check_password_hash    : vérifie un mot de passe contre son hash (au login)
 from werkzeug.security import generate_password_hash, check_password_hash
 
-SECRET_KEY = os.environ["SECRET_KEY"]   # lu depuis .env (jamais dans le code !)
+# La clé secrète SERT À SIGNER les tokens JWT : elle ne doit JAMAIS être dans le
+# code ni committée → on la lit dans .env (déjà dans .gitignore)
+SECRET_KEY = os.environ["SECRET_KEY"]
 
-def creer_token(user): ...              # jwt.encode({"user_id":..., "role":...}, SECRET_KEY)
-def verifier_token(): ...               # décode + renvoie 401 si invalide/expiré
-def login_required(f): ...             # décorateur : 401 si pas de token valide
-def admin_required(f): ...             # décorateur : 403 si role != "admin"
+def creer_token(user):
+    # Crée le token signé : payload = {"user_id":..., "role":...}
+    # jwt.encode(payload, SECRET_KEY, algorithm="HS256") → chaîne "xxxxx.yyyyy.zzzzz"
+    # Le client devra renvoyer ce token dans le header Authorization à chaque appel
+    ...
+
+def verifier_token():
+    # Lit le header "Authorization: Bearer <token>", décode et VÉRIFIE la signature
+    # → renvoie le payload (dict) si OK ; sinon erreur 401 (token invalide ou expiré)
+    ...
+
+def login_required(f):
+    # DÉCORATEUR : la route exige un token valide (utilisé avec @login_required)
+    # @wraps(f) garde le nom de la route ; sans token valide → 401 en JSON
+    ...
+
+def admin_required(f):
+    # DÉCORATEUR : en plus d'un token valide, exige le rôle "admin"
+    # token d'un simple client → 403 (authentifié mais PAS autorisé)
+    ...
 ```
 
 Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/login`** → renvoie `{ "token": "..." }` (vérifie le hash avec `check_password_hash`).
