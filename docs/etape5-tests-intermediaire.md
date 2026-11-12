@@ -10,7 +10,6 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 |---|---|---|
 | `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` |
 | `security.creer_token / verifier_token` | ✅ `test_token_invalide_401` | ✅ (via login) |
-| `Order.valider()` (transition 4.6) | ✅ `test_order_valider_transition` | (route commandes au 🥇) |
 | CRUD `/api/produits` (F2) | — | ✅ `test_creer_produit_sans_token_401`, `test_creer_produit_client_403`, `test_creer_produit_admin_201`, `test_creer_produit_prix_negatif_400` |
 | `GET /api/produits` (public, recherche) | — | ✅ `test_liste_produits_avec_recherche` |
 
@@ -51,17 +50,7 @@ def test_creer_produit_prix_negatif_400(client_http, token_admin):
                          headers={"Authorization": f"Bearer {token_admin}"})
     assert r.status_code == 400
 
-# tests/test_models.py — test unitaire de la transition d'état (4.6)
-def test_order_valider_transition():
-    o = Order(statut=STATUT_EN_ATTENTE)
-    o.valider()                              # en_attente → validée
-    assert o.statut == STATUT_VALIDEE
-    # une 2e validation doit échouer (transition non autorisée)
-    try:
-        o.valider()
-        assert False, "la transition aurait dû être refusée"
-    except ValueError:
-        pass                                 # OK : transition contrôlée
+# (test de la transition d'état Order.valider(), partie 4.6, au niveau 🥇 avec F3 — pas ici)
 ```
 
 💡 **Règle du test** : 1 élément + 1 scénario + résultat attendu, nom explicite (`test_creer_produit_sans_token_401`).
@@ -69,7 +58,7 @@ def test_order_valider_transition():
 ---
 
 ✅ **Checklist étape 5 (niveau 🥈)** :
-- [x] test unitaire pour chaque fonction/classe 🥈 (token, transition Order) ;
+- [x] test unitaire pour chaque fonction/classe 🥈 (token) ; (transition 4.6 → niveau 🥇 avec F3)
 - [x] tests d'intégration route + base + sécurité (login, 401/403, CRUD produits, validation 400) ;
 - [x] matrice élément × type à jour ;
 - [x] README « Comment tester » à jour (`pytest` lance tout).
