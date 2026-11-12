@@ -113,7 +113,7 @@ app/
 ├── app.py               # + enregistre les nouveaux blueprints
 ├── db.py                # inchangé
 ├── security.py          # NOUVEAU (4.11) : JWT, hachage, décorateurs
-├── modelsSQLAlchemy.py  # + Category, Product, Order, OrderItem (4.4, 4.6)
+├── modelsSQLAlchemy.py  # + Category, Product (Order, OrderItem au 🥇 avec F3)
 └── routes/
     ├── auth.py          # + POST /api/auth/login
     └── produits.py      # NOUVEAU (F2) : CRUD /api/produits
