@@ -182,7 +182,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 | Niveau | Parties 4.x traitées | Laissé pour plus tard |
 |---|---|---|
 | 🥉 Débutant | 4.1 base, 4.5 classe (1 objet simple), 4.7 (1 route), 4.8 (1 module), 4.10 erreurs basiques | 4.2, 4.3, 4.4, 4.6, 4.9, 4.11 |
-| 🥈 Intermédiaire | + 4.3 contraintes essentielles, 4.4 relations, 4.6 transitions simples, 4.11 sécurité de base | 4.2, 4.9, versions complètes de 4.7 et 4.10 |
+| 🥈 Intermédiaire | + 4.3 contraintes essentielles, 4.4 relations, 4.11 sécurité de base | 4.2, **4.6** (transitions = changement d'état → 🥇), 4.9, versions complètes de 4.7 et 4.10 |
 | 🥇 Confirmé | **4.1 à 4.11 toutes**, versions complètes (contrat d'API complet, tous les gestionnaires d'erreurs, contrôle des transitions par rôle) | rien |
 
 ### Groupe A — Données (d'après l'étape 3)
