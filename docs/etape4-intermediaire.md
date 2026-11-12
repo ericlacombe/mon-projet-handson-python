@@ -124,6 +124,13 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 ## 4.7 — Contrat d'API niveau 🥈 (les nouvelles routes)
 
+> 💡 Rappel : une route = **URL + méthode HTTP** (le « panneau du guichet ») reliée à un
+> **endpoint** (la fonction Python exécutée). Le contrat ci-dessous dit, pour chaque
+> route : qui a le droit d'y accéder, quoi envoyer (entrées JSON), quoi on reçoit
+> (sorties JSON + codes HTTP). Les routes protégées exigent le header
+> `Authorization: Bearer <token JWT>` (obtenu via `/api/auth/login`).
+
+
 | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
 |---|---|---|---|---|
 | POST | `/api/auth/login` | Public | `{email, password}` | `200` + token JWT · `401` mauvais identifiants |
@@ -132,6 +139,11 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 | POST | `/api/produits` | **Admin** (token + rôle) | `{name, description, price, stock, category_id}` | `201` · `400` (prix<0…) · `401`/`403` |
 | PUT | `/api/produits/<id>` | Admin | idem | `200` · `404` · `401`/`403` |
 | DELETE | `/api/produits/<id>` | Admin | — | `204` · `404` · `401`/`403` |
+
+- `200` = OK · `201` = ressource créée · `204` = supprimé (corps vide) ;
+- `400` = entrées invalides (ex. prix < 0, champs manquants) · `401` = pas de token ou token invalide ;
+- `403` = token valide mais rôle insuffisant (client au lieu d'admin) · `404` = ressource introuvable ;
+- `GET /api/produits` est **public** (Visiteur) : catalogue consultable sans compte, avec recherche `?q=texte`.
 
 ## 4.8 — Modules niveau 🥈 (un par fonction métier)
 
