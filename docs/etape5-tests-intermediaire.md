@@ -6,12 +6,12 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 
 ## Matrice élément × type de test (niveau 🥈)
 
-| Élément créé (étape 4 🥈) | Unitaire | Intégration (route+base+sécurité) |
-|---|---|---|
-| `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` |
-| `security.creer_token / verifier_token` | ✅ `test_token_invalide_401` | ✅ (via login) |
-| CRUD `/api/produits` (F2) | — | ✅ `test_creer_produit_sans_token_401`, `test_creer_produit_client_403`, `test_creer_produit_admin_201`, `test_creer_produit_prix_negatif_400` |
-| `GET /api/produits` (public, recherche) | — | ✅ `test_liste_produits_avec_recherche` |
+| Fonction métier | Objet(s) | Élément testé (étape 4 🥈) | Unitaire | Intégration (route+base+sécurité) |
+|---|---|---|---|---|
+| **F1+F4** (auth) | `User` → token | `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` |
+| **F4** | token (donnée temporaire, 4.2) | `security.creer_token / verifier_token` | ✅ `test_token_invalide_401` | ✅ (via login) |
+| **F2** (+F4) | `Product`, `Category` | CRUD `/api/produits` | — | ✅ `test_creer_produit_sans_token_401`, `test_creer_produit_client_403`, `test_creer_produit_admin_201`, `test_creer_produit_prix_negatif_400` |
+| **F2** | `Product` | `GET /api/produits` (public, recherche) | — | ✅ `test_liste_produits_avec_recherche` |
 
 ## Les tests (extraits, avec commentaires)
 
