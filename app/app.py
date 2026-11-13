@@ -28,6 +28,8 @@ from flask import Flask
 from app.db import session
 # modèles (définis dans modelsSQLAlchemy.py) : User (🥉), Category + Product (🥈)
 from app.modelsSQLAlchemy import User, Category, Product
+# hachage du mot de passe de démo (werkzeug, inclus avec Flask)
+from werkzeug.security import generate_password_hash
 
 # ------------------------------------------------------------------
 # Création de l'application Flask
@@ -65,11 +67,11 @@ def init_sample_data():
     (les vrais tests sont dans tests/ et lancés avec pytest).
     """
     if session.query(User).count() == 0:
-        # --- Compte admin de démo (pour se connecter tout de suite) ---
-        # En vrai : generate_password_hash("admin123") — ici hash factice de démo
+        # --- Compte admin de démo (pour se connecter tout de suite via /login) ---
+        # Mot de passe de démo : "admin123" (haché pour de vrai, comme un vrai compte)
         admin = User(
             email="admin@digimarket.fr",
-            password_hash="hash_de_demo",   # en vrai : generate_password_hash(...)
+            password_hash=generate_password_hash("admin123"),
             first_name="Admin",
             last_name="Digi",
             role="admin",
