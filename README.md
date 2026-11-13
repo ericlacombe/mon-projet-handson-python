@@ -23,23 +23,23 @@
 - PascalCase pour les classes
 - routes au pluriel : /api/produits, /api/commandes
 
-## Fonctionnalités — cas d'utilisation (étape 1)
-- **Visiteur** : s'inscrire, se connecter, consulter le catalogue, rechercher un produit, voir le détail d'un produit
-- **Client** : en plus, passer une commande, consulter son historique de commandes, suivre l'état d'une commande
-- **Administrateur** : gérer les produits et les stocks, voir toutes les commandes, changer le statut d'une commande
+## Fonctionnalités — cas d'utilisation (étape 1, avec niveau)
+- **Visiteur** : s'inscrire 🥉 ✅ · se connecter 🥈 🚧 · consulter le catalogue / rechercher / détail produit 🥈 🚧
+- **Client** : passer une commande, historique, suivre l'état 🥇 ⏳
+- **Administrateur** : gérer les produits et stocks 🥈 🚧 · voir toutes les commandes, changer le statut 🥇 ⏳
 
-## Fonctions métier (étape 2)
-- **F1 — Gérer les comptes** : inscription, connexion, émission du token JWT
-- **F2 — Gérer le catalogue** : liste, recherche, détail, CRUD produits, gestion des stocks
-- **F3 — Gérer les commandes** : passer une commande, historique, suivi, changement de statut, lignes
-- **F4 — Sécuriser les accès** : hachage des mots de passe, vérification JWT, contrôle des rôles
+## Fonctions métier (étape 2, avec niveau)
+- **F1 — Gérer les comptes** 🥉 ✅ (register fait ; login 🥈 🚧) : inscription, connexion, token JWT
+- **F2 — Gérer le catalogue** 🥈 🚧 : liste, recherche, détail, CRUD produits, gestion des stocks
+- **F3 — Gérer les commandes** 🥇 ⏳ : commander, historique, suivi, changement de statut, lignes
+- **F4 — Sécuriser les accès** 🥈 🚧 : hachage (🥉 ✅ dans register), vérification JWT, contrôle des rôles
 
-## Modèle de données — objets (étape 3)
-- **Utilisateur** : id, email (unique), mot_de_passe_hash, nom, prenom, adresse, role
-- **Categorie** : id, nom (unique)
-- **Produit** : id, nom, description, prix, stock, categorie_id (FK)
-- **Commande** : id, utilisateur_id (FK), adresse_livraison, statut (en_attente | validée | expédiée | annulée), date_creation
-- **LigneCommande** : id, commande_id (FK), produit_id (FK), quantite, prix_unitaire
+## Modèle de données — objets (étape 3, avec niveau)
+- **Utilisateur** 🥉 ✅ : id, email (unique), mot_de_passe_hash, nom, prenom, adresse, role
+- **Categorie** 🥈 🚧 : id, nom (unique)
+- **Produit** 🥈 🚧 : id, nom, description, prix, stock, categorie_id (FK)
+- **Commande** 🥇 ⏳ : id, utilisateur_id (FK), adresse_livraison, statut (en_attente | validée | expédiée | annulée), date_creation
+- **LigneCommande** 🥇 ⏳ : id, commande_id (FK), produit_id (FK), quantite, prix_unitaire
 
 Liens : Utilisateur 1—N Commande · Categorie 1—N Produit · Produit 1—N LigneCommande · Commande 1—N LigneCommande
 (détail complet dans `etape3-objets.md`, schéma ER + PK/FK/UK)
@@ -72,6 +72,16 @@ mon-projet-handson-python/
 (digimarket.db est créée automatiquement au lancement, à la racine)
 
 📊 Cette structure est illustrée dans les canva : 🥉 **[docs/canva-structure-debutant.mmd](docs/canva-structure-debutant.mmd)** (figé) · 🥈 **[docs/canva-structure-intermediaire.mmd](docs/canva-structure-intermediaire.mmd)** (en cours).
+
+## API — routes du niveau 🥈 (contrat complet dans docs/etape4-intermediaire.md §4.7)
+
+| Fonction métier | Objet(s) | Méthode | Route | Accès | Codes |
+|---|---|---|---|---|---|
+| F1 | `User` | POST | `/api/auth/register` | Public | 201 · 400 · 409 (🥉 ✅ fait) |
+| F1+F4 | `User` → token | POST | `/api/auth/login` | Public | 200 + JWT · 401 (🥈 🚧) |
+| F2 | `Product` | GET | `/api/produits` (`?q=` recherche) | Public | 200 (🥈 🚧) |
+| F2 | `Product` | GET | `/api/produits/<id>` | Public | 200 · 404 (🥈 🚧) |
+| F2+F4 | `Product`, `Category` | POST/PUT/DELETE | `/api/produits[/<id>]` | **Admin** (Bearer token) | 201/200/204 · 400 · 401 · 403 (🥈 🚧) |
 
 ## Installation et lancement (étape 6)
 ```bash
