@@ -72,7 +72,7 @@ class Product(Base):
 
 > ⚠️ La partie 4.6 (transitions d'état, ex. `Order.valider()`) concerne **F3 « Gérer les commandes »** : selon la règle de répartition par complexité (changement d'état = logique complexe), elle est traitée au **niveau 🥇 confirmé**, pas ici.
 
-## 4.7 — Contrat d'API niveau 🥈 (les nouvelles routes)
+## 4.7 — Routes de l'API : contrat complet niveau 🥈 (méthode, entrées, sorties, codes, accès, fonction métier, objet)
 
 > 💡 Rappel : une route = **URL + méthode HTTP** (le « panneau du guichet ») reliée à un
 > **endpoint** (la fonction Python exécutée). Le contrat ci-dessous dit, pour chaque
