@@ -4,7 +4,7 @@
 
 **Rappel du principe** : on croise les résultats des étapes 1, 2 et 3. Règle à dire à voix haute : *« analyse → condition → si positif, ACTION de création »*, et *« si la condition est fausse, que se passe-t-il ? »*.
 
-**Niveau 🥈 = niveau 🥉 + parties 4.3 (contraintes), 4.4 (relations), 4.6 (transitions simples), 4.11 (sécurité de base)**.
+**Niveau 🥈 = niveau 🥉 + parties 4.3 (contraintes), 4.5 (relations), 4.6 (transitions simples), 4.11 (sécurité de base)**.
 Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + **« un utilisateur se connecte (JWT) »**.
 
 > 📌 **Répartition des fonctions métier** (règle de complexité dans `methodologie.md`) :
@@ -34,7 +34,7 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 | **F2** (+ F4 contrôle admin) | `Product` | `price` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` |
 | **F2** (+ F4) | `Product` | `stock` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` |
 
-## 4.4 — Création des objets ayant une relation 1—N (condition : deux objets liés ✅ → ACTION)
+## 4.5 — Création des objets ayant une relation 1—N (condition : deux objets liés ✅ → ACTION)
 
 Du schéma ER (étape 3) — niveau 🥈 on ne garde que la relation utile à F2 (les relations Commande/LigneCommande = F3, réservées au 🥇) :
 
@@ -44,7 +44,7 @@ Du schéma ER (étape 3) — niveau 🥈 on ne garde que la relation utile à F2
 
 ```python
 # modelsSQLAlchemy.py (extrait 🥈) — ForeignKey et relationship
-# Pourquoi ForeignKey maintenant ? Parce qu'il y a des RELATIONS entre tables (4.4)
+# Pourquoi ForeignKey maintenant ? Parce qu'il y a des RELATIONS entre tables (4.5)
 from sqlalchemy import Column, Integer, String, Float, Text, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -177,7 +177,7 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 ---
 
-✅ **Checklist étape 4 (niveau 🥈)** : 4.3 contraintes ✅ · 4.4 FK/relations ✅ · 4.11 sécurité ✅ · contrat d'API 🥈 ✅ · arborescence 🥈 ✅ (4.6 → niveau 🥇 avec F3).
+✅ **Checklist étape 4 (niveau 🥈)** : 4.3 contraintes ✅ · 4.5 FK/relations ✅ · 4.11 sécurité ✅ · contrat d'API 🥈 ✅ · arborescence 🥈 ✅ (4.6 → niveau 🥇 avec F3).
 
 ⚠️ **Piège évité** : pas de classe pour le token JWT (donnée temporaire, 4.2 — un `dict` suffit).
 
@@ -187,7 +187,7 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 ❓ **Auto-évaluation** : 1) Pourquoi ForeignKey seulement maintenant ? 2) Où va la SECRET_KEY ? 3) Quelles routes sont réservées à l'admin ?
 
-📝 **À retenir (3 lignes)** : 1) 🥈 = 🥉 + 4.3/4.4/4.6/4.11. 2) Relations → ForeignKey + relationship. 3) Sécurité → module dédié + JWT + .env + décorateurs de rôle.
+📝 **À retenir (3 lignes)** : 1) 🥈 = 🥉 + 4.3/4.5/4.6/4.11. 2) Relations → ForeignKey + relationship. 3) Sécurité → module dédié + JWT + .env + décorateurs de rôle.
 
 ---
-*Conception 🥈 prête (ordre 4.3 → 4.4 → 4.6 → 4.11, comme la méthode). Prochaine étape (avec validation) : étape 5 niveau 🥈 (tests : unitaires + intégration + 401/403).*
+*Conception 🥈 prête (ordre 4.3 → 4.5 → 4.6 → 4.11, comme la méthode). Prochaine étape (avec validation) : étape 5 niveau 🥈 (tests : unitaires + intégration + 401/403).*

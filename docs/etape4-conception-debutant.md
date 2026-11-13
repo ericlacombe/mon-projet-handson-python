@@ -4,7 +4,7 @@
 
 **Principe** : on croise les résultats des étapes 1, 2 et 3. Règle à dire à voix haute : *« analyse → condition → si positif, ACTION de création »*, et *« si la condition est fausse, que se passe-t-il ? »*.
 
-Niveau 🥉 = seules les parties **4.1, 4.5, 4.7 (1 route), 4.8, 4.10 basique** sont traitées, appliquées au **fil rouge** « S'inscrire » (Visiteur → cas étape 1 → F1 « Gérer les comptes » étape 2 → objet `Utilisateur` étape 3).
+Niveau 🥉 = seules les parties **4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique** sont traitées, appliquées au **fil rouge** « S'inscrire » (Visiteur → cas étape 1 → F1 « Gérer les comptes » étape 2 → objet `Utilisateur` étape 3).
 
 ---
 
@@ -25,12 +25,12 @@ CREATE TABLE utilisateurs (
 );
 ```
 
-## 4.5 — Classe `Utilisateur` (condition : objet avec état persistant ✅ → ACTION)
+## 4.4 — Classe `Utilisateur` (condition : objet avec état persistant ✅ → ACTION)
 
 ```python
 # modelsSQLAlchemy.py (extrait) — même style que le projet précédent (SQLAlchemy pur, pas Flask-SQLAlchemy)
 # Pourquoi une classe ? Parce que l'objet Utilisateur a un état PERSISTANT :
-# il doit vivre en base au-delà d'une seule requête (règle 4.5) → on crée une classe.
+# il doit vivre en base au-delà d'une seule requête (règle 4.4) → on crée une classe.
 # (Un objet temporaire, ex. le token JWT décodé, n'aurait PAS de classe — règle 4.2.)
 from sqlalchemy import Column, Integer, String, Text
 
@@ -89,7 +89,7 @@ def register():                                    # l'endpoint = la fonction ex
 app/
 ├── app.py                  # point d'entrée Flask (crée l'app, enregistre auth_bp)
 ├── models/
-│   └── utilisateur.py      # classe Utilisateur (4.5)
+│   └── utilisateur.py      # classe Utilisateur (4.4)
 └── routes/
     └── auth.py             # blueprint auth_bp + POST /api/auth/register (4.7, 4.8)
 digimarket.db               # base SQLite, table utilisateurs (4.1)
@@ -99,7 +99,7 @@ digimarket.db               # base SQLite, table utilisateurs (4.1)
 
 ✅ **Checklist étape 4 (niveau 🥉)** :
 - [x] 4.1 base créée (condition persisté ✅) → table `utilisateurs` ;
-- [x] 4.5 classe créée → `Utilisateur` ;
+- [x] 4.4 classe créée → `Utilisateur` ;
 - [x] 4.7 une route créée → `POST /api/auth/register` + contrat ;
 - [x] 4.8 un module créé → `routes/auth.py` ;
 - [x] 4.10 erreurs basiques → 400/409 en JSON ;
@@ -120,7 +120,7 @@ digimarket.db               # base SQLite, table utilisateurs (4.1)
 
 📝 **À retenir (3 lignes)** :
 1) Étape 4 : analyse → condition → si positif, ACTION de création (et si faux, on demande ce qui se passe).
-2) Niveau 🥉 = 4.1 base + 4.5 classe + 4.7 une route + 4.8 un module + 4.10 erreurs basiques, sur UN fil rouge.
+2) Niveau 🥉 = 4.1 base + 4.4 classe + 4.7 une route + 4.8 un module + 4.10 erreurs basiques, sur UN fil rouge.
 3) Sortie de l'étape 4 = l'arborescence de fichiers à créer.
 
 ---

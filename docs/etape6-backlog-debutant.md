@@ -7,7 +7,7 @@
 ## Backlog 🥉 (1 seul incrément)
 
 - [x] **1. Squelette** : `requirements.txt` (flask, sqlalchemy, pytest), `app/app.py` (Flask + engine SQLite + session + `create_all` + `init_sample_data()` + enregistrement du blueprint + `app.run`), `app/db.py` (engine + session partagée), `app/modelsSQLAlchemy.py` (`Base` + classe `User`, table `users`)
-      → **pourquoi :** vient de l'étape 4 — 4.1 (base), 4.5 (classe), 4.8 (module/app) ; l'arborescence du README.
+      → **pourquoi :** vient de l'étape 4 — 4.1 (base), 4.4 (classe), 4.8 (module/app) ; l'arborescence du README.
       → **testable :** `python app/app.py` démarre sans erreur ✅ (vérifié)
 - [x] **2. Route** `POST /api/auth/register` dans `app/routes/auth.py` (blueprint `auth_bp`, réponses 400/409/201 en JSON)
       → **pourquoi :** cas « S'inscrire » (étape 1, acteur Visiteur) → route 4.7 + erreurs 4.10 (409 email déjà pris prévu à l'étape 4).
