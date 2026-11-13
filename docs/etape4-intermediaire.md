@@ -125,7 +125,7 @@ app/
     # (routes/commandes.py sera ajouté au niveau 🥇 avec F3)
 ```
 
-## 4.11 — Sécurité de base (condition : authentification/autorisation requise ✅ → ACTION)
+## 4.11 — Sécuriser les accès (F4) : token JWT = donnée temporaire (4.2), contrôle 401/403 sur les routes protégées (condition : authentification/autorisation requise ✅ → ACTION)
 
 Nouveau module `app/security.py` + bibliothèque **PyJWT** + fichier **`.env`** (jamais commité) :
 
