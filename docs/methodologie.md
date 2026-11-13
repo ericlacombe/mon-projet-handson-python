@@ -191,7 +191,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 |---|---|---|---|
 | 4.1 Base de données | Modèle de données (3) | Un objet au moins doit être **persisté** : conserver ses valeurs au-delà d'une seule requête, même après redémarrage du serveur | **Création** de la base de données et de ses tables (schéma) |
 | 4.2 Données temporaires | Diagramme de flux (2) | Des données ne sont utiles que le temps d'une seule requête | **Création** d'une structure simple (`dict`/objet léger) — **pas de table** |
-| 4.3 Contraintes & validations | Attributs du modèle (3) | Un attribut a une règle de validité (unicité, valeur min, format…) | **Création** de contraintes en base + validation côté route avec code d'erreur adapté |
+| 4.3 Contraintes métier sur les objets (par route) | Attributs du modèle (3) | Un attribut a une règle de validité (unicité, valeur min, format…) | **Création** de contraintes en base + validation côté route avec code d'erreur adapté |
 | 4.4 Relations entre objets | Liens du schéma ER (3) | Deux objets sont liés (1—N, N—N) | **Création** des clés étrangères et des relations dans les classes |
 | 4.5 Classes | Objets du modèle (3) | Un objet a un **état persistant**, modifié au fil du temps | **Création d'une classe par objet** persistant |
 | 4.6 Transitions d'états | Cycle de vie (3) | Un objet possède plusieurs états avec des transitions possibles | **Création** d'une méthode par transition sur la classe + constantes des états + contrôle des transitions autorisées |
@@ -199,7 +199,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 💡 **Explications du Groupe A** :
 - **4.1** — « persisté » = garder ses valeurs au-delà d'une seule requête, même après redémarrage. Si aucun objet n'a ce besoin → on saute la base. C'est la question « persisté ou temporaire ? » de l'étape 3 qui répond.
 - **4.2** — exemples : contenu d'un token décodé, panier non validé, calcul intermédiaire (brouillon jetable).
-- **4.3** — exemples : email unique → contrainte `unique` + erreur `409` ; prix négatif → validation + erreur `400`.
+- **4.3** — contraintes métier sur les objets (par route) ; exemples : email unique → contrainte `unique` + erreur `409` ; prix négatif → validation + erreur `400`.
 - **4.4** — exemple : Utilisateur 1—N Commandes → clé étrangère `utilisateur_id` + `relationship`.
 - **4.5** — une classe par objet **persistants uniquement** : attributs (colonnes) + méthodes (comportements). Un objet temporaire (4.2) n'a pas de classe.
   *Pourquoi une classe ?* Parce que l'objet a un **état persistant** : il doit vivre en base au-delà d'une seule requête → on crée une classe. (Un objet temporaire, ex. le token décodé, n'en a pas.)
