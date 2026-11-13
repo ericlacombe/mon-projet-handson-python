@@ -178,7 +178,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 
 **Consignes de présentation du fichier `etape4-<niveau>.md`** (appliqué à chaque niveau) :
 1. Commencer le fichier par un **tableau récap** : Fonction métier | Objet(s) | Routes | Fichiers à créer ;
-2. Dans **tous les tableaux** du chapitre (récap, 4.3, 4.4, 4.7…), les deux premières colonnes sont **Fonction métier** puis **Objet(s)** ;
+2. Dans **tous les tableaux** du chapitre (récap, 4.3, 4.5, 4.7…), les deux premières colonnes sont **Fonction métier** puis **Objet(s)** ;
 3. Un objet/fonction avec **relation 1—N** → niveau 🥈 ; avec **changement d'état (transitions)** → niveau 🥇 (voir règle de répartition par complexité).
 **Ordre conseillé** : Groupe A (données) d'abord — le Groupe B (comportement) s'appuie sur les données.
 
@@ -186,8 +186,8 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 
 | Niveau | Parties 4.x traitées | Laissé pour plus tard |
 |---|---|---|
-| 🥉 Débutant | 4.1 base, 4.5 classe (1 objet simple), 4.7 (1 route), 4.8 (1 module), 4.10 erreurs basiques | 4.2, 4.3, 4.4, 4.6, 4.9, 4.11 |
-| 🥈 Intermédiaire | + 4.3 contraintes essentielles, 4.4 relations, 4.11 sécurité de base | 4.2, **4.6** (transitions = changement d'état → 🥇), 4.9, versions complètes de 4.7 et 4.10 |
+| 🥉 Débutant | 4.1 base, 4.4 classe (1 objet simple), 4.7 (1 route), 4.8 (1 module), 4.10 erreurs basiques | 4.2, 4.3, 4.5, 4.6, 4.9, 4.11 |
+| 🥈 Intermédiaire | + 4.3 contraintes essentielles, 4.5 relations, 4.11 sécurité de base | 4.2, **4.6** (transitions = changement d'état → 🥇), 4.9, versions complètes de 4.7 et 4.10 |
 | 🥇 Confirmé | **4.1 à 4.11 toutes**, versions complètes (contrat d'API complet, tous les gestionnaires d'erreurs, contrôle des transitions par rôle) | rien |
 
 ### Groupe A — Données (d'après l'étape 3)
@@ -197,16 +197,16 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 | 4.1 Base de données | Modèle de données (3) | Un objet au moins doit être **persisté** : conserver ses valeurs au-delà d'une seule requête, même après redémarrage du serveur | **Création** de la base de données et de ses tables (schéma) |
 | 4.2 Données temporaires | Diagramme de flux (2) | Des données ne sont utiles que le temps d'une seule requête | **Création** d'une structure simple (`dict`/objet léger) — **pas de table** |
 | 4.3 Contraintes métier sur les objets (par route) | Attributs du modèle (3) | Un attribut a une règle de validité (unicité, valeur min, format…) | **Création** de contraintes en base + validation côté route avec code d'erreur adapté |
-| 4.4 Création des objets ayant une relation 1—N | Liens du schéma ER (3) | Deux objets sont liés (1—N, N—N) | **Création** des clés étrangères et des relations dans les classes |
-| 4.5 Classes | Objets du modèle (3) | Un objet a un **état persistant**, modifié au fil du temps | **Création d'une classe par objet** persistant |
+| 4.4 Création des objets simples | Objets du modèle (3) | Un objet a un **état persistant**, modifié au fil du temps | **Création d'une classe par objet** persistant |
+| 4.5 Création des objets ayant une relation 1—N | Liens du schéma ER (3) | Deux objets sont liés (1—N, N—N) | **Création** des clés étrangères et des relations dans les classes |
 | 4.6 Création des objets ayant une transition d'état (méthodes + contrôle) | Cycle de vie (3) | Un objet possède plusieurs états avec des transitions possibles | **Création** d'une méthode par transition sur la classe + constantes des états + contrôle des transitions autorisées |
 
 💡 **Explications du Groupe A** :
 - **4.1** — « persisté » = garder ses valeurs au-delà d'une seule requête, même après redémarrage. Si aucun objet n'a ce besoin → on saute la base. C'est la question « persisté ou temporaire ? » de l'étape 3 qui répond.
 - **4.2** — exemples : contenu d'un token décodé, panier non validé, calcul intermédiaire (brouillon jetable).
 - **4.3** — contraintes métier sur les objets (par route) ; exemples : email unique → contrainte `unique` + erreur `409` ; prix négatif → validation + erreur `400`.
-- **4.4** — exemple : Utilisateur 1—N Commandes → clé étrangère `utilisateur_id` + `relationship`.
-- **4.5** — une classe par objet **persistants uniquement** : attributs (colonnes) + méthodes (comportements). Un objet temporaire (4.2) n'a pas de classe.
+- **4.5** — exemple : Utilisateur 1—N Commandes → clé étrangère `utilisateur_id` + `relationship`.
+- **4.4** — une classe par objet **persistants uniquement** : attributs (colonnes) + méthodes (comportements). Un objet temporaire (4.2) n'a pas de classe.
   *Pourquoi une classe ?* Parce que l'objet a un **état persistant** : il doit vivre en base au-delà d'une seule requête → on crée une classe. (Un objet temporaire, ex. le token décodé, n'en a pas.)
 - **4.6** — exemple : `Commande.valider()` ; constantes `EN_ATTENTE = "en_attente"`… ; contrôle par rôle (lien 4.11).
 
@@ -238,11 +238,11 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 
 👉 **Sortie de l'étape 4** : l'arborescence de fichiers à créer (base, classes, modules, routes, sécurité, utilitaires).
 
-**Exemple générique appliqué** : 3 objets persistés → 4.1 base (3 tables) + 4.5 3 classes ; cycle de vie → 4.6 méthodes de transition ; API → 4.7 routes dans 4.8 modules ; matrice des rôles → 4.11 sécurité ; donnée temporaire → 4.2 `dict`.
+**Exemple générique appliqué** : 3 objets persistés → 4.1 base (3 tables) + 4.4 3 classes ; cycle de vie → 4.6 méthodes de transition ; API → 4.7 routes dans 4.8 modules ; matrice des rôles → 4.11 sécurité ; donnée temporaire → 4.2 `dict`.
 
 ✅ **Checklist étape 4** : chaque partie cochée produit **un élément concret** de l'arborescence de fichiers.
 
-⚠️ **Pièges** : créer une classe pour une donnée temporaire (confondre 4.2 et 4.5) — *faux bon résultat classique : « j'ai créé une classe Token » → erreur, le token est temporaire (4.2), pas de classe*.
+⚠️ **Pièges** : créer une classe pour une donnée temporaire (confondre 4.2 et 4.4) — *faux bon résultat classique : « j'ai créé une classe Token » → erreur, le token est temporaire (4.2), pas de classe*.
 
 🧰 **Bonnes pratiques à ce stade** :
 - commentaires « pourquoi, pas quoi » (le code dit quoi, le commentaire dit pourquoi) ;
@@ -252,7 +252,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 - choisir l'arborescence de fichiers **compatible avec les conventions déjà utilisées** dans d'autres projets (ex. modèles SQLAlchemy dans un fichier séparé `modelsSQLAlchemy.py`, routes par blueprint…) ;
 - commit Git de l'étape 4 (arborescence de fichiers créée).
 
-🧵 **Fil rouge** : pour « S'inscrire » → 4.1 table `utilisateurs` ; 4.3 contrainte `unique` sur email ; 4.5 classe `Utilisateur` ; 4.7 route `POST /api/auth/register` ; 4.8 module `auth.py` ; 4.10 gestionnaire d'erreur 409 ; 4.11 hachage du mot de passe.
+🧵 **Fil rouge** : pour « S'inscrire » → 4.1 table `utilisateurs` ; 4.3 contrainte `unique` sur email ; 4.4 classe `Utilisateur` ; 4.7 route `POST /api/auth/register` ; 4.8 module `auth.py` ; 4.10 gestionnaire d'erreur 409 ; 4.11 hachage du mot de passe.
 ❓ **Auto-évaluation** : 1) Pourquoi une classe pour Utilisateur et pas pour le token ? 2) Quelle partie crée la route POST /api/auth/register ? 3) Que se passe-t-il si la condition du 4.1 est fausse ?
 📝 **À retenir (3 lignes)** : 1) Analyse → condition → si positif, action de création. 2) Persisté → base + classe ; temporaire → dict. 3) Groupe A (données) avant Groupe B (comportement).
 
@@ -305,11 +305,11 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 ### 🥉 Niveau DÉBUTANT — l'essentiel uniquement
 Objectif : un petit code fonctionnel rapidement, sans que les fonctions essentielles soient noyées dans des contraintes secondaires.
 - Une seule **fonction métier** (F1 « Gérer les comptes » — niveau figé) et un seul **objet simple** (`User`), avec hachage du mot de passe.
-- Sous-étapes suivies : 0 (besoins limités) → 1 (un seul acteur, les cas essentiels) → 2 (la fonction métier + flux simple) → 3 (un objet, sans cycle de vie) → 4 avec seulement **4.1, 4.5, 4.7 (1 route), 4.8, 4.10 basique** → 5 (1 test unitaire).
-- Laissé de côté : 4.2, 4.3, 4.4, 4.6, 4.9, 4.11, matrice des rôles complète, régression/intégration.
+- Sous-étapes suivies : 0 (besoins limités) → 1 (un seul acteur, les cas essentiels) → 2 (la fonction métier + flux simple) → 3 (un objet, sans cycle de vie) → 4 avec seulement **4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique** → 5 (1 test unitaire).
+- Laissé de côté : 4.2, 4.3, 4.5, 4.6, 4.9, 4.11, matrice des rôles complète, régression/intégration.
 
 ### 🥈 Niveau INTERMÉDIAIRE
-- Le domaine fonctionnel **complet** : plusieurs objets avec relations (4.4), un cycle de vie simple (4.6), sécurité de base (4.11), contraintes essentielles (4.3).
+- Le domaine fonctionnel **complet** : plusieurs objets avec relations (4.5), un cycle de vie simple (4.6), sécurité de base (4.11), contraintes essentielles (4.3).
 - Tests : unitaires + premiers tests d'intégration.
 
 ### 🥇 Niveau CONFIRMÉ
@@ -317,8 +317,8 @@ Objectif : un petit code fonctionnel rapidement, sans que les fonctions essentie
 
 | Niveau | Parties étape 4 | Tests | Laissé de côté |
 |---|---|---|---|
-| Débutant | 4.1, 4.5, 4.7 (1 route), 4.8, 4.10 basique | 1 unitaire | le reste |
-| Intermédiaire | + 4.3, 4.4, 4.6, 4.11 | unitaires + intégration | 4.2, 4.9, régression complète |
+| Débutant | 4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique | 1 unitaire | le reste |
+| Intermédiaire | + 4.3, 4.5, 4.11 | unitaires + intégration | 4.2, **4.6**, 4.9, régression complète |
 | Confirmé | **4.1–4.11 toutes** | unitaires + régression + intégration | rien |
 
 **Méthode générale** : squelette d'abord (dossiers, base, classes), puis module par module, **avec le test de l'étape 5 à chaque incrément**.
@@ -373,8 +373,8 @@ flowchart TD
     E0 --> E1["(1) use cases : QUI fait QUOI"]
     E1 --> E2["(2) fonctions MÉTIER"]
     E2 --> E3["(3) objets manipulés (ER + cycle de vie)"]
-    E3 --> B1["🥉 NIVEAU DÉBUTANT<br/>4: 4.1 4.5 4.7 4.8 4.10<br/>5: 1 test unitaire<br/>6: backlog 🥉 → CODE → DoD ✅"]
-    B1 --> B2["🥈 NIVEAU INTERMÉDIAIRE<br/>4: + 4.3 4.4 4.6 4.11<br/>5: + intégration<br/>6: backlog 🥈 → CODE → DoD ✅"]
+    E3 --> B1["🥉 NIVEAU DÉBUTANT<br/>4: 4.1 4.4 4.7 4.8 4.10<br/>5: 1 test unitaire<br/>6: backlog 🥉 → CODE → DoD ✅"]
+    B1 --> B2["🥈 NIVEAU INTERMÉDIAIRE<br/>4: + 4.3 4.5 4.11<br/>5: + intégration<br/>6: backlog 🥈 → CODE → DoD ✅"]
     B2 --> B3["🥇 NIVEAU CONFIRMÉ<br/>4: 4.1 à 4.11 toutes<br/>5: + régression<br/>6: backlog 🥇 → CODE → DoD ✅"]
 ```
 
