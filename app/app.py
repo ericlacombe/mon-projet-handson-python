@@ -1,8 +1,11 @@
 """
 app.py — Point d'entrée de l'API DigiMarket (niveau 🥉).
 
-Flask + SQLAlchemy pur : on crée l'app, on enregistre le blueprint auth,
+Flask + SQLAlchemy pur : on crée l'app, on enregistre les blueprints,
 puis on lance le serveur.
+
+Niveau 🥉 : blueprint auth (POST /api/auth/register).
+Niveau 🥈 : + blueprint produits (F2 : /api/produits, /api/categories) + données de démo catalogue.
 
 Lancer depuis la racine du projet :  python -m app.app
 
@@ -32,21 +35,29 @@ from app.modelsSQLAlchemy import User, Category, Product
 app = Flask(__name__)
 
 # ------------------------------------------------------------------
-# Blueprints (routes) — ici seulement auth pour le niveau 🥉
+# Blueprints (routes) — un par fonction métier (4.8)
 # ------------------------------------------------------------------
-# auth_bp : le blueprint défini dans routes/auth.py (fonction métier F1 « Gérer les comptes »)
+# auth_bp : blueprint de routes/auth.py — F1 « Gérer les comptes »
+#   🥉 POST /api/auth/register (inscription) · 🥈 POST /api/auth/login (token JWT)
 from app.routes.auth import auth_bp
+# produits_bp : blueprint de routes/produits.py — F2 « Gérer le catalogue » (AJOUT 🥈)
+#   GET /api/produits[/<id>] (public) · POST/PUT/DELETE (admin) · POST /api/categories
+#   Pourquoi un 2e blueprint ? Chaque domaine fonctionnel a son fichier (CDC) :
+#   app.py ne fait qu'assembler.
 from app.routes.produits import produits_bp
 # register_blueprint : enregistre les routes du blueprint dans l'app
-# → elles seront accessibles sous /api/auth/... (ex. POST /api/auth/register)
+# → accessibles sous /api/auth/... et /api/produits, /api/categories
 app.register_blueprint(auth_bp)
-app.register_blueprint(produits_bp)   # routes sous /api/produits, /api/categories
+app.register_blueprint(produits_bp)
 
 # ------------------------------------------------------------------
-# Données de DÉMO : un compte admin si la base est vide
+# Données de DÉMO (si la base est vide) : 🥉 compte admin · 🥈 + catalogue
 # ------------------------------------------------------------------
 def init_sample_data():
-    """Ajoute un compte admin de DÉMO si la table users est vide.
+    """Ajoute les données de DÉMO si la table users est vide.
+
+    🥉 : un compte admin (admin@digimarket.fr) pour se connecter tout de suite.
+    🥈 : + 1 catégorie + 2 produits (catalogue visible sans rien créer).
 
     Utilité : avoir un compte prêt pour essayer l'API À LA MAIN
     (curl, navigateur, Thunder Client) sans passer par l'inscription.
