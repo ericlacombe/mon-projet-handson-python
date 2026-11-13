@@ -14,7 +14,7 @@ flowchart TB
         A_APP["app.py - Flask blueprints run"]
         A_DB["db.py - engine session"]
         A_SEC["security.py - JWT hachage decorateurs (4.11)"]
-        A_MODELS["modelsSQLAlchemy.py - User Category Product (Order OrderItem au niveau 🥇 avec F3)"]
+        A_MODELS["modelsSQLAlchemy.py - User (🥉) Category Product avec FK relation 1-N (4.5) - Order OrderItem au 🥇 avec F3"]
         A_AUTH["routes/auth.py - register login"]
         A_PROD["routes/produits.py - CRUD /api/produits (F2)"]
     end
@@ -27,6 +27,8 @@ flowchart TB
 
     subgraph DOCS["docs - documentation"]
         D_ET4["etape4-intermediaire.md"]
+        D_ET5["etape5-tests-intermediaire.md"]
+        D_ET6["etape6-backlog-intermediaire.md - à venir"]
         D_CANVA_B["canva-structure-debutant.mmd - niveau bronze fige"]
         D_CANVA_I["canva-structure-intermediaire.mmd - ce canva"]
     end
