@@ -20,7 +20,8 @@ flowchart TB
     end
 
     subgraph TESTS["tests - tests"]
-        T_AUTH["test_auth.py"]
+        T_AUTH["test_auth.py - 🥉 409"]
+        T_CONF["conftest.py - 🥈 fixtures communes (base en mémoire, tokens admin/client)"]
         T_SEC["test_security.py - token 401 403"]
         T_PROD["test_produits.py - CRUD + roles"]
     end
@@ -28,7 +29,7 @@ flowchart TB
     subgraph DOCS["docs - documentation"]
         D_ET4["etape4-intermediaire.md"]
         D_ET5["etape5-tests-intermediaire.md"]
-        D_ET6["etape6-backlog-intermediaire.md - à venir"]
+        D_ET6["etape6-backlog-intermediaire.md - fait, 8/8 cochées"]
         D_CANVA_B["canva-structure-debutant.mmd - niveau bronze fige"]
         D_CANVA_I["canva-structure-intermediaire.mmd - ce canva"]
     end
@@ -52,6 +53,7 @@ flowchart TB
     A_SEC -.->|User check_password_hash| A_MODELS
     T_AUTH -.->|app models auth_module| A_APP
     T_SEC -.->|security app| A_SEC
+    T_CONF -.->|app models routes| A_APP
     T_PROD -.->|app models produits| A_PROD
 
     style APP fill:#e8f4ff,stroke:#3b82f6
