@@ -15,12 +15,12 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 
 ## 4.3 — Contraintes & validations (condition : règle de validité sur un attribut ✅ → ACTION)
 
-| Attribut | Règle | Où | Erreur |
-|---|---|---|---|
-| `users.email` | unique | contrainte base `unique=True` (déjà fait 🥉) | 409 |
-| `categories.name` | unique | `unique=True` | 409 |
-| `products.price` | >= 0 | validation dans la route | 400 |
-| `products.stock` | >= 0 | validation dans la route | 400 |
+| Attribut (objet) | Règle | Où | Erreur | Route concernée | Fonction métier |
+|---|---|---|---|---|---|
+| `users.email` (`User`) | unique | contrainte base `unique=True` (déjà fait 🥉) | 409 | `POST /api/auth/register` | **F1** Gérer les comptes |
+| `categories.name` (`Category`) | unique | `unique=True` | 409 | `POST /api/categories` (🥈) | **F2** Gérer le catalogue |
+| `products.price` (`Product`) | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4 contrôle admin) |
+| `products.stock` (`Product`) | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4) |
 
 ## 4.4 — Relations entre objets (condition : deux objets liés ✅ → ACTION)
 
