@@ -1,4 +1,5 @@
-%% Canva visuel de la méthodologie v1.2 — à rendre sur https://mermaid.live
+%% Canva visuel de la méthodologie v1.3 — à rendre sur https://mermaid.live
+%% Mis à jour : inversion 4.4/4.5, 4.6 au niveau confirmé, règles apprises (répartition, commits, canva par niveau, pièges)
 flowchart TB
     subgraph PHASE1["ÉTAPES 0-3 : faites UNE SEULE FOIS (conception globale)"]
         direction TB
@@ -13,24 +14,33 @@ flowchart TB
 
     subgraph BOUCLE["BOUCLE ×3 NIVEAUX : à chaque niveau, on exécute 4 → 5 → 6 → CODE"]
         direction TB
-        B1["🥉 NIVEAU DÉBUTANT<br/>4 : 4.1 base, 4.5 classe, 4.7 1 route, 4.8 1 module, 4.10 erreurs basiques<br/>5 : 1 test unitaire<br/>6 : backlog 🥉 → CODE incrémental → DoD ✅"]
-        B2["🥈 NIVEAU INTERMÉDIAIRE<br/>4 : + 4.3 contraintes, 4.4 relations, 4.6 transitions, 4.11 sécurité<br/>5 : + tests d'intégration<br/>6 : backlog 🥈 → CODE → DoD ✅"]
-        B3["🥇 NIVEAU CONFIRMÉ<br/>4 : 4.1 à 4.11 TOUTES<br/>5 : + régression, matrice complète<br/>6 : backlog 🥇 → CODE → DoD ✅"]
+        B1["🥉 NIVEAU DÉBUTANT<br/>4 : 4.1 base, 4.4 objets simples, 4.7 (1 route), 4.8 (1 module), 4.10 erreurs basiques<br/>5 : 1 test unitaire<br/>6 : backlog 🥉 → CODE incrémental → DoD ✅"]
+        B2["🥈 NIVEAU INTERMÉDIAIRE<br/>4 : + 4.3 contraintes métier, 4.5 relations 1—N, 4.11 sécurité JWT<br/>5 : + tests d'intégration (401/403, 400/409)<br/>6 : backlog 🥈 → CODE → DoD ✅"]
+        B3["🥇 NIVEAU CONFIRMÉ<br/>4 : 4.1 à 4.11 TOUTES (dont 4.6 transitions d'état)<br/>5 : + régression, matrice complète<br/>6 : backlog 🥇 → CODE → DoD ✅"]
         B1 -->|"code 🥉 reste fonctionnel"| B2
         B2 -->|"code 🥈 reste fonctionnel"| B3
     end
 
     subgraph LEG4["Étape 4 — les 11 parties (analyse → condition → si positif, ACTION)"]
         direction TB
-        G4A["Groupe A — DONNÉES :<br/>4.1 base · 4.2 temporaires · 4.3 contraintes · 4.4 relations · 4.5 classes · 4.6 transitions"]
-        G4B["Groupe B — COMPORTEMENT :<br/>4.7 routes · 4.8 modules · 4.9 fonctions Python · 4.10 erreurs · 4.11 sécurité"]
+        G4A["Groupe A — DONNÉES :<br/>4.1 base · 4.2 temporaires · 4.3 contraintes métier<br/>4.4 objets simples · 4.5 relations 1—N · 4.6 transitions"]
+        G4B["Groupe B — COMPORTEMENT :<br/>4.7 routes (contrat d'API) · 4.8 modules<br/>4.9 fonctions Python · 4.10 erreurs · 4.11 sécurité"]
+    end
+
+    subgraph REGLES["RÈGLES APPRISES (transversal)"]
+        direction TB
+        R1["Répartition par complexité : pas de changement d'état = 🥉 · relation 1—N = 🥈 · transitions/multi-relations = 🥇"]
+        R2["Tableaux : colonnes Fonction métier puis Objet(s) en premier (étapes 4 et 5)"]
+        R3["Backlog en tableau cochable · 1 tâche cochée = 1 commit · DoD cochable par niveau"]
+        R4["README + canva du niveau courant à jour, canva précédents jamais écrasés"]
+        R5["Pièges : import circulaire (db.py), .env/*.db jamais commités, docstring indentée, git add -A ciblé"]
     end
 
     subgraph TRANS["TRANSVERSAL — à toute étape"]
         direction TB
-        T1["📓 carnet de bord (compris / bloque)"]
+        T1["📓 carnet de bord (compris / bloqué)"]
         T2["🔗 traçabilité (chaque élément vient de l'étape précédente)"]
-        T3["✅ checklist + 📌 Definition of Ready (livrable précédent commité)"]
+        T3["✅ checklist + 📋 Definition of Ready (livrable précédent commité)"]
         T4["🚨 signaux d'alerte : bloqué 20-30 min → relire l'exemple / demander de l'aide"]
         T5["🧰 bonnes pratiques propres à chaque étape"]
         T6["🧵 fil rouge : « un utilisateur s'inscrit » suivi de bout en bout"]
@@ -38,9 +48,11 @@ flowchart TB
 
     L1((boucle)) --> B1
     PHASE1 -.-> LEG4
+    REGLES -.-> BOUCLE
     TRANS -.-> BOUCLE
 
     style PHASE1 fill:#e8f4ff,stroke:#3b82f6
     style BOUCLE fill:#fff7e6,stroke:#f59e0b
     style LEG4 fill:#f0fdf4,stroke:#22c55e
+    style REGLES fill:#fef3c7,stroke:#d97706
     style TRANS fill:#fdf2f8,stroke:#ec4899
