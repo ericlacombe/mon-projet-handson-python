@@ -9,7 +9,7 @@ Règle : on valide ce backlog avant la 1ère ligne de code 🥈. Chaque tâche a
 | [x] | 3 | Login : `POST /api/auth/login` → token JWT | route F1 (4.7) | `app/routes/auth.py` | `test_login_ok_renvoie_token` = 200 ; mauvais mdp = 401 |
 | [x] | 4 | Catalogue : GET liste/recherche + détail (public), POST/PUT/DELETE (admin) + prix/stock >= 0 | routes F2 (4.7) + contraintes (4.3) | `app/routes/produits.py`, `app/app.py` | 201 admin · 401 sans token · 403 client · 400 prix<0 |
 | [x] | 5 | Catégories : `POST /api/categories` (admin) | objet `Category` + CDC contexte | `app/routes/produits.py` | 201 admin · 409 nom pris · 401 sans token |
-| [ ] | 6 | Les 13 tests 🥈 écrits (F1 login, F2 produits/catégories, F4 tokens) | matrice étape 5 🥈 | `tests/test_security.py`, `tests/test_produits.py` | `pytest` tout vert |
+| [x] | 6 | Les 13 tests 🥈 écrits (F1 login, F2 produits/catégories, F4 tokens) | matrice étape 5 🥈 | `tests/test_security.py`, `tests/test_produits.py` | `pytest` tout vert |
 | [ ] | 7 | Données de démo au lancement : 1 admin + 1 catégorie + 2 produits | livrable CDC « données de test » | `app/app.py` | `python -m app.app` → admin en base |
 | [ ] | 8 | README + canva 🥈 à jour | arborescence 4.8 | `README.md`, `docs/canva-structure-intermediaire.mmd` | relecture OK |
 
