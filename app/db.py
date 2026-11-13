@@ -35,7 +35,9 @@ engine = create_engine("sqlite:///digimarket.db", echo=False)
 # 2. Création des tables dans la base de données
 # ------------------------------------------------------------------
 # Base.metadata contient la description de toutes les tables déclarées
-# (dans modelsSQLAlchemy.py). create_all(engine) envoie les ordres
+# (dans modelsSQLAlchemy.py : users 🥉, categories + products 🥈 — create_all
+# couvre automatiquement les tables des niveaux suivants, pas besoin de le modifier).
+# create_all(engine) envoie les ordres
 # "CREATE TABLE" si les tables n'existent pas encore. Sans danger :
 # les tables existantes ne sont pas recréées ni supprimées.
 # C'est ici que les tables vides sont créées.
