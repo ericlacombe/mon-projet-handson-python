@@ -15,6 +15,13 @@ Règle : on valide ce backlog avant la 1ère ligne de code 🥈. Chaque tâche a
 
 **Ordre conseillé** : 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 (tests à chaque incrément).
 
-**DoD niveau 🥈** : code 🥈 fonctionnel (contrat 4.7) · `pytest` vert · README/canva à jour · commits clairs · démo au lancement.
+**DoD niveau 🥈** :
+- [x] code 🥈 fonctionnel (contrat 4.7 : 8 routes répondent) ;
+- [x] `pytest` vert (**14 passed** : 🥉 1 + 🥈 13) ;
+- [x] README + canva 🥈 à jour ;
+- [x] commits clairs ;
+- [x] démo au lancement (admin + catégorie + 2 produits).
+
+✅ **Niveau 🥈 terminé** — F2 (catalogue) + F4 (sécurité JWT) + login F1 livrés et testés.
 
 ⚠️ CDC : `POST /api/categories` non listé en route mais « gestion des catégories » exigée → on le garde (admin).
