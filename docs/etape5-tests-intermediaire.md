@@ -6,6 +6,14 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 
 ## Matrice élément × type de test (niveau 🥈)
 
+> 💡 **À quoi sert cette matrice ?** Elle croise chaque **élément créé à l'étape 4**
+> (colonne « Élément testé ») avec les **types de test** possibles (unitaire / intégration),
+> pour ne rien oublier. Règles de remplissage :
+> - 1ʳᵉ colonne **Fonction métier**, 2ᵉ **Objet(s)** (convention étape 4) ;
+> - ✅ = test prévu ; « — » = pas de test de ce type pour cet élément ;
+> - unitaire = on teste la fonction/classe seule (sans route) ; intégration = on teste
+>   la route complète (requête HTTP → base → réponse, y compris la sécurité 401/403).
+
 | Fonction métier | Objet(s) | Élément testé (étape 4 🥈) | Unitaire | Intégration (route+base+sécurité) |
 |---|---|---|---|---|
 | **F1+F4** (auth) | `User` → token | `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` |
