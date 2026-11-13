@@ -13,7 +13,7 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 
 ---
 
-## 4.3 — Contraintes & validations (condition : règle de validité sur un attribut ✅ → ACTION)
+## 4.3 — Contraintes métier sur les objets (par route) (condition : règle de validité sur un attribut ✅ → ACTION)
 
 | Attribut (objet) | Règle | Où | Erreur | Route concernée | Fonction métier |
 |---|---|---|---|---|---|
