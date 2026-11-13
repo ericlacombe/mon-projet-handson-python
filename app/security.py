@@ -32,6 +32,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 # ------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------
+# Charger le fichier .env si présent (sans écraser les variables déjà définies)
+# → au lancement (python -m app.app), SECRET_KEY vient de .env
+if os.path.exists(".env"):
+    for line in open(".env", encoding="utf-8"):
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k, v)
+
 # La clé secrète SERT À SIGNER les tokens JWT : elle ne doit JAMAIS être dans
 # le code ni committée → on la lit dans .env (déjà dans .gitignore)
 SECRET_KEY = os.environ["SECRET_KEY"]
