@@ -23,8 +23,8 @@ from flask import Flask
 # l'import circulaire : app.py importe routes/auth.py, donc auth.py ne peut pas
 # importer app.py)
 from app.db import session
-# modèle User (table users, défini dans modelsSQLAlchemy.py)
-from app.modelsSQLAlchemy import User
+# modèles (définis dans modelsSQLAlchemy.py) : User (🥉), Category + Product (🥈)
+from app.modelsSQLAlchemy import User, Category, Product
 
 # ------------------------------------------------------------------
 # Création de l'application Flask
@@ -54,6 +54,8 @@ def init_sample_data():
     (les vrais tests sont dans tests/ et lancés avec pytest).
     """
     if session.query(User).count() == 0:
+        # --- Compte admin de démo (pour se connecter tout de suite) ---
+        # En vrai : generate_password_hash("admin123") — ici hash factice de démo
         admin = User(
             email="admin@digimarket.fr",
             password_hash="hash_de_demo",   # en vrai : generate_password_hash(...)
@@ -62,8 +64,16 @@ def init_sample_data():
             role="admin",
         )
         session.add(admin)
+        # --- Niveau 🥈 : catégorie + 2 produits de démo (catalogue visible tout de suite) ---
+        cat = Category(name="Informatique")
+        session.add(cat)
+        session.flush()                     # donne un id à la catégorie avant les produits (FK)
+        session.add(Product(name="PC portable", description="14 pouces, 16 Go RAM",
+                            price=899.99, stock=10, category_id=cat.id))
+        session.add(Product(name="Clavier mécanique", description="Switchs silencieux",
+                            price=79.90, stock=25, category_id=cat.id))
         session.commit()
-        print("Données de démo initialisées.")
+        print("Données de démo initialisées (admin + catalogue).")
 
 # ------------------------------------------------------------------
 # Point d'entrée : lance le serveur Flask
