@@ -15,12 +15,12 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 
 ## 4.3 — Contraintes métier sur les objets (par route) (condition : règle de validité sur un attribut ✅ → ACTION)
 
-| Attribut (objet) | Règle | Où | Erreur | Route concernée | Fonction métier |
-|---|---|---|---|---|---|
-| `users.email` (`User`) | unique | contrainte base `unique=True` (déjà fait 🥉) | 409 | `POST /api/auth/register` | **F1** Gérer les comptes |
-| `categories.name` (`Category`) | unique | `unique=True` | 409 | `POST /api/categories` (🥈) | **F2** Gérer le catalogue |
-| `products.price` (`Product`) | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4 contrôle admin) |
-| `products.stock` (`Product`) | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4) |
+| Objet | Attribut | Règle | Où | Erreur | Route concernée | Fonction métier |
+|---|---|---|---|---|---|---|
+| `User` | `email` | unique | contrainte base `unique=True` (déjà fait 🥉) | 409 | `POST /api/auth/register` | **F1** Gérer les comptes |
+| `Category` | `name` | unique | `unique=True` | 409 | `POST /api/categories` (🥈) | **F2** Gérer le catalogue |
+| `Product` | `price` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4 contrôle admin) |
+| `Product` | `stock` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4) |
 
 ## 4.4 — Relations entre objets (condition : deux objets liés ✅ → ACTION)
 
