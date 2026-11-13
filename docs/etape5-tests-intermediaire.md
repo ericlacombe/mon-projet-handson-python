@@ -55,7 +55,7 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 ## Les tests (extraits, avec commentaires)
 
 ```python
-# tests/test_security.py — tests de la sécurité (4.11)
+# >>> fichier cible : tests/test_security.py   (ces tests vérifient la partie 4.11 sécurité)
 # ============================================================
 # CATÉGORIE F1 — Gérer les comptes (authentification)
 # ============================================================
@@ -105,7 +105,7 @@ def test_creer_produit_prix_negatif_400(client_http, token_admin):
     assert r.status_code == 400
 
 # (test de la transition d'état Order.valider(), partie 4.6, au niveau 🥇 avec F3 — pas ici)
-# tests/test_produits.py — tests dédiés à l'objet Category (F2, suite)
+# >>> fichier cible : tests/test_produits.py   (ces tests vérifient F2, dont l'objet Category)
 # (F3 « Gérer les commandes » : PAS de tests ici — réservé au niveau 🥇)
 def test_categorie_objet_attributs():
     c = Category(name="Informatique")
