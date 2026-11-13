@@ -13,6 +13,18 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 
 ---
 
+## 📋 Tableau récap — ce qu'on crée au niveau 🥈
+
+| Fonction métier | Objet(s) | Routes (contrat 4.7) | Fichiers |
+|---|---|---|---|
+| **F1** Gérer les comptes | `User` (déjà 🥉) | `POST /api/auth/login` (🥈) | `routes/auth.py` (+ login) |
+| **F2** Gérer le catalogue | `Category`, `Product` (nouveaux, relation 1—N) | `GET /api/produits`, `GET /api/produits/<id>`, `POST`/`PUT`/`DELETE /api/produits[/<id>]` | `routes/produits.py` (nouveau), `modelsSQLAlchemy.py` (+ Category, Product) |
+| **F4** Sécuriser les accès | — (pas d'objet ; le token est une donnée temporaire, 4.2) | contrôle sur toutes les routes protégées (401/403) | `app/security.py` (nouveau), `.env`, `requirements.txt` (+ PyJWT) |
+
+> F3 « Gérer les commandes » (objets `Order`, `OrderItem`) : **niveau 🥇 uniquement**.
+
+---
+
 ## 4.3 — Contraintes métier sur les objets (par route) (condition : règle de validité sur un attribut ✅ → ACTION)
 
 | Objet | Attribut | Règle | Où | Erreur | Route concernée | Fonction métier |
