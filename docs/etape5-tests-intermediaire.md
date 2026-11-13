@@ -55,9 +55,8 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 ## Les tests (extraits, avec commentaires)
 
 ```python
-# >>> portée : jusqu'au prochain « fichier cible » — fichier tests/test_security.py, catégories F1 (login) + F4 (sécurité, 4.11)
 # ============================================================
-# CATÉGORIE F1 — Gérer les comptes (authentification)
+# CATÉGORIE F1 — Gérer les comptes (authentification) → fichier : tests/test_security.py
 # ============================================================
 def test_login_ok_renvoie_token(client_http, session_test):
     # Un user existe en base (fixture) → login renvoie 200 + un token JWT
@@ -70,7 +69,7 @@ def test_login_mauvais_mot_de_passe_401(client_http):
     assert r.status_code == 401             # mauvais identifiants → 401
 
 # ============================================================
-# CATÉGORIE F4 — Sécuriser les accès (contrôle 401/403, séparé de F1/F2)
+# CATÉGORIE F4 — Sécuriser les accès (401/403, séparé de F1/F2) → fichier : tests/test_security.py
 # ============================================================
 def test_token_invalide_401(client_http):
     # Token truqué (signature invalide) → 401
@@ -85,7 +84,7 @@ def test_token_expire_401(client_http):
     assert r.status_code == 401
 
 # ============================================================
-# CATÉGORIE F2 — Gérer le catalogue (produits + catégories)
+# CATÉGORIE F2 — Gérer le catalogue (produits + catégories) → fichier : tests/test_produits.py
 # ============================================================
 def test_creer_produit_sans_token_401(client_http):
     # Sans header Authorization → le décorateur login_required renvoie 401
@@ -111,7 +110,6 @@ def test_creer_produit_prix_negatif_400(client_http, token_admin):
     assert r.status_code == 400
 
 # (test de la transition d'état Order.valider(), partie 4.6, au niveau 🥇 avec F3 — pas ici)
-# >>> portée : jusqu'à la fin du bloc — fichier tests/test_produits.py, catégorie F2 (produits + Category)
 # (F3 « Gérer les commandes » : PAS de tests ici — réservé au niveau 🥇)
 def test_categorie_objet_attributs():
     c = Category(name="Informatique")
