@@ -19,19 +19,38 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 | **F1+F4** (auth) | `User` → token | `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` |
 | **F4** | token (donnée temporaire, 4.2) | `security.creer_token / verifier_token` | ✅ `test_token_invalide_401`, `test_token_expire_401` | ✅ (via login) |
 | **F2** (+F4) | `Product`, `Category` | CRUD `/api/produits` | — | ✅ `test_creer_produit_sans_token_401`, `test_creer_produit_client_403`, `test_creer_produit_admin_201`, `test_creer_produit_prix_negatif_400` |
+| **F2** (+F4) | `Category` | `POST /api/categories` (création catégorie) | ✅ `test_categorie_objet_attributs` | ✅ `test_creer_categorie_admin_201`, `test_categorie_nom_unique_409`, `test_categorie_sans_token_401` |
 | **F2** | `Product` | `GET /api/produits` (public, recherche) | — | ✅ `test_liste_produits_avec_recherche` |
 
-### Récap — tests F4 « Sécuriser les accès » prévus
+### Récap — tests prévus par fonction métier (F1 / F2 séparés de F4 sécurité)
 
-| Test | Vérifie | Code attendu |
+**F1 — Gérer les comptes** (auth) :
+
+| Test | Vérifie | Code |
 |---|---|---|
 | `test_login_ok_renvoie_token` | login OK → token JWT émis | 200 |
-| `test_login_mauvais_mot_de_passe_401` | mauvais mot de passe (hash) | 401 |
-| `test_token_invalide_401` | token truqué/invalide | 401 |
-| `test_token_expire_401` | token expiré | 401 |
+| `test_login_mauvais_mot_de_passe_401` | mauvais mot de passe | 401 |
+
+**F2 — Gérer le catalogue** (produits + catégories) :
+
+| Test | Vérifie | Code |
+|---|---|---|
+| `test_creer_produit_admin_201` | création produit (admin) | 201 |
 | `test_creer_produit_sans_token_401` | route protégée sans token | 401 |
-| `test_creer_produit_client_403` | token client, route admin | 403 |
-| `test_creer_produit_admin_201` | token admin → contrôle OK | 201 |
+| `test_creer_produit_client_403` | token client sur route admin | 403 |
+| `test_creer_produit_prix_negatif_400` | contrainte 4.3 : prix >= 0 | 400 |
+| `test_liste_produits_avec_recherche` | GET public + recherche `?q=` | 200 |
+| `test_creer_categorie_admin_201` | création catégorie (admin) | 201 |
+| `test_categorie_nom_unique_409` | contrainte 4.3 : nom catégorie unique | 409 |
+| `test_categorie_sans_token_401` | route catégories sans token | 401 |
+| `test_categorie_objet_attributs` (unitaire) | objet `Category` : id, name, products | — |
+
+**F4 — Sécuriser les accès** (séparé des F1/F2 : c'est du contrôle d'accès, pas de la logique métier) :
+
+| Test | Vérifie | Code |
+|---|---|---|
+| `test_token_invalide_401` | token truqué | 401 |
+| `test_token_expire_401` | token expiré | 401 |
 
 ## Les tests (extraits, avec commentaires)
 
@@ -77,6 +96,27 @@ def test_creer_produit_prix_negatif_400(client_http, token_admin):
     assert r.status_code == 400
 
 # (test de la transition d'état Order.valider(), partie 4.6, au niveau 🥇 avec F3 — pas ici)
+# tests/test_produits.py — tests dédiés à l'objet Category (F2)
+def test_categorie_objet_attributs():
+    c = Category(name="Informatique")
+    assert c.name == "Informatique"
+    assert hasattr(c, "products")          # relation 1—N (4.5)
+
+def test_creer_categorie_admin_201(client_http, token_admin):
+    r = client_http.post("/api/categories", json={"name": "Informatique"},
+                         headers={"Authorization": f"Bearer {token_admin}"})
+    assert r.status_code == 201
+
+def test_categorie_nom_unique_409(client_http, token_admin):
+    # 4.3 : unicité du nom de catégorie → 2e création = 409
+    client_http.post("/api/categories", json={"name": "Info"}, headers={"Authorization": f"Bearer {token_admin}"})
+    r = client_http.post("/api/categories", json={"name": "Info"}, headers={"Authorization": f"Bearer {token_admin}"})
+    assert r.status_code == 409
+
+def test_categorie_sans_token_401(client_http):
+    r = client_http.post("/api/categories", json={"name": "Info"})
+    assert r.status_code == 401
+
 ```
 
 💡 **Règle du test** : 1 élément + 1 scénario + résultat attendu, nom explicite (`test_creer_produit_sans_token_401`).
