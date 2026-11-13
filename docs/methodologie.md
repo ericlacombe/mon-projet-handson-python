@@ -192,9 +192,9 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 | 4.1 Base de données | Modèle de données (3) | Un objet au moins doit être **persisté** : conserver ses valeurs au-delà d'une seule requête, même après redémarrage du serveur | **Création** de la base de données et de ses tables (schéma) |
 | 4.2 Données temporaires | Diagramme de flux (2) | Des données ne sont utiles que le temps d'une seule requête | **Création** d'une structure simple (`dict`/objet léger) — **pas de table** |
 | 4.3 Contraintes métier sur les objets (par route) | Attributs du modèle (3) | Un attribut a une règle de validité (unicité, valeur min, format…) | **Création** de contraintes en base + validation côté route avec code d'erreur adapté |
-| 4.4 Relations entre objets | Liens du schéma ER (3) | Deux objets sont liés (1—N, N—N) | **Création** des clés étrangères et des relations dans les classes |
+| 4.4 Création des objets ayant une relation 1—N | Liens du schéma ER (3) | Deux objets sont liés (1—N, N—N) | **Création** des clés étrangères et des relations dans les classes |
 | 4.5 Classes | Objets du modèle (3) | Un objet a un **état persistant**, modifié au fil du temps | **Création d'une classe par objet** persistant |
-| 4.6 Transitions d'états | Cycle de vie (3) | Un objet possède plusieurs états avec des transitions possibles | **Création** d'une méthode par transition sur la classe + constantes des états + contrôle des transitions autorisées |
+| 4.6 Création des objets ayant une transition d'état (méthodes + contrôle) | Cycle de vie (3) | Un objet possède plusieurs états avec des transitions possibles | **Création** d'une méthode par transition sur la classe + constantes des états + contrôle des transitions autorisées |
 
 💡 **Explications du Groupe A** :
 - **4.1** — « persisté » = garder ses valeurs au-delà d'une seule requête, même après redémarrage. Si aucun objet n'a ce besoin → on saute la base. C'est la question « persisté ou temporaire ? » de l'étape 3 qui répond.
@@ -209,11 +209,11 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 
 | Partie | Analyse (source) | Condition = résultat positif | Action menée |
 |---|---|---|---|
-| 4.7 Routes | Cas d'utilisation (1) | Le système est une **API** : chaque cas devient un point d'entrée HTTP | **Création** d'un blueprint + d'une route par cas, avec le contrat d'API (méthodes, entrées, sorties, codes HTTP) |
-| 4.8 Modules (par fonction métier) | Diagramme fonctionnel (2) | Chaque **fonction métier** F1–F4 | **Création** d'un fichier de code (module) par fonction métier : il regroupe les routes et fonctions Python qui la réalisent |
+| 4.7 Routes de l'API : contrat complet (méthode, entrées, sorties, codes, accès, fonction métier, objet) | Cas d'utilisation (1) | Le système est une **API** : chaque cas devient un point d'entrée HTTP | **Création** d'un blueprint + d'une route par cas, avec le contrat d'API (méthodes, entrées, sorties, codes HTTP) |
+| 4.8 Organisation du code en modules (un fichier/blueprint par fonction métier) | Diagramme fonctionnel (2) | Chaque **fonction métier** F1–F4 | **Création** d'un fichier de code (module) par fonction métier : il regroupe les routes et fonctions Python qui la réalisent |
 | 4.9 Fonctions Python (transformations sans état) | Diagramme de flux (2) | Une opération **transforme des données sans garder d'état entre les appels** (pas de persistance) | **Création d'une fonction Python** dédiée (fonction « pure »), dans le module concerné ou dans `utils/` |
 | 4.10 Gestion des erreurs | Branches d'erreur du flux (2) | Le flux prévoit des cas d'erreur | **Création** de gestionnaires d'erreurs renvoyant du JSON avec le bon code HTTP |
-| 4.11 Sécurité | Matrice des rôles (1) + flux (2) | Authentification / autorisation requise (tokens, rôles) | **Création** d'un module de sécurité : hachage des secrets, émission/vérification des tokens, décorateurs de rôle |
+| 4.11 Sécuriser les accès : token = donnée temporaire, contrôle 401/403 sur les routes protégées | Matrice des rôles (1) + flux (2) | Authentification / autorisation requise (tokens, rôles) | **Création** d'un module de sécurité : hachage des secrets, émission/vérification des tokens, décorateurs de rôle |
 
 💡 **Explications du Groupe B** :
 - **4.7** — le **contrat d'API** = tableau de chaque route (méthode HTTP, chemin, entrées JSON, sorties JSON, codes de retour). Analogie : une route = un guichet avec un panneau (méthode) et un formulaire (entrées).
