@@ -2,9 +2,11 @@
 routes/auth.py — Blueprint de la fonction métier F1 « Gérer les comptes ».
 
 Niveau 🥉 : une seule route, le fil rouge « S'inscrire ».
+Niveau 🥈 : ajout de la route « login » (connexion → token JWT, partie 4.11).
 
-Route disponible :
-  POST /api/auth/register  →  inscrit un nouvel utilisateur
+Routes disponibles :
+  POST /api/auth/register  →  🥉 inscrit un nouvel utilisateur (hachage du mdp)
+  POST /api/auth/login     →  🥈 connecte un utilisateur existant, renvoie un token JWT
 
 Pourquoi un blueprint séparé et pas la route dans app.py ?
 - le CDC demande une organisation en modules fonctionnels (Blueprints) :
@@ -39,10 +41,12 @@ auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
 
 # ------------------------------------------------------------------
-# Création d'une route pour enregister un nouvel utilisateur.
+# POST /api/auth/register — INSCRIPTION (niveau 🥉, fil rouge « S'inscrire »)
 #
 # Pourquoi une route ? Pour relier une requête URL (POST /api/auth/register)
 # à cet endpoint (la fonction register) où le code est exécuté.
+# L'inscription crée le compte (mot de passe haché) mais ne connecte PAS :
+# pour obtenir un token, il faut ensuite appeler /login.
 # ------------------------------------------------------------------
 
 @auth_bp.route("/register", methods=["POST"])   # la route = URL + méthode HTTP
@@ -92,7 +96,13 @@ def register():                                  # l'endpoint = cette fonction
         return jsonify({"error": str(e)}), 500
 
 # ------------------------------------------------------------------
-# POST /api/auth/login — Connexion : renvoie un token JWT (F1 + F4)
+# POST /api/auth/login — CONNEXION (niveau 🥈, ajout F1+F4, partie 4.11)
+#
+# Pourquoi une route login ? Le CDC exige « Connexion et génération de token
+# JWT ». Sans token valide, les routes protégées (ex. POST /api/produits)
+# répondent 401. Le login vérifie le mot de passe (hash) et émet le token
+# signé (valable 24h) que le client renvoie ensuite en header
+# "Authorization: Bearer <token>".
 # ------------------------------------------------------------------
 @auth_bp.route("/login", methods=["POST"])
 def login():                                     # l'endpoint = cette fonction
