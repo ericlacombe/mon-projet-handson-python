@@ -17,9 +17,21 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 | Fonction métier | Objet(s) | Élément testé (étape 4 🥈) | Unitaire | Intégration (route+base+sécurité) |
 |---|---|---|---|---|
 | **F1+F4** (auth) | `User` → token | `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` |
-| **F4** | token (donnée temporaire, 4.2) | `security.creer_token / verifier_token` | ✅ `test_token_invalide_401` | ✅ (via login) |
+| **F4** | token (donnée temporaire, 4.2) | `security.creer_token / verifier_token` | ✅ `test_token_invalide_401`, `test_token_expire_401` | ✅ (via login) |
 | **F2** (+F4) | `Product`, `Category` | CRUD `/api/produits` | — | ✅ `test_creer_produit_sans_token_401`, `test_creer_produit_client_403`, `test_creer_produit_admin_201`, `test_creer_produit_prix_negatif_400` |
 | **F2** | `Product` | `GET /api/produits` (public, recherche) | — | ✅ `test_liste_produits_avec_recherche` |
+
+### Récap — tests F4 « Sécuriser les accès » prévus
+
+| Test | Vérifie | Code attendu |
+|---|---|---|
+| `test_login_ok_renvoie_token` | login OK → token JWT émis | 200 |
+| `test_login_mauvais_mot_de_passe_401` | mauvais mot de passe (hash) | 401 |
+| `test_token_invalide_401` | token truqué/invalide | 401 |
+| `test_token_expire_401` | token expiré | 401 |
+| `test_creer_produit_sans_token_401` | route protégée sans token | 401 |
+| `test_creer_produit_client_403` | token client, route admin | 403 |
+| `test_creer_produit_admin_201` | token admin → contrôle OK | 201 |
 
 ## Les tests (extraits, avec commentaires)
 
@@ -34,6 +46,12 @@ def test_login_ok_renvoie_token(client_http, session_test):
 def test_login_mauvais_mot_de_passe_401(client_http):
     r = client_http.post("/api/auth/login", json={"email": "a@b.c", "password": "faux"})
     assert r.status_code == 401             # mauvais identifiants → 401
+
+def test_token_expire_401(client_http):
+    # Token signé avec une date d'expiration passée → 401 (expiré)
+    r = client_http.post("/api/produits", json={"name": "PC"},
+                         headers={"Authorization": "Bearer <token_expire>"})
+    assert r.status_code == 401
 
 def test_creer_produit_sans_token_401(client_http):
     # Sans header Authorization → le décorateur login_required renvoie 401
