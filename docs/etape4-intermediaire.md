@@ -22,7 +22,7 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 | `Product` | `price` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4 contrôle admin) |
 | `Product` | `stock` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4) |
 
-## 4.4 — Relations entre objets (condition : deux objets liés ✅ → ACTION)
+## 4.4 — Création des objets ayant une relation 1—N (condition : deux objets liés ✅ → ACTION)
 
 Du schéma ER (étape 3) — niveau 🥈 on ne garde que la relation utile à F2 (les relations Commande/LigneCommande = F3, réservées au 🥇) :
 
