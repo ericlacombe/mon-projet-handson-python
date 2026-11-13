@@ -99,7 +99,7 @@ class Product(Base):
 - `403` = token valide mais rôle insuffisant (client au lieu d'admin) · `404` = ressource introuvable ;
 - `GET /api/produits` est **public** (Visiteur) : catalogue consultable sans compte, avec recherche `?q=texte`.
 
-## 4.8 — Modules niveau 🥈 (un par fonction métier)
+## 4.8 — Organisation du code niveau 🥈 : app.py + db.py + security.py + routes/*.py (un blueprint par fonction métier)
 
 ```
 app/
