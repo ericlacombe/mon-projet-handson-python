@@ -68,7 +68,7 @@ class Product(Base):
     category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 ```
 
-## 4.6 — Transitions d'état → niveau 🥇 confirmé
+## 4.6 — Création des objets ayant une transition d'état (méthodes + contrôle) → niveau 🥇 confirmé
 
 > ⚠️ La partie 4.6 (transitions d'état, ex. `Order.valider()`) concerne **F3 « Gérer les commandes »** : selon la règle de répartition par complexité (changement d'état = logique complexe), elle est traitée au **niveau 🥇 confirmé**, pas ici.
 
