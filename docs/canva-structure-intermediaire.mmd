@@ -11,19 +11,19 @@ flowchart TB
     ROOT --> DBFILE["digimarket.db - base SQLite cree au lancement"]
 
     subgraph APP["app - code API"]
-        A_APP["app.py - Flask blueprints run"]
-        A_DB["db.py - engine session"]
-        A_SEC["security.py - F4 fait : JWT hachage decorateurs 401/403 (4.11)"]
-        A_MODELS["modelsSQLAlchemy.py - User (🥉) Category Product avec FK relation 1-N (4.5) - Order OrderItem au 🥇 avec F3"]
-        A_AUTH["routes/auth.py - register login"]
-        A_PROD["routes/produits.py - F2 fait : CRUD /api/produits + /api/categories"]
+        A_APP["app.py - Flask : crée l'app + enregistre les blueprints + run"]
+        A_DB["db.py - engine SQLite + session partagée (évite l'import circulaire)"]
+        A_SEC["security.py - F4 : creer/verifier token JWT, hachage, @login_required (401), @admin_required (403) - partie 4.11"]
+        A_MODELS["modelsSQLAlchemy.py - objets : User (F1, 🥉) · Category+Product (F2, 🥈, FK 1-N partie 4.5) · Order+OrderItem (F3, au 🥇)"]
+        A_AUTH["routes/auth.py - F1 : POST /api/auth/register (🥉) · POST /api/auth/login (🥈)"]
+        A_PROD["routes/produits.py - F2 : GET /api/produits · GET /api/produits/<id> · POST/PUT/DELETE /api/produits[/<id>] (admin) · POST /api/categories (admin)"]
     end
 
     subgraph TESTS["tests - tests"]
-        T_AUTH["test_auth.py - 🥉 409"]
-        T_CONF["conftest.py - 🥈 fixtures communes (base en mémoire, tokens admin/client)"]
-        T_SEC["test_security.py - token 401 403"]
-        T_PROD["test_produits.py - CRUD + roles"]
+        T_AUTH["test_auth.py - F1 : POST /api/auth/register → 409 doublon (🥉)"]
+        T_CONF["conftest.py - fixtures 🥈 : base en mémoire + client_http + token_admin/token_client"]
+        T_SEC["test_security.py - F1 login + F4 : token invalide/expiré → 401"]
+        T_PROD["test_produits.py - F2 : CRUD produits/catégories → 201/400/401/403/409"]
     end
 
     subgraph DOCS["docs - documentation"]
