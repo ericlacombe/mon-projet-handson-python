@@ -165,6 +165,8 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 | Objet avec **relation 1—N** (clé étrangère), CRUD protégé par rôle, sécurité de base (JWT, hachage, .env) | 🥈 intermédiaire |
 | Fonction métier **AVEC changement d'état** (cycle de vie, transitions), plusieurs relations entre objets, logique complexe (stock, totaux, historique) | 🥇 confirmé |
 
+**Rappel à chaque niveau** : README à jour + canva du niveau courant (`docs/canva-structure-<niveau>.mmd`), sans jamais écraser les canva des niveaux précédents.
+
 **Règle** : on ne passe au niveau suivant que quand le niveau courant respecte sa **Definition of Done** (code ✅ + test ✅ + doc ✅ + commit ✅). Le code d'un niveau **reste fonctionnel** quand on ajoute le suivant.
 
 > Les étapes 4, 5, 6 ci-dessous sont les **références** : à chaque boucle, on applique la version du niveau courant (voir leurs tableaux de niveaux).
@@ -275,6 +277,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 | 🥇 Confirmé | + tests de régression automatisés, matrice complète élément × type de test, tests de sécurité (401/403) et de validation (400/409) |
 
 **Outil** : une matrice « élément créé (étape 4) × type de test (unitaire / intégration / régression) ».
+> Consigne de présentation : dans la matrice, les 2 premières colonnes sont **Fonction métier** puis **Objet(s)**, puis l'élément testé, puis les types de test.
 💡 **Explications** :
 - Règle du test : **un test = une fonction Python/classe testée + UN scénario + le résultat attendu** — un seul comportement par test, nom explicite.
 - **Ordre d'écriture** : d'abord les unitaires (chaque élément isolé), puis l'intégration (ensemble), et la régression se rejoue automatiquement à chaque modification.
@@ -300,7 +303,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 
 **Règle de départ** : à l'étape 6, on crée et on valide d'abord le **BACKLOG** (lignes cochables et testables) avant d'écrire une seule ligne de code.
 
-**Principe** : à chaque niveau (🥉 débutant → 🥈 intermédiaire → 🥇 confirmé), on exécute la boucle **étape 4 → étape 5 → étape 6** : conception du niveau → tests du niveau → backlog du niveau → **code de l'incrément**. **Chaque ligne du backlog doit être cochable et testable seule ; après chaque incrément le code reste fonctionnel ; on ne change pas de niveau tant que la DoD du niveau courant n'est pas validée** (code ✅ + test ✅ + doc ✅ + commit ✅), et on ne mélange jamais deux niveaux dans le même incrément.
+**Principe** : à chaque niveau (🥉 débutant → 🥈 intermédiaire → 🥇 confirmé), on exécute la boucle **étape 4 → étape 5 → étape 6** : conception du niveau → tests du niveau → backlog du niveau → **code de l'incrément**. **Chaque ligne du backlog doit être cochable et testable seule ; après chaque incrément le code reste fonctionnel ; on coche le backlog au fur et à mesure (**1 tâche cochée = 1 commit** avec un message clair) ; on ne change pas de niveau tant que la DoD du niveau courant n'est pas validée** (code ✅ + test ✅ + doc ✅ + commit ✅), et on ne mélange jamais deux niveaux dans le même incrément.
 
 ### 🥉 Niveau DÉBUTANT — l'essentiel uniquement
 Objectif : un petit code fonctionnel rapidement, sans que les fonctions essentielles soient noyées dans des contraintes secondaires.
@@ -320,6 +323,11 @@ Objectif : un petit code fonctionnel rapidement, sans que les fonctions essentie
 | Débutant | 4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique | 1 unitaire | le reste |
 | Intermédiaire | + 4.3, 4.5, 4.11 | unitaires + intégration | 4.2, **4.6**, 4.9, régression complète |
 | Confirmé | **4.1–4.11 toutes** | unitaires + régression + intégration | rien |
+
+**DoD par niveau (cases à cocher dans le backlog du niveau)** :
+- 🥉 : - [ ] code fonctionnel (fil rouge) · - [ ] 1 test unitaire vert · - [ ] README à jour · - [ ] commits clairs
+- 🥈 : - [ ] code de l'incrément fonctionnel · - [ ] tests unitaires + intégration verts · - [ ] README + canva 🥈 à jour · - [ ] commits clairs
+- 🥇 : - [ ] tout le CDC couvert · - [ ] matrice de traçabilité complète · - [ ] régression verte · - [ ] README complet (livrable)
 
 **Méthode générale** : squelette d'abord (dossiers, base, classes), puis module par module, **avec le test de l'étape 5 à chaque incrément**.
 👉 **Sortie** : les trois backlogs, fil conducteur pour coder pas à pas.
@@ -344,6 +352,12 @@ Objectif : un petit code fonctionnel rapidement, sans que les fonctions essentie
 - README **complet** = livrable exigé par le CDC : installation, utilisation, description des fonctionnalités, documentation complète de l'API ;
 - matrice de traçabilité finale complète (chaque besoin du CDC couvert : besoin → cas → route → test → commit) ;
 - vérification des anti-patterns (pas de fonction de 100 lignes, pas d'imports circulaires, pas de logique métier mélangée au JSON).
+
+### ⚠️ Pièges fréquents (vus en pratique)
+- **Import circulaire** : app.py importe routes/*.py, donc les routes ne doivent PAS importer app.py → la session partagée passe par `db.py` ;
+- **Secret commité** : `.env` (clés) et `*.db` (base) dans `.gitignore` — vérifier avec `git status` avant chaque `git add -A` ;
+- **Docstring mal indentée** : une indentation cassée dans une docstring fait planter tout le fichier (IndentationError) ;
+- **`git add -A` aveugle** : peut ré-ajouter la base de données supprimée du suivi → préférer `git add <fichier>` ciblé.
 
 🧵 **Fil rouge** : la ligne de backlog du fil rouge est « Implémenter `POST /api/auth/register` + son test `test_register_email_deja_utilise` ».
 ❓ **Auto-évaluation** : 1) Pourquoi un seul niveau à la fois ? 2) Citez la Definition of Done. 3) Que doit contenir chaque ligne du backlog ?
