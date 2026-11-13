@@ -36,9 +36,11 @@ app = Flask(__name__)
 # ------------------------------------------------------------------
 # auth_bp : le blueprint défini dans routes/auth.py (fonction métier F1 « Gérer les comptes »)
 from app.routes.auth import auth_bp
+from app.routes.produits import produits_bp
 # register_blueprint : enregistre les routes du blueprint dans l'app
 # → elles seront accessibles sous /api/auth/... (ex. POST /api/auth/register)
 app.register_blueprint(auth_bp)
+app.register_blueprint(produits_bp)   # routes sous /api/produits, /api/categories
 
 # ------------------------------------------------------------------
 # Données de DÉMO : un compte admin si la base est vide
