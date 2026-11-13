@@ -56,6 +56,9 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 
 ```python
 # tests/test_security.py — tests de la sécurité (4.11)
+# ============================================================
+# CATÉGORIE F1 — Gérer les comptes (authentification)
+# ============================================================
 def test_login_ok_renvoie_token(client_http, session_test):
     # Un user existe en base (fixture) → login renvoie 200 + un token JWT
     r = client_http.post("/api/auth/login", json={"email": "a@b.c", "password": "secret"})
@@ -66,12 +69,18 @@ def test_login_mauvais_mot_de_passe_401(client_http):
     r = client_http.post("/api/auth/login", json={"email": "a@b.c", "password": "faux"})
     assert r.status_code == 401             # mauvais identifiants → 401
 
+# ============================================================
+# CATÉGORIE F4 — Sécuriser les accès (contrôle 401/403, séparé de F1/F2)
+# ============================================================
 def test_token_expire_401(client_http):
     # Token signé avec une date d'expiration passée → 401 (expiré)
     r = client_http.post("/api/produits", json={"name": "PC"},
                          headers={"Authorization": "Bearer <token_expire>"})
     assert r.status_code == 401
 
+# ============================================================
+# CATÉGORIE F2 — Gérer le catalogue (produits + catégories)
+# ============================================================
 def test_creer_produit_sans_token_401(client_http):
     # Sans header Authorization → le décorateur login_required renvoie 401
     r = client_http.post("/api/produits", json={"name": "PC", "price": 999, "stock": 5, "category_id": 1})
@@ -96,7 +105,8 @@ def test_creer_produit_prix_negatif_400(client_http, token_admin):
     assert r.status_code == 400
 
 # (test de la transition d'état Order.valider(), partie 4.6, au niveau 🥇 avec F3 — pas ici)
-# tests/test_produits.py — tests dédiés à l'objet Category (F2)
+# tests/test_produits.py — tests dédiés à l'objet Category (F2, suite)
+# (F3 « Gérer les commandes » : PAS de tests ici — réservé au niveau 🥇)
 def test_categorie_objet_attributs():
     c = Category(name="Informatique")
     assert c.name == "Informatique"
