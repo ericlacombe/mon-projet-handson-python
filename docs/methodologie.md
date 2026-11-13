@@ -175,6 +175,11 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 ⏱️ **~2 h — difficile** (au total, sur les 3 niveaux)
 
 **Principe** : on croise les résultats des étapes 1, 2 et 3. Règle à dire à voix haute : *« analyse → condition → si positif, ACTION de création »*, et *« si la condition est fausse, que se passe-t-il ? »*.
+
+**Consignes de présentation du fichier `etape4-<niveau>.md`** (appliqué à chaque niveau) :
+1. Commencer le fichier par un **tableau récap** : Fonction métier | Objet(s) | Routes | Fichiers à créer ;
+2. Dans **tous les tableaux** du chapitre (récap, 4.3, 4.4, 4.7…), les deux premières colonnes sont **Fonction métier** puis **Objet(s)** ;
+3. Un objet/fonction avec **relation 1—N** → niveau 🥈 ; avec **changement d'état (transitions)** → niveau 🥇 (voir règle de répartition par complexité).
 **Ordre conseillé** : Groupe A (données) d'abord — le Groupe B (comportement) s'appuie sur les données.
 
 ### Niveaux de l'étape 4 (🥉 débutant / 🥈 intermédiaire / 🥇 confirmé)
