@@ -15,7 +15,7 @@
 | Niveau | Fonctions métier | État |
 |---|---|---|
 | 🥉 débutant | **F1 — Gérer les comptes** (register + hachage) | ✅ fait et testé (`pytest` = 1 passed) — aussi figé dans `mon-premier-projet` |
-| 🥈 intermédiaire | **F2 — catalogue** + **F4 — sécurité JWT** | 🚧 en cours — conception faite (`docs/etape4-intermediaire.md`, `docs/etape5-tests-intermediaire.md`) |
+| 🥈 intermédiaire | **F2 — catalogue** + **F4 — sécurité JWT** | ✅ fait — code + 13 tests (`pytest` = 14 passed) |
 | 🥇 confirmé | **F3 — Gérer les commandes** (états, stock, historique) | ⏳ à venir |
 
 ## Conventions (étape 0)
@@ -48,19 +48,22 @@ Liens : Utilisateur 1—N Commande · Categorie 1—N Produit · Produit 1—N L
 ```
 mon-projet-handson-python/
 ├── README.md                   # ce fichier (page d'entrée)
-├── requirements.txt            # flask, sqlalchemy, pytest (+ PyJWT au 🥈)
-├── .env                        # 🥈 à venir : SECRET_KEY (jamais commité)
+├── requirements.txt            # flask, sqlalchemy, pytest, PyJWT
+├── .env                        # 🥈 SECRET_KEY (jamais commité, .gitignore)
 ├── app/                        # 💻 code de l'API (package Python)
-│   └── security.py             # 🥈 à venir (F4 : JWT, hachage, décorateurs)
+│   ├── security.py             # 🥈 F4 : JWT, hachage, décorateurs 401/403
 │   ├── __init__.py           # rend app/ importable comme package Python
 │   ├── app.py                  # point d'entrée Flask (app, blueprints, app.run)
 │   ├── db.py                   # engine SQLite + session partagée (SQLAlchemy pur)
-│   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 + Category, Product (à venir)
+│   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 Category, Product (relation 1—N)
 │   └── routes/
-│       ├── auth.py             # 🥉 register · 🥈 + login (à venir)
-│       └── produits.py       # 🥈 à venir (F2 : CRUD /api/produits)
+│       ├── auth.py             # 🥉 register · 🥈 login (token JWT)
+│       └── produits.py       # 🥈 F2 : CRUD /api/produits + /api/categories
 ├── tests/                      # 🧪 dossier dédié aux tests
-│   └── test_auth.py            # test_register_email_deja_utilise (409)
+│   ├── test_auth.py            # 🥉 test_register_email_deja_utilise (409)
+│   ├── conftest.py             # 🥈 fixtures communes (base en mémoire, tokens)
+│   ├── test_security.py        # 🥈 F1 login + F4 tokens (401)
+│   └── test_produits.py        # 🥈 F2 CRUD produits/catégories (201/400/401/403/409)
 └── docs/                       # 📚 toute la documentation
     ├── attentes.md             # cahier des charges
     ├── methodologie.md         # la méthode (étapes 0–6 + niveaux)
@@ -94,7 +97,7 @@ python -m app.app               # lance l'API sur http://127.0.0.1:5000 (depuis 
 
 ## Comment tester (étape 5)
 ```bash
-pytest            # depuis la racine : lance tous les tests (ici : tests/test_auth.py → 409)
+pytest            # depuis la racine : lance tous les tests (14 tests : 🥉 1 + 🥈 13)
 ```
 
 ## Fichiers du projet (avec niveau)

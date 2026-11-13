@@ -13,10 +13,10 @@ flowchart TB
     subgraph APP["app - code API"]
         A_APP["app.py - Flask blueprints run"]
         A_DB["db.py - engine session"]
-        A_SEC["security.py - JWT hachage decorateurs (4.11)"]
+        A_SEC["security.py - F4 fait : JWT hachage decorateurs 401/403 (4.11)"]
         A_MODELS["modelsSQLAlchemy.py - User (🥉) Category Product avec FK relation 1-N (4.5) - Order OrderItem au 🥇 avec F3"]
         A_AUTH["routes/auth.py - register login"]
-        A_PROD["routes/produits.py - CRUD /api/produits (F2)"]
+        A_PROD["routes/produits.py - F2 fait : CRUD /api/produits + /api/categories"]
     end
 
     subgraph TESTS["tests - tests"]
