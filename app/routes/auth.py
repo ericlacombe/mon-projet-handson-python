@@ -29,6 +29,8 @@ from werkzeug.security import generate_password_hash
 
 # session partagée (module db.py — évite l'import circulaire avec app.py)
 from app.db import session
+# module sécurité (4.11) : check_password_hash + creer_token
+from app.security import check_password_hash, creer_token
 # modèle User (défini dans modelsSQLAlchemy.py, table users)
 from app.modelsSQLAlchemy import User
 
@@ -88,3 +90,34 @@ def register():                                  # l'endpoint = cette fonction
     except Exception as e:
         session.rollback()                        # annule en cas d'erreur
         return jsonify({"error": str(e)}), 500
+
+# ------------------------------------------------------------------
+# POST /api/auth/login — Connexion : renvoie un token JWT (F1 + F4)
+# ------------------------------------------------------------------
+@auth_bp.route("/login", methods=["POST"])
+def login():                                     # l'endpoint = cette fonction
+    """Connecte un utilisateur et renvoie son token JWT.
+
+    Entrée (JSON) : {email, password}
+    Sorties : 200 + {token} · 400 champs manquants · 401 mauvais identifiants
+    """
+    try:
+        body = request.get_json() or {}          # corps JSON de la requête
+
+        # 400 : champs obligatoires manquants
+        if not body.get("email") or not body.get("password"):
+            return jsonify({"error": "email et password requis"}), 400
+
+        # Cherche l'utilisateur par son email (unique)
+        user = session.query(User).filter_by(email=body["email"]).first()
+        # 401 : email inconnu OU mauvais mot de passe (même message pour ne pas
+        # révéler quel email existe — bonne pratique de sécurité)
+        if user is None or not check_password_hash(user.password_hash, body["password"]):
+            return jsonify({"error": "identifiants invalides"}), 401
+
+        # 200 : identifiants OK → on émet le token JWT signé (valable 24h)
+        token = creer_token(user)
+        return jsonify({"message": "connexion réussie", "token": token}), 200
+
+    except Exception as e:
+        return jsonify({"error": "erreur serveur", "detail": str(e)}), 500
