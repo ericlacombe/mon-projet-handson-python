@@ -1,7 +1,8 @@
 """
 modelsSQLAlchemy.py — Modèles SQLAlchemy (ORM) pour DigiMarket.
 
-Niveau 🥉 : uniquement la table users (fil rouge « S'inscrire »).
+Niveau 🥉 : table users (fil rouge « S'inscrire »).
+Niveau 🥈 : + tables categories et products (relation 1—N, partie 4.5).
 Ce fichier définit (sous forme de classes) les modèles des tables de la base SQL, importés par :
 - app/app.py          (l'API Flask : point d'entrée, blueprints, endpoints)
 - app/db.py           (moteur + session partagée, create_all)
@@ -17,7 +18,8 @@ Même style que l'ancien projet (SQLAlchemy pur, pas Flask-SQLAlchemy).
 # ------------------------------------------------------------------
 # Column               : définit une colonne dans une table
 # Integer, String, Text : types de données des colonnes
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, Float, ForeignKey
+from sqlalchemy.orm import relationship
 
 # declarative_base : fonction qui génère la classe de base des modèles
 # (elle garde la "métadonnée" = la description de toutes les tables)
@@ -61,7 +63,51 @@ class User(Base):
         return f"<User {self.email}>"
 
 # ------------------------------------------------------------------
-# Schéma de la table (niveau 🥉 : une seule table) :
+# Niveau 🥈 — Objets en relation 1—N (partie 4.5) : Category 1—N Product
+# ------------------------------------------------------------------
+
+class Category(Base):
+    # Nom de la table : categories (pluriel)
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True)
+    # Nom de la catégorie — unique (contrainte 4.3) et obligatoire
+    name = Column(String(100), unique=True, nullable=False)
+
+    # RELATION 1—N (4.5) : une catégorie a plusieurs produits.
+    # - relationship("Product") : côté "1" de la relation (dans Category)
+    # - backref="category" : crée automatiquement product.category (accès inverse)
+    # - lazy=True (défaut) : les produits sont chargés seulement quand on y accède
+    # - cascade="all, delete-orphan" : supprimer une catégorie supprime ses produits
+    products = relationship("Product", backref="category", lazy=True,
+                            cascade="all, delete-orphan")
+
+    def __repr__(self):
+        return f"<Category {self.name}>"
+
+
+class Product(Base):
+    # Nom de la table : products (pluriel)
+    __tablename__ = "products"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    description = Column(Text)
+    # Prix en euros — validé >= 0 côté route (contrainte 4.3 → erreur 400)
+    price = Column(Float, nullable=False)
+    # Stock disponible — validé >= 0 côté route (contrainte 4.3 → 400)
+    stock = Column(Integer, nullable=False, default=0)
+
+    # Côté "N" de la relation 1—N (4.5) : la clé étrangère vers categories.
+    # - ForeignKey("categories.id") : référence la clé primaire de categories
+    # - nullable=False : un produit DOIT appartenir à une catégorie
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
+
+    def __repr__(self):
+        return f"<Product {self.name} ({self.price}€)>"
+
+# ------------------------------------------------------------------
+# Schéma des tables (niveau 🥈 : users + categories + products) :
 # ------------------------------------------------------------------
 #
 #   users
@@ -74,3 +120,16 @@ class User(Base):
 #   └── role          string, défaut 'client'
 #
 # ------------------------------------------------------------------
+
+#   categories
+#   ├── id    PK int
+#   └── name  UK string, obligatoire
+#
+#   products  (category_id → categories.id, FK)
+#   ├── id          PK int
+#   ├── name        string, obligatoire
+#   ├── description text
+#   ├── price       float, obligatoire  (>= 0 validé côté route)
+#   ├── stock       int, défaut 0       (>= 0 validé côté route)
+#   └── category_id FK int, obligatoire
+#
