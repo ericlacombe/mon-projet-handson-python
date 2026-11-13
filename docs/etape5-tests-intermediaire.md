@@ -72,6 +72,12 @@ def test_login_mauvais_mot_de_passe_401(client_http):
 # ============================================================
 # CATÉGORIE F4 — Sécuriser les accès (contrôle 401/403, séparé de F1/F2)
 # ============================================================
+def test_token_invalide_401(client_http):
+    # Token truqué (signature invalide) → 401
+    r = client_http.post("/api/produits", json={"name": "PC"},
+                         headers={"Authorization": "Bearer <token_truque>"})
+    assert r.status_code == 401
+
 def test_token_expire_401(client_http):
     # Token signé avec une date d'expiration passée → 401 (expiré)
     r = client_http.post("/api/produits", json={"name": "PC"},
@@ -126,6 +132,14 @@ def test_categorie_nom_unique_409(client_http, token_admin):
 def test_categorie_sans_token_401(client_http):
     r = client_http.post("/api/categories", json={"name": "Info"})
     assert r.status_code == 401
+
+def test_liste_produits_avec_recherche(client_http, token_admin):
+    # 2 produits créés, puis recherche ?q=pc → seul le PC remonté
+    client_http.post("/api/produits", json={"name": "PC portable", "price": 999, "stock": 5, "category_id": 1}, headers={"Authorization": f"Bearer {token_admin}"})
+    client_http.post("/api/produits", json={"name": "Clavier", "price": 49, "stock": 20, "category_id": 1}, headers={"Authorization": f"Bearer {token_admin}"})
+    r = client_http.get("/api/produits?q=pc")
+    assert r.status_code == 200
+    assert len(r.get_json()) == 1 and "PC" in r.get_json()[0]["name"]
 
 ```
 
