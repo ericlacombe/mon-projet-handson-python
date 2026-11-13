@@ -27,20 +27,20 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 
 ## 4.3 — Contraintes métier sur les objets (par route) (condition : règle de validité sur un attribut ✅ → ACTION)
 
-| Objet | Attribut | Règle | Où | Erreur | Route concernée | Fonction métier |
+| Fonction métier | Objet(s) | Attribut | Règle | Où | Erreur | Route concernée |
 |---|---|---|---|---|---|---|
-| `User` | `email` | unique | contrainte base `unique=True` (déjà fait 🥉) | 409 | `POST /api/auth/register` | **F1** Gérer les comptes |
-| `Category` | `name` | unique | `unique=True` | 409 | `POST /api/categories` (🥈) | **F2** Gérer le catalogue |
-| `Product` | `price` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4 contrôle admin) |
-| `Product` | `stock` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` | **F2** (+ F4) |
+| **F1** Gérer les comptes | `User` | `email` | unique | contrainte base `unique=True` (déjà fait 🥉) | 409 | `POST /api/auth/register` |
+| **F2** Gérer le catalogue | `Category` | `name` | unique | `unique=True` | 409 | `POST /api/categories` (🥈) |
+| **F2** (+ F4 contrôle admin) | `Product` | `price` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` |
+| **F2** (+ F4) | `Product` | `stock` | >= 0 | validation dans la route | 400 | `POST`/`PUT /api/produits` |
 
 ## 4.4 — Création des objets ayant une relation 1—N (condition : deux objets liés ✅ → ACTION)
 
 Du schéma ER (étape 3) — niveau 🥈 on ne garde que la relation utile à F2 (les relations Commande/LigneCommande = F3, réservées au 🥇) :
 
-| Relation | Clé étrangère créée | `relationship` dans la classe |
-|---|---|---|
-| Categorie 1—N Produit | `products.category_id → categories.id` | `Category.products`, `Product.category` |
+| Fonction métier | Objet(s) | Relation | Clé étrangère créée | `relationship` dans la classe |
+|---|---|---|---|---|
+| **F2** Gérer le catalogue | `Category`, `Product` | Categorie 1—N Produit | `products.category_id → categories.id` | `Category.products`, `Product.category` |
 
 ```python
 # modelsSQLAlchemy.py (extrait 🥈) — ForeignKey et relationship
@@ -93,15 +93,15 @@ class Product(Base):
 > `Authorization: Bearer <token JWT>` (obtenu via `/api/auth/login`).
 
 
-| Méthode | Route | Accès | Entrée (JSON) | Sorties / codes | Fonction métier | Objet manipulé |
+| Fonction métier | Objet(s) manipulé(s) | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
 |---|---|---|---|---|---|---|
-| POST | `/api/auth/register` | Public | `{email, password, ...}` | `201` · `400` · `409` | **F1** Gérer les comptes | `User` (créé) |
-| POST | `/api/auth/login` | Public | `{email, password}` | `200` + token JWT · `401` | **F1 + F4** (auth) | `User` (lu) → token (temporaire, 4.2) |
-| GET | `/api/produits` | Public | query `?q=` | `200` liste JSON | **F2** Gérer le catalogue | `Product` (lus) |
-| GET | `/api/produits/<id>` | Public | — | `200` · `404` | **F2** | `Product` (lu) |
-| POST | `/api/produits` | **Admin** (token + rôle) | `{name, description, price, stock, category_id}` | `201` · `400` · `401`/`403` | **F2** (+ F4 contrôle) | `Product` (créé) + `Category` (FK) |
-| PUT | `/api/produits/<id>` | Admin | idem | `200` · `404` · `401`/`403` | **F2** (+ F4) | `Product` (modifié) |
-| DELETE | `/api/produits/<id>` | Admin | — | `204` · `404` · `401`/`403` | **F2** (+ F4) | `Product` (supprimé) |
+| **F1** Gérer les comptes | `User` (créé) | POST | `/api/auth/register` | Public | `{email, password, ...}` | `201` · `400` · `409` |
+| **F1 + F4** (auth) | `User` (lu) → token (temporaire, 4.2) | POST | `/api/auth/login` | Public | `{email, password}` | `200` + token JWT · `401` |
+| **F2** Gérer le catalogue | `Product` (lus) | GET | `/api/produits` | Public | query `?q=` | `200` liste JSON |
+| **F2** | `Product` (lu) | GET | `/api/produits/<id>` | Public | — | `200` · `404` |
+| **F2** (+ F4 contrôle) | `Product` (créé), `Category` (FK) | POST | `/api/produits` | **Admin** (token + rôle) | `{name, description, price, stock, category_id}` | `201` · `400` · `401`/`403` |
+| **F2** (+ F4) | `Product` (modifié) | PUT | `/api/produits/<id>` | Admin | idem | `200` · `404` · `401`/`403` |
+| **F2** (+ F4) | `Product` (supprimé) | DELETE | `/api/produits/<id>` | Admin | — | `204` · `404` · `401`/`403` |
 
 > 💡 Chaque route = un cas d'utilisation (étape 1) réalisé par une **fonction métier** (étape 2, F1–F4)
 > qui agit sur un **objet** (étape 3) : la route ne fait que traduire la requête HTTP en appel à la fonction métier.
