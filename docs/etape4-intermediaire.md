@@ -222,3 +222,19 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 | Vérification des autorisations selon le rôle | ✅ fait | `@admin_required` → 401/403 |
 | Protection contre les injections SQL | ✅ fait | ORM SQLAlchemy (requêtes paramétrées) |
 | Autres vulnérabilités courantes | ✅/N/A | XSS : N/A (API 100 % JSON) · CSRF : N/A (token en header, pas de cookie) · HTTPS : à activer en prod |
+
+---
+
+✅ **Checklist étape 4 (niveau 🥈)** : 4.3 contraintes ✅ · 4.5 FK/relations ✅ · 4.11 sécurité ✅ · contrat d'API 🥈 ✅ · arborescence 🥈 ✅ (4.6 → niveau 🥇 avec F3).
+
+⚠️ **Piège évité** : pas de classe pour le token JWT (donnée temporaire, 4.2 — un dict suffit).
+
+🧰 **Bonnes pratiques** : `.env` pour SECRET_KEY (jamais commité, .gitignore ✅) · PyJWT ajouté à requirements.txt · README + canva mis à jour (nouveau canva `canva-structure-intermediaire.mmd`, sans écraser celui de 🥉) · commit.
+
+🧵 **Fil rouge 🥈** : « se connecter » → POST /api/auth/login → token JWT ; « gérer le catalogue » → CRUD /api/produits réservé admin.
+
+❓ **Auto-évaluation** : 1) Pourquoi ForeignKey seulement maintenant ? 2) Où va la SECRET_KEY ? 3) Quelles routes sont réservées à l'admin ?
+
+📝 **À retenir (3 lignes)** : 1) 🥈 = 🥉 + 4.3/4.5/4.11 (4.6 → 🥇). 2) Relations → ForeignKey + relationship. 3) Sécurité → module dédié + JWT + .env + décorateurs de rôle.
+
+*Conception 🥈 prête (ordre 4.3 → 4.5 → 4.11, comme la méthode). Prochaine étape (avec validation) : étape 5 niveau 🥈 (tests : unitaires + intégration + 401/403) — déjà faite : `docs/etape5-tests-intermediaire.md`, puis étape 6 : `docs/etape6-backlog-intermediaire.md` ✅.*
