@@ -222,6 +222,14 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 | 4.10 Gestion des erreurs | Branches d'erreur du flux (2) | Le flux prévoit des cas d'erreur | **Création** de gestionnaires d'erreurs renvoyant du JSON avec le bon code HTTP |
 | 4.11 Sécuriser les accès : token = donnée temporaire, contrôle 401/403 sur les routes protégées | Matrice des rôles (1) + flux (2) | Authentification / autorisation requise (tokens, rôles) | **Création** d'un module de sécurité : hachage des secrets, émission/vérification des tokens, décorateurs de rôle |
 
+> **Consigne 4.11 — documenter la chaîne de protection de bout en bout** : dans le fichier `etape4-<niveau>.md` (§4.11) et dans le README, écrire la chaîne **numérotée** des protections mises en place, de la base à l'infra, chaque point au même niveau (flèche `→`) :
+> ```
+>  → 0. BASE   : ce qui est stocké en base (rôles, mots de passe hachés…)
+>  → 1..n. …   : chaque protection (register, login/token, routes protégées, .env/HTTPS…)
+> ```
+> + un **tableau** (Fonction métier | Objet | Protection | Fichier) + la **conformité CDC** (quelle exigence de sécurité est couverte, et où).
+> *Exemple réel : `etape4-intermediaire.md` §4.11 + section « Sécurité » du README du projet.*
+
 💡 **Explications du Groupe B** :
 - **4.7** — le **contrat d'API** = tableau de chaque route (méthode HTTP, chemin, entrées JSON, sorties JSON, codes de retour). Analogie : une route = un guichet avec un panneau (méthode) et un formulaire (entrées).
   *Pourquoi une route ?* Pour relier une **requête URL** (ex. `POST /api/auth/register`) à un **endpoint** (la fonction Python) où le code est appelé : la route = l'URL + la méthode HTTP, l'endpoint = la fonction exécutée.
