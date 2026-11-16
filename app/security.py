@@ -3,11 +3,26 @@ app/security.py — Module de SÉCURITÉ (partie 4.11, fonction métier F4).
 
 Niveau 🥈 : toute la sécurité est regroupée ici :
 - hachage/vérification des mots de passe (werkzeug) ;
-- création/vérification des tokens JWT (PyJWT) ;
+- création/vérification des tokens JWT signés (PyJWT, HS256) ;
 - décorateurs de contrôle d'accès : @login_required (401), @admin_required (403).
 
+📌 Les 2 mécanismes (complémentaires, 2 menaces différentes) :
+  1. HASH du mot de passe  → protège la BASE (si elle fuit, les mdp restent illisibles).
+     Principe : on ne retrouve JAMAIS le mdp — on RECALCULE son hash avec un sel
+     et on compare les 2 empreintes (même entrée → même hash). Le sel + les
+     ~600 000 itérations PBKDF2 ralentissent les attaques par dictionnaire.
+  2. TOKEN JWT SIGNÉ       → protège les REQUÊTES (prouve l'identité sans renvoyer
+     le mdp). Un JWT = header.payload.signature : le payload est en clair (base64,
+     JAMAIS de secret dedans : user_id, role, exp), la SIGNATURE = HMAC-SHA256
+     (hash + clé secrète) garantit authenticité + intégrité. Ce n'est PAS chiffré.
+     Un token = UNE connexion d'UN utilisateur : user_id et role sont embarqués
+     (signés), donc token admin ≠ token client, et on ne peut pas modifier le rôle.
+
 Le token JWT est une DONNÉE TEMPORAIRE (4.2) : pas de table, pas de classe.
-La clé secrète SECRET_KEY est lue dans le fichier .env (jamais commité).
+La clé secrète SECRET_KEY SERT À SIGNER les tokens : si elle fuit, on peut forger
+des tokens → elle est lue dans .env (jamais commité) + HTTPS en production.
+Codes : 401 = pas authentifié (token absent/invalide/expiré) ; 403 = authentifié
+mais rôle insuffisant (client sur une route admin).
 """
 
 # ------------------------------------------------------------------
@@ -54,11 +69,14 @@ ALGO = "HS256"
 # Création / vérification du token JWT
 # ------------------------------------------------------------------
 def creer_token(user):
-    """Crée le token signé pour un utilisateur.
+    """Crée le token SIGNÉ (pas chiffré) pour UN utilisateur, à chaque login.
 
-    payload = {"user_id":..., "role":..., "exp":...}
-    jwt.encode(payload, SECRET_KEY, algorithm="HS256") → chaîne "xxxxx.yyyyy.zzzzz"
-    Le client devra renvoyer ce token dans le header Authorization à chaque appel.
+    Structure du JWT "xxxxx.yyyyy.zzzzz" :
+      - header.payload en base64 → LISIBLES par tous (jamais de secret dedans) ;
+      - signature = HMAC-SHA256(header.payload, SECRET_KEY) → prouve que le token
+        vient de nous et n'a pas été modifié (le client ne peut pas changer le rôle).
+    payload = {"user_id":..., "role":..., "exp":...}  → token admin ≠ token client.
+    Le client renvoie ce token dans le header "Authorization: Bearer <token>".
     """
     payload = {
         "user_id": user.id,
@@ -81,7 +99,8 @@ def verifier_token():
         return None                       # pas de header Bearer → pas authentifié
     token = header[len("Bearer "):]
     try:
-        # 3. Décoder + vérifier la signature ET la date d'expiration (exp)
+        # 3. Décoder + VÉRIFIER la signature (HMAC avec SECRET_KEY) ET l'expiration (exp)
+        #    signature fausse → InvalidTokenError → 401 ; token volé périmé → 401
         return jwt.decode(token, SECRET_KEY, algorithms=[ALGO])
     except jwt.ExpiredSignatureError:
         return None                       # token expiré → 401
@@ -119,8 +138,10 @@ def admin_required(f):
         payload = verifier_token()
         if payload is None:
             return jsonify({"error": "token requis ou invalide"}), 401
+        # Le rôle est EMBARQUÉ dans le token signé : un client ne peut pas
+        # le changer (signature invalide → 401). Ici token valide mais role != admin.
         if payload.get("role") != "admin":
-            # 403 = interdit : authentifié mais rôle insuffisant
+            # 403 = interdit : authentifié mais rôle insuffisant (vs 401 = pas authentifié)
             return jsonify({"error": "réservé aux administrateurs"}), 403
         return f(*args, user=payload, **kwargs)
     return wrapper
