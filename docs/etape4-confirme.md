@@ -66,6 +66,36 @@ class Order(Base):
 | `calculer_total(commande)` | somme `quantite * prix_unitaire` des lignes | `app/routes/commandes.py` (ou `app/utils.py`) |
 | `verifier_stock(items)` | vérifie la dispo de chaque produit | idem |
 
+## 4.1 — Base de données (vérification niveau 🥇)
+
+Rien de nouveau à créer : les 5 tables sont déclarées dans `modelsSQLAlchemy.py`
+(`users, categories, products, orders, order_items`) et `Base.metadata.create_all`
+les crée au lancement. 🥇 = **vérifier** au démarrage :
+
+```python
+assert set(Base.metadata.tables) == {"users", "categories", "products", "orders", "order_items"}
+```
+
+## 4.10 — Gestion des erreurs (niveau 🥇 : gestionnaire global + nouveaux codes F3)
+
+Au 🥈 : try/except par route (500) + codes 400/401/403/404/409. Au 🥇 on ajoute un **gestionnaire global** (réponse JSON uniforme pour toute l'app) :
+
+```python
+@app.errorhandler(404)
+def not_found(e):  return jsonify({"error": "introuvable"}), 404
+@app.errorhandler(405)
+def method_not_allowed(e):  return jsonify({"error": "méthode non autorisée"}), 405
+@app.errorhandler(500)
+def server_error(e):  return jsonify({"error": "erreur serveur"}), 500
+```
+
+| Fonction métier | Objet(s) | Erreur 🥇 | Code | Où |
+|---|---|---|---|---|
+| **F3** | `OrderItem` | quantité ≤ 0 | 400 | route POST /api/commandes |
+| **F3** | `Product` | stock insuffisant | 400 | route POST /api/commandes |
+| **F3** | `Order` | transition interdite (4.6) | 400 | `Order.changer_statut` → route PATCH |
+| **F3+F4** | `Order` | non propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
+
 ## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
 
 ```
