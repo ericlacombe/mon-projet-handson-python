@@ -50,13 +50,27 @@ assert set(Base.metadata.tables) == {"users", "categories", "products", "orders"
 
 ```python
 class Order(Base):
+    # 4.6 — Cycle de vie d'une commande (états + transitions autorisées).
+    # STATUTS : tous les états possibles (constantes nommées, pas de "magic strings").
     STATUTS = ("en_attente", "validée", "expédiée", "annulée")
+    # TRANSITIONS : pour chaque état, la liste des états suivants AUTORISÉS.
+    #   en_attente → validée (l'admin valide, le stock est décrémenté)
+    #              → annulée (restitution du stock)
+    #   validée    → expédiée | annulée
+    #   expédiée/annulée → AUCUNE (états finaux : on ne revient jamais en arrière)
     TRANSITIONS = {"en_attente": ["validée", "annulée"], "validée": ["expédiée", "annulée"],
                    "expédiée": [], "annulée": []}
-    def changer_statut(self, nouveau):        # 4.6 : contrôle des transitions autorisées
+
+    def changer_statut(self, nouveau):
+        # 4.6 : UNE méthode par objet avec cycle de vie, qui CONTRÔLE la transition :
+        # si le passage statut → nouveau n'est pas dans TRANSITIONS, on refuse
+        # (ValueError → la route renvoie 400 "transition interdite").
         if nouveau not in self.TRANSITIONS[self.statut]:
             raise ValueError(f"transition {self.statut} → {nouveau} interdite")
         self.statut = nouveau
+        # C'est AUSSI ici qu'on branche les effets de bord (4.3) :
+        #   validée → décrémenter le stock des produits (verifier_stock + update)
+        #   annulée → restituer le stock
 ```
 
 ## 4.7 — Contrat d'API niveau 🥇 (routes commandes, CDC étape 3)
