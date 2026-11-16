@@ -21,43 +21,6 @@ les crée au lancement. 🥇 = **vérifier** au démarrage :
 assert set(Base.metadata.tables) == {"users", "categories", "products", "orders", "order_items"}
 ```
 
-## 4.10 — Gestion des erreurs (niveau 🥇 : gestionnaire global + nouveaux codes F3)
-
-Au 🥈 : try/except par route (500) + codes 400/401/403/404/409. Au 🥇 on ajoute un **gestionnaire global** (réponse JSON uniforme pour toute l'app) :
-
-```python
-@app.errorhandler(404)
-def not_found(e):  return jsonify({"error": "introuvable"}), 404
-@app.errorhandler(405)
-def method_not_allowed(e):  return jsonify({"error": "méthode non autorisée"}), 405
-@app.errorhandler(500)
-def server_error(e):  return jsonify({"error": "erreur serveur"}), 500
-```
-
-| Fonction métier | Objet(s) | Erreur 🥇 | Code | Où |
-|---|---|---|---|---|
-| **F3** | `OrderItem` | quantité ≤ 0 | 400 | route POST /api/commandes |
-| **F3** | `Product` | stock insuffisant | 400 | route POST /api/commandes |
-| **F3** | `Order` | transition interdite (4.6) | 400 | `Order.changer_statut` → route PATCH |
-| **F3+F4** | `Order` | non propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
-
-## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
-
-```
- → 0. BASE      : role stocké ('client' par défaut, 'admin' = démo uniquement), mdp haché PBKDF2+sel
- → 1. REGISTER    : rôle forcé "client" côté serveur
- → 2. DÉMO       : seul compte admin, mdp haché
- → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
- → 4. ROUTES      : 401 si signature invalide/expiré · 403 si rôle insuffisant
-      + 🥇 NOUVEAU : 403 si client NON PROPRIÉTAIRE sur /api/commandes/<id>
-        (règle « propriétaire ou admin » : commande.user_id == user_id du token, ou role == admin)
- → 5. .env+HTTPS  : SECRET_KEY hors git, réseau chiffré en prod
-```
-
-| Fonction métier | Objet | Protection 🥇 | Fichier |
-|---|---|---|---|
-| **F3+F4** | `Order` | propriétaire ou admin → sinon **403** | `app/routes/commandes.py`, `app/security.py` |
-
 ## 4.3 — Contraintes métier (ajouts 🥇)
 
 | Fonction métier | Objet(s) | Règle | Où | Erreur |
@@ -112,6 +75,43 @@ class Order(Base):
 |---|---|---|
 | `calculer_total(commande)` | somme `quantite * prix_unitaire` des lignes | `app/routes/commandes.py` (ou `app/utils.py`) |
 | `verifier_stock(items)` | vérifie la dispo de chaque produit | idem |
+
+## 4.10 — Gestion des erreurs (niveau 🥇 : gestionnaire global + nouveaux codes F3)
+
+Au 🥈 : try/except par route (500) + codes 400/401/403/404/409. Au 🥇 on ajoute un **gestionnaire global** (réponse JSON uniforme pour toute l'app) :
+
+```python
+@app.errorhandler(404)
+def not_found(e):  return jsonify({"error": "introuvable"}), 404
+@app.errorhandler(405)
+def method_not_allowed(e):  return jsonify({"error": "méthode non autorisée"}), 405
+@app.errorhandler(500)
+def server_error(e):  return jsonify({"error": "erreur serveur"}), 500
+```
+
+| Fonction métier | Objet(s) | Erreur 🥇 | Code | Où |
+|---|---|---|---|---|
+| **F3** | `OrderItem` | quantité ≤ 0 | 400 | route POST /api/commandes |
+| **F3** | `Product` | stock insuffisant | 400 | route POST /api/commandes |
+| **F3** | `Order` | transition interdite (4.6) | 400 | `Order.changer_statut` → route PATCH |
+| **F3+F4** | `Order` | non propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
+
+## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
+
+```
+ → 0. BASE      : role stocké ('client' par défaut, 'admin' = démo uniquement), mdp haché PBKDF2+sel
+ → 1. REGISTER    : rôle forcé "client" côté serveur
+ → 2. DÉMO       : seul compte admin, mdp haché
+ → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
+ → 4. ROUTES      : 401 si signature invalide/expiré · 403 si rôle insuffisant
+      + 🥇 NOUVEAU : 403 si client NON PROPRIÉTAIRE sur /api/commandes/<id>
+        (règle « propriétaire ou admin » : commande.user_id == user_id du token, ou role == admin)
+ → 5. .env+HTTPS  : SECRET_KEY hors git, réseau chiffré en prod
+```
+
+| Fonction métier | Objet | Protection 🥇 | Fichier |
+|---|---|---|---|
+| **F3+F4** | `Order` | propriétaire ou admin → sinon **403** | `app/routes/commandes.py`, `app/security.py` |
 
 ## Backlog 🥇 (sera détaillé dans etape6-backlog-confirme.md)
 
