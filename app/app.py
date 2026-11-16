@@ -68,7 +68,8 @@ def init_sample_data():
     """
     if session.query(User).count() == 0:
         # --- Compte admin de démo (pour se connecter tout de suite via /login) ---
-        # C'est la SEULE source de rôle "admin" (aucune route publique n'en crée) :
+        # C'est la SEULE source de rôle "admin" ('client' par défaut partout ailleurs,
+        # aucune route publique n'en crée — chaîne de protection §4.11) :
         # mot de passe de démo "admin123", haché pour de vrai comme un vrai compte.
         # Le rôle "admin" part ensuite SIGNÉ dans le token JWT (security.py).
         admin = User(

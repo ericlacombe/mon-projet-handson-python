@@ -56,9 +56,10 @@ class User(Base):
     # Adresse — optionnelle (type Text = pas de limite de taille)
     address = Column(Text)
     # Rôle : 'client' par défaut, 'admin' pour les administrateurs.
-    # PROTECTION : aucune route publique ne change ce rôle — register force
-    # 'client' (voir routes/auth.py) ; seul le compte de démo est 'admin'
-    # (voir app.py). Le rôle est ensuite embarqué SIGNÉ dans le token JWT
+    # PROTECTION (chaîne de protection, docs/etape4-intermediaire.md §4.11) :
+    # 'client' par défaut à l'inscription, 'admin' UNIQUEMENT pour le compte
+    # de démo — aucune route publique ne change ce rôle (register force 'client',
+    # voir routes/auth.py). Le rôle est ensuite embarqué SIGNÉ dans le token JWT
     # (voir security.py) : un client ne peut pas se faire passer pour admin.
     role = Column(String(20), nullable=False, default="client")
 

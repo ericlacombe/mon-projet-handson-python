@@ -80,7 +80,8 @@ def register():                                  # l'endpoint = cette fonction
             address=body.get("address", ""),
             # PROTECTION DU RÔLE ADMIN : toujours "client" ici, en dur côté serveur.
             # Même si le JSON envoyé contient {"role": "admin"}, il est IGNORÉ :
-            # il n'existe aucune route publique pour créer/promouvoir un admin.
+            # il n'existe aucune route publique pour créer/promouvoir un admin
+            # (chaîne de protection §4.11 : 0. BASE → 5. .env+HTTPS).
             role="client",
         )
         # session.add(user) : marque l'objet pour insertion — RIEN n'est encore écrit

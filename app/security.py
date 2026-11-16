@@ -23,6 +23,7 @@ La clé secrète SECRET_KEY SERT À SIGNER les tokens : si elle fuit, on peut fo
 des tokens → elle est lue dans .env (jamais commité) + HTTPS en production.
 Codes : 401 = pas authentifié (token absent/invalide/expiré) ; 403 = authentifié
 mais rôle insuffisant (client sur une route admin).
+Chaîne complète : docs/etape4-intermediaire.md §4.11 (0. BASE → 5. .env+HTTPS).
 """
 
 # ------------------------------------------------------------------
