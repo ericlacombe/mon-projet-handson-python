@@ -136,6 +136,12 @@ app/
 | **F1+F4** login | token JWT (donnée temporaire 4.2) | token **signé** HMAC-SHA256 (pas chiffré — payload lisible), rôle embarqué, exp 24 h ; token admin ≠ token client | `app/security.py` |
 | **F4** contrôle | — | routes admin : signature vérifiée → **401** si invalide/expiré ; rôle vérifié → **403** si client | `app/security.py` |
 | (infra) | — | `SECRET_KEY` dans `.env` hors git (sinon tokens forgés) + HTTPS en prod | `.env`, `.gitignore` |
+| **F1** register | `User` | email **unique** (contrainte base) → doublon = **409** | `app/modelsSQLAlchemy.py`, `app/routes/auth.py` |
+| **F1/F2** toutes routes | — | champs obligatoires manquants → **400** ; ressource inconnue → **404** | `app/routes/auth.py`, `app/routes/produits.py` |
+| **F2** produits/catégories | `Product`, `Category` | contraintes 4.3 : prix/stock >= 0 → **400** ; catégorie FK inexistante → **400** ; nom catégorie unique → **409** | `app/routes/produits.py` |
+| (robustesse) | — | try/except + `session.rollback()` → erreur propre en JSON **500** (pas de fuite interne) | `app/routes/*.py` |
+| (injection SQL) | toutes les tables | **ORM SQLAlchemy** = requêtes paramétrées automatiquement → pas d'injection SQL possible (CDC) | `app/db.py`, `app/modelsSQLAlchemy.py` |
+| (hygiène git) | — | `.gitignore` : `.env`, `*.db`, `__pycache__/`, `venv/` jamais commités | `.gitignore` |
 
 > En une phrase : *personne ne peut créer un admin via l'API, les mots de passe restent illisibles même si la base fuit, et chaque requête est prouvée par un token signé à durée limitée.*
 
