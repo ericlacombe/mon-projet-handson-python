@@ -183,7 +183,7 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 **La chaîne de protection de bout en bout :**
 
 ```
-0. BASE      : role stocké, mdp haché PBKDF2+sel, jamais en clair
+ → 0. BASE      : role stocké en base ('client' par défaut à l'inscription, 'admin' uniquement pour le compte de démo), mdp haché PBKDF2+sel, jamais en clair
  → 1. REGISTER    : rôle forcé "client" côté serveur
  → 2. DÉMO       : seul compte admin, mdp haché
  → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
