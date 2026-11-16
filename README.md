@@ -86,6 +86,19 @@ mon-projet-handson-python/
 | F2 | `Product` | GET | `/api/produits/<id>` | Public | 200 · 404 (🥈 🚧) |
 | F2+F4 | `Product`, `Category` | POST/PUT/DELETE | `/api/produits[/<id>]` | **Admin** (Bearer token) | 201/200/204 · 400 · 401 · 403 (🥈 🚧) |
 
+## Sécurité — la chaîne de protection de bout en bout
+
+```
+ → 0. BASE      : role stocké en base ('client' par défaut à l'inscription, 'admin' uniquement pour le compte de démo), mdp haché PBKDF2+sel, jamais en clair
+ → 1. REGISTER    : rôle forcé "client" côté serveur
+ → 2. DÉMO       : seul compte admin, mdp haché
+ → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
+ → 4. ROUTES ADMIN : 401 si signature invalide/expiré, 403 si client
+ → 5. .env+HTTPS  : SECRET_KEY hors git, réseau chiffré en prod
+```
+
+Détail complet : `docs/etape4-intermediaire.md` §4.11 (tableau des protections + conformité CDC).
+
 ## Installation et lancement (étape 6)
 ```bash
 python -m venv venv                # crée un environnement virtuel isolé (dossier venv/) : les bibliothèques du projet n'installent PAS dans ton Python global
