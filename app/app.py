@@ -68,7 +68,9 @@ def init_sample_data():
     """
     if session.query(User).count() == 0:
         # --- Compte admin de démo (pour se connecter tout de suite via /login) ---
-        # Mot de passe de démo : "admin123" (haché pour de vrai, comme un vrai compte)
+        # C'est la SEULE source de rôle "admin" (aucune route publique n'en crée) :
+        # mot de passe de démo "admin123", haché pour de vrai comme un vrai compte.
+        # Le rôle "admin" part ensuite SIGNÉ dans le token JWT (security.py).
         admin = User(
             email="admin@digimarket.fr",
             password_hash=generate_password_hash("admin123"),

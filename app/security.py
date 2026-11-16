@@ -80,6 +80,9 @@ def creer_token(user):
     """
     payload = {
         "user_id": user.id,
+        # Le rôle vient de la BASE et est embarqué SIGNÉ dans le token :
+        # personne ne peut le modifier après coup (signature invalide → 401).
+        # Aucune route publique ne change le rôle (register force "client").
         "role": user.role,
         # exp : date d'expiration (le token sera refusé après)
         "exp": datetime.now(timezone.utc) + TOKEN_DUREE,

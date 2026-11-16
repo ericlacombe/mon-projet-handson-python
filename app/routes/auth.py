@@ -78,7 +78,10 @@ def register():                                  # l'endpoint = cette fonction
             first_name=body.get("first_name", ""),
             last_name=body.get("last_name", ""),
             address=body.get("address", ""),
-            role="client",                        # tout nouvel inscrit est client
+            # PROTECTION DU RÔLE ADMIN : toujours "client" ici, en dur côté serveur.
+            # Même si le JSON envoyé contient {"role": "admin"}, il est IGNORÉ :
+            # il n'existe aucune route publique pour créer/promouvoir un admin.
+            role="client",
         )
         # session.add(user) : marque l'objet pour insertion — RIEN n'est encore écrit
         # en base : l'objet est juste "suivi" par la session (état "pending")
