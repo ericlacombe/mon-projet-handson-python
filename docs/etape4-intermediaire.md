@@ -180,6 +180,17 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 ### 🔐 Synthèse — toutes les protections en place au niveau 🥈
 
+**La chaîne de protection de bout en bout :**
+
+```
+0. BASE      : role stocké, mdp haché PBKDF2+sel, jamais en clair
+ → 1. REGISTER    : rôle forcé "client" côté serveur
+ → 2. DÉMO       : seul compte admin, mdp haché
+ → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
+ → 4. ROUTES ADMIN : 401 si signature invalide/expiré, 403 si client
+ → 5. .env+HTTPS  : SECRET_KEY hors git, réseau chiffré en prod
+```
+
 | Fonction métier | Objet | Protection | Fichier |
 |---|---|---|---|
 | (stockage) | `User` (role, password_hash) | mdp haché PBKDF2 + sel (~600 000 itérations), jamais en clair — on recalcule et on compare | `app/modelsSQLAlchemy.py` |
