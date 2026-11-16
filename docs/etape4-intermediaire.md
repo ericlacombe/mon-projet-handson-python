@@ -193,9 +193,7 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 ---
 *Conception 🥈 prête (ordre 4.3 → 4.5 → 4.6 → 4.11, comme la méthode). Prochaine étape (avec validation) : étape 5 niveau 🥈 (tests : unitaires + intégration + 401/403).*
 
----
-
-## 🔐 Synthèse — toutes les protections en place au niveau 🥈
+### 🔐 Synthèse — toutes les protections en place au niveau 🥈
 
 | Fonction métier | Objet | Protection | Fichier |
 |---|---|---|---|
