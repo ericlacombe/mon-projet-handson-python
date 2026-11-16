@@ -61,6 +61,20 @@ assert set(Base.metadata.tables) == {"users", "categories", "products", "orders"
 
 ```python
 class Order(Base):
+    __tablename__ = "orders"
+    id = Column(Integer, primary_key=True)
+    # 4.5 — Côté "N" de la relation Order N—1 User : la CLÉ ÉTRANGÈRE
+    # ForeignKey("users.id") : la commande appartient à UN utilisateur (acheteur)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    address_livraison = Column(Text, nullable=False)
+    date_creation = Column(DateTime, default=datetime.utcnow)
+
+    # 4.5 — Côté "1" de la relation Order 1—N OrderItem : la RELATION
+    # relationship("OrderItem") : UNE commande a PLUSIEURS lignes (order.items)
+    # - backref="order" : accès inverse ligne.order
+    # - cascade="all, delete-orphan" : supprimer la commande supprime ses lignes
+    items = relationship("OrderItem", backref="order", cascade="all, delete-orphan")
+
     # 4.6 — Cycle de vie d'une commande (états + transitions autorisées).
     # STATUTS : tous les états possibles (constantes nommées, pas de "magic strings").
     STATUTS = ("en_attente", "validée", "expédiée", "annulée")
