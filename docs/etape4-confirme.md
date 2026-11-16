@@ -66,6 +66,23 @@ class Order(Base):
 | `calculer_total(commande)` | somme `quantite * prix_unitaire` des lignes | `app/routes/commandes.py` (ou `app/utils.py`) |
 | `verifier_stock(items)` | vérifie la dispo de chaque produit | idem |
 
+## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
+
+```
+ → 0. BASE      : role stocké ('client' par défaut, 'admin' = démo uniquement), mdp haché PBKDF2+sel
+ → 1. REGISTER    : rôle forcé "client" côté serveur
+ → 2. DÉMO       : seul compte admin, mdp haché
+ → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
+ → 4. ROUTES      : 401 si signature invalide/expiré · 403 si rôle insuffisant
+      + 🥇 NOUVEAU : 403 si client NON PROPRIÉTAIRE sur /api/commandes/<id>
+        (règle « propriétaire ou admin » : commande.user_id == user_id du token, ou role == admin)
+ → 5. .env+HTTPS  : SECRET_KEY hors git, réseau chiffré en prod
+```
+
+| Fonction métier | Objet | Protection 🥇 | Fichier |
+|---|---|---|---|
+| **F3+F4** | `Order` | propriétaire ou admin → sinon **403** | `app/routes/commandes.py`, `app/security.py` |
+
 ## Backlog 🥇 (sera détaillé dans etape6-backlog-confirme.md)
 
 1. Modèles `Order` + `OrderItem` (+ FK, relations, `changer_statut`) ;
