@@ -126,36 +126,6 @@ app/
 ```
 
 
-### 🔐 Synthèse — la sécurité en une chaîne de 5 protections
-
-| Fonction métier | Objet | Protection | Fichier |
-|---|---|---|---|
-| (stockage) | `User` (role, password_hash) | mdp haché PBKDF2 + sel (~600 000 itérations), jamais en clair — on recalcule et on compare | `app/modelsSQLAlchemy.py` |
-| **F1** register | `User` créé | rôle forcé `"client"` côté serveur (jamais depuis le JSON) | `app/routes/auth.py` |
-| (démo) | `User` admin | seul compte admin (aucune route publique n'en crée), mdp haché | `app/app.py` |
-| **F1+F4** login | token JWT (donnée temporaire 4.2) | token **signé** HMAC-SHA256 (pas chiffré — payload lisible), rôle embarqué, exp 24 h ; token admin ≠ token client | `app/security.py` |
-| **F4** contrôle | — | routes admin : signature vérifiée → **401** si invalide/expiré ; rôle vérifié → **403** si client | `app/security.py` |
-| (infra) | — | `SECRET_KEY` dans `.env` hors git (sinon tokens forgés) + HTTPS en prod | `.env`, `.gitignore` |
-| **F1** register | `User` | email **unique** (contrainte base) → doublon = **409** | `app/modelsSQLAlchemy.py`, `app/routes/auth.py` |
-| **F1/F2** toutes routes | — | champs obligatoires manquants → **400** ; ressource inconnue → **404** | `app/routes/auth.py`, `app/routes/produits.py` |
-| **F2** produits/catégories | `Product`, `Category` | contraintes 4.3 : prix/stock >= 0 → **400** ; catégorie FK inexistante → **400** ; nom catégorie unique → **409** | `app/routes/produits.py` |
-| (robustesse) | — | try/except + `session.rollback()` → erreur propre en JSON **500** (pas de fuite interne) | `app/routes/*.py` |
-| (injection SQL) | toutes les tables | **ORM SQLAlchemy** = requêtes paramétrées automatiquement → pas d'injection SQL possible (CDC) | `app/db.py`, `app/modelsSQLAlchemy.py` |
-| (hygiène git) | — | `.gitignore` : `.env`, `*.db`, `__pycache__/`, `venv/` jamais commités | `.gitignore` |
-
-> En une phrase : *personne ne peut créer un admin via l'API, les mots de passe restent illisibles même si la base fuit, et chaque requête est prouvée par un token signé à durée limitée.*
-
-
-#### Conformité cahier des charges — sécurité (docs/attentes.md)
-
-| Exigence CDC | Statut | Où |
-|---|---|---|
-| Authentification sécurisée via tokens JWT | ✅ fait | `app/security.py` (`creer_token`/`verifier_token`, HS256, exp 24 h) |
-| Hachage des mots de passe | ✅ fait | `generate_password_hash` (PBKDF2+sel) au register, `check_password_hash` au login |
-| Vérification des autorisations selon le rôle | ✅ fait | `@admin_required` → 401/403 |
-| Protection contre les injections SQL | ✅ fait | ORM SQLAlchemy (requêtes paramétrées) |
-| Autres vulnérabilités courantes | ✅/N/A | XSS : N/A (API 100 % JSON) · CSRF : N/A (token en header, pas de cookie) · HTTPS : à activer en prod |
-
 ## 4.11 — Sécuriser les accès (F4) : token JWT = donnée temporaire (4.2), contrôle 401/403 sur les routes protégées (condition : authentification/autorisation requise ✅ → ACTION)
 
 Nouveau module `app/security.py` + bibliothèque **PyJWT** + fichier **`.env`** (jamais commité) :
@@ -222,3 +192,35 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 ---
 *Conception 🥈 prête (ordre 4.3 → 4.5 → 4.6 → 4.11, comme la méthode). Prochaine étape (avec validation) : étape 5 niveau 🥈 (tests : unitaires + intégration + 401/403).*
+
+---
+
+## 🔐 Synthèse — toutes les protections en place au niveau 🥈
+
+| Fonction métier | Objet | Protection | Fichier |
+|---|---|---|---|
+| (stockage) | `User` (role, password_hash) | mdp haché PBKDF2 + sel (~600 000 itérations), jamais en clair — on recalcule et on compare | `app/modelsSQLAlchemy.py` |
+| **F1** register | `User` créé | rôle forcé `"client"` côté serveur (jamais depuis le JSON) | `app/routes/auth.py` |
+| (démo) | `User` admin | seul compte admin (aucune route publique n'en crée), mdp haché | `app/app.py` |
+| **F1+F4** login | token JWT (donnée temporaire 4.2) | token **signé** HMAC-SHA256 (pas chiffré — payload lisible), rôle embarqué, exp 24 h ; token admin ≠ token client | `app/security.py` |
+| **F4** contrôle | — | routes admin : signature vérifiée → **401** si invalide/expiré ; rôle vérifié → **403** si client | `app/security.py` |
+| (infra) | — | `SECRET_KEY` dans `.env` hors git (sinon tokens forgés) + HTTPS en prod | `.env`, `.gitignore` |
+| **F1** register | `User` | email **unique** (contrainte base) → doublon = **409** | `app/modelsSQLAlchemy.py`, `app/routes/auth.py` |
+| **F1/F2** toutes routes | — | champs obligatoires manquants → **400** ; ressource inconnue → **404** | `app/routes/auth.py`, `app/routes/produits.py` |
+| **F2** produits/catégories | `Product`, `Category` | contraintes 4.3 : prix/stock >= 0 → **400** ; catégorie FK inexistante → **400** ; nom catégorie unique → **409** | `app/routes/produits.py` |
+| (robustesse) | — | try/except + `session.rollback()` → erreur propre en JSON **500** (pas de fuite interne) | `app/routes/*.py` |
+| (injection SQL) | toutes les tables | **ORM SQLAlchemy** = requêtes paramétrées automatiquement → pas d'injection SQL possible (CDC) | `app/db.py`, `app/modelsSQLAlchemy.py` |
+| (hygiène git) | — | `.gitignore` : `.env`, `*.db`, `__pycache__/`, `venv/` jamais commités | `.gitignore` |
+
+> En une phrase : *personne ne peut créer un admin via l'API, les mots de passe restent illisibles même si la base fuit, et chaque requête est prouvée par un token signé à durée limitée.*
+
+
+### Conformité cahier des charges — sécurité (docs/attentes.md)
+
+| Exigence CDC | Statut | Où |
+|---|---|---|
+| Authentification sécurisée via tokens JWT | ✅ fait | `app/security.py` (`creer_token`/`verifier_token`, HS256, exp 24 h) |
+| Hachage des mots de passe | ✅ fait | `generate_password_hash` (PBKDF2+sel) au register, `check_password_hash` au login |
+| Vérification des autorisations selon le rôle | ✅ fait | `@admin_required` → 401/403 |
+| Protection contre les injections SQL | ✅ fait | ORM SQLAlchemy (requêtes paramétrées) |
+| Autres vulnérabilités courantes | ✅/N/A | XSS : N/A (API 100 % JSON) · CSRF : N/A (token en header, pas de cookie) · HTTPS : à activer en prod |
