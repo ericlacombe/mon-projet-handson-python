@@ -48,6 +48,17 @@ assert set(Base.metadata.tables) == {"users", "categories", "products", "orders"
 | **F3** | `Order` | validée → expédiée | `Order.expedier()` | admin uniquement |
 | **F3** | `Order` | en_attente/validée → annulée | `Order.annuler()` | admin ou propriétaire + RESTITUTION du stock |
 
+> 💡 **Rappel 4.5 appliqué à `Order`** (voir `etape4-intermediaire.md` §4.5 pour le détail) :
+> - **Côté "1"** (dans `Order`) : `items = relationship("OrderItem", backref="order", cascade="all, delete-orphan")`
+>   → une commande a plusieurs lignes (`order.items`) ; supprimer la commande supprime ses lignes.
+> - **Côté "N"** (dans `OrderItem`) : la **clé étrangère** `order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)`
+>   → une ligne appartient obligatoirement à UNE commande (`ligne.order` grâce au backref).
+>
+> ```python
+> # côté "1" dans Order      : items = relationship("OrderItem", backref="order", ...)
+> # côté "N" dans OrderItem  : order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+> ```
+
 ```python
 class Order(Base):
     # 4.6 — Cycle de vie d'une commande (états + transitions autorisées).
