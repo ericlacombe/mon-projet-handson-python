@@ -48,32 +48,30 @@ assert set(Base.metadata.tables) == {"users", "categories", "products", "orders"
 | **F3** | `Order` | validée → expédiée | `Order.expedier()` | admin uniquement |
 | **F3** | `Order` | en_attente/validée → annulée | `Order.annuler()` | admin ou propriétaire + RESTITUTION du stock |
 
-> 💡 **Rappel 4.5 appliqué à `Order`** (voir `etape4-intermediaire.md` §4.5 pour le détail) :
-> - **Côté "1"** (dans `Order`) : `items = relationship("OrderItem", backref="order", cascade="all, delete-orphan")`
->   → une commande a plusieurs lignes (`order.items`) ; supprimer la commande supprime ses lignes.
-> - **Côté "N"** (dans `OrderItem`) : la **clé étrangère** `order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)`
->   → une ligne appartient obligatoirement à UNE commande (`ligne.order` grâce au backref).
->
-> ```python
-> # côté "1" dans Order      : items = relationship("OrderItem", backref="order", ...)
-> # côté "N" dans OrderItem  : order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-> ```
-
 ```python
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True)
-    # 4.5 — Côté "N" de la relation Order N—1 User : la CLÉ ÉTRANGÈRE
-    # ForeignKey("users.id") : la commande appartient à UN utilisateur (acheteur)
+    # ------------------------------------------------------------------
+    # Côté "N" de la relation : la clé étrangère (repris du 4.5)
+    # - ForeignKey("users.id") : ce champ RÉFÉRENCE la clé primaire de users
+    # - nullable=False : une commande DOIT appartenir à un utilisateur (obligatoire)
+    # ------------------------------------------------------------------
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     address_livraison = Column(Text, nullable=False)
     date_creation = Column(DateTime, default=datetime.utcnow)
 
-    # 4.5 — Côté "1" de la relation Order 1—N OrderItem : la RELATION
-    # relationship("OrderItem") : UNE commande a PLUSIEURS lignes (order.items)
-    # - backref="order" : accès inverse ligne.order
-    # - cascade="all, delete-orphan" : supprimer la commande supprime ses lignes
-    items = relationship("OrderItem", backref="order", cascade="all, delete-orphan")
+    # ------------------------------------------------------------------
+    # RELATION 1—N : Order 1—N OrderItem (une commande a plusieurs lignes)
+    # ------------------------------------------------------------------
+    # relationship("OrderItem") dans Order définit la relation ORM.
+    # - backref="order" : crée automatiquement orderitem.order (accès inverse :
+    #   depuis une ligne, on atteint sa commande — ex. ma_ligne.order.id)
+    # - lazy=True (défaut) : les lignes sont chargées UNIQUEMENT quand on y accède
+    #   (chargement différé, pas tout en mémoire d'un coup)
+    # - cascade="all, delete-orphan" : supprimer une commande supprime aussi ses
+    #   lignes (sinon elles resteraient "orphelines", sans commande)
+    items = relationship("OrderItem", backref="order", lazy=True, cascade="all, delete-orphan")
 
     # 4.6 — Cycle de vie d'une commande (états + transitions autorisées).
     # STATUTS : tous les états possibles (constantes nommées, pas de "magic strings").
