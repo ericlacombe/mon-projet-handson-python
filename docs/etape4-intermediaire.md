@@ -145,6 +145,17 @@ app/
 
 > En une phrase : *personne ne peut créer un admin via l'API, les mots de passe restent illisibles même si la base fuit, et chaque requête est prouvée par un token signé à durée limitée.*
 
+
+#### Conformité cahier des charges — sécurité (docs/attentes.md)
+
+| Exigence CDC | Statut | Où |
+|---|---|---|
+| Authentification sécurisée via tokens JWT | ✅ fait | `app/security.py` (`creer_token`/`verifier_token`, HS256, exp 24 h) |
+| Hachage des mots de passe | ✅ fait | `generate_password_hash` (PBKDF2+sel) au register, `check_password_hash` au login |
+| Vérification des autorisations selon le rôle | ✅ fait | `@admin_required` → 401/403 |
+| Protection contre les injections SQL | ✅ fait | ORM SQLAlchemy (requêtes paramétrées) |
+| Autres vulnérabilités courantes | ✅/N/A | XSS : N/A (API 100 % JSON) · CSRF : N/A (token en header, pas de cookie) · HTTPS : à activer en prod |
+
 ## 4.11 — Sécuriser les accès (F4) : token JWT = donnée temporaire (4.2), contrôle 401/403 sur les routes protégées (condition : authentification/autorisation requise ✅ → ACTION)
 
 Nouveau module `app/security.py` + bibliothèque **PyJWT** + fichier **`.env`** (jamais commité) :
