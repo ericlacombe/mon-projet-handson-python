@@ -21,6 +21,10 @@ les crée au lancement. 🥇 = **vérifier** au démarrage :
 assert set(Base.metadata.tables) == {"users", "categories", "products", "orders", "order_items"}
 ```
 
+## 4.2 — Données temporaires (niveau 🥇)
+
+Le **panier côté client** est une donnée temporaire : elle n'existe que le temps de la session de navigation, on ne la stocke PAS en base (comme le token JWT au 🥈). → un simple `dict`/objet léger côté client suffit, **pas de table**.
+
 ## 4.3 — Contraintes métier (ajouts 🥇)
 
 | Fonction métier | Objet(s) | Règle | Où | Erreur |
@@ -41,6 +45,8 @@ assert set(Base.metadata.tables) == {"users", "categories", "products", "orders"
 ## 4.6 — Création des objets ayant une transition d'état (Order)
 
 `Order.statut` : `en_attente` → `validée` → `expédiée` ; `annulée` possible depuis `en_attente`/`validée`.
+
+> 💡 **Analogie** : le cycle de vie d'une commande, c'est comme le suivi d'un colis — *en préparation → expédié → livré* (on ne revient jamais en arrière).
 
 | Fonction métier | Objet | Transition | Méthode sur la classe | Contrôle |
 |---|---|---|---|---|
@@ -108,6 +114,8 @@ class Order(Base):
 
 ## 4.9 — Fonctions Python (transformations sans état)
 
+> 💡 Une fonction Python ici est **pure** : mêmes entrées → même sortie, sans effet de bord persistant (pas d'écriture en base). Ex. `calculer_total(lignes)`.
+
 | Fonction | Rôle | Fichier |
 |---|---|---|
 | `calculer_total(commande)` | somme `quantite * prix_unitaire` des lignes | `app/routes/commandes.py` (ou `app/utils.py`) |
@@ -149,6 +157,30 @@ def server_error(e):  return jsonify({"error": "erreur serveur"}), 500
 | Fonction métier | Objet | Protection 🥇 | Fichier |
 |---|---|---|---|
 | **F3+F4** | `Order` | propriétaire ou admin → sinon **403** | `app/routes/commandes.py`, `app/security.py` |
+
+## Matrice de traçabilité CDC (fin de projet 🥇)
+
+| Exigence CDC (attentes.md) | Route | Test | Statut |
+|---|---|---|---|
+| Inscription (étape 1) | `POST /api/auth/register` | `test_register_email_deja_utilise` (409) | ✅ 🥉 |
+| Connexion + token JWT (étape 1) | `POST /api/auth/login` | `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` | ✅ 🥈 |
+| Liste/recherche/détail produits (étape 2) | `GET /api/produits[/<id>]` | `test_liste_produits_avec_recherche` | ✅ 🥈 |
+| CRUD produits admin (étape 2) | `POST/PUT/DELETE /api/produits[/<id>]` | 201/401/403/400 tests | ✅ 🥈 |
+| Créer une commande (étape 3) | `POST /api/commandes` | `test_creer_commande_201`, `test_stock_insuffisant_400` | 🥇 |
+| Historique / suivi (étape 3) | `GET /api/commandes[/<id>]` | `test_liste_mes_commandes`, `test_commande_autre_user_403` | 🥇 |
+| Lignes d'une commande (étape 3) | `GET /api/commandes/<id>/lignes` | `test_lignes_commande` | 🥇 |
+| Changer le statut (admin, étape 3) | `PATCH /api/commandes/<id>/statut` | `test_patch_statut_admin_200`, `test_transition_interdite_400` | 🥇 |
+| Stock décrémenté à la validation | effet de bord `Order.valider()` | `test_stock_decremente_a_validation` | 🥇 |
+
+---
+
+✅ **Checklist étape 4 (niveau 🥇)** : 4.1 vérif 5 tables ✅ · 4.2 temporaire ✅ · 4.3 ✅ · 4.5 ✅ · 4.6 ✅ · 4.7 ✅ · 4.9 ✅ · 4.10 ✅ · 4.11 ✅ · contrat complet ✅ · traçabilité CDC ✅.
+
+🧵 **Fil rouge 🥇** : « passer une commande » → `POST /api/commandes` (client connecté, stock vérifié, lignes créées, total calculé) → suivi via `GET /api/commandes/<id>` → `PATCH .../statut` (admin, transition contrôlée, stock décrémenté).
+
+❓ **Auto-évaluation** : 1) Quelles transitions de `Order` sont autorisées ? 2) Pourquoi le panier n'est pas une table (4.2) ? 3) Où est contrôlée la règle « propriétaire ou admin » ?
+
+📝 **À retenir (3 lignes)** : 1) 🥇 = tout le CDC (4.1→4.11 complet). 2) Transition d'état → constantes + méthode qui contrôle (4.6). 3) Sécurité = chaîne de protection 0→5 + règle propriétaire-ou-admin.
 
 ## Backlog 🥇 (sera détaillé dans etape6-backlog-confirme.md)
 
