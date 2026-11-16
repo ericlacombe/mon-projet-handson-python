@@ -186,9 +186,6 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 📝 **À retenir (3 lignes)** : 1) 🥈 = 🥉 + 4.3/4.5/4.6/4.11. 2) Relations → ForeignKey + relationship. 3) Sécurité → module dédié + JWT + .env + décorateurs de rôle.
 
----
-*Conception 🥈 prête (ordre 4.3 → 4.5 → 4.6 → 4.11, comme la méthode). Prochaine étape (avec validation) : étape 5 niveau 🥈 (tests : unitaires + intégration + 401/403).*
-
 ### 🔐 Synthèse — toutes les protections en place au niveau 🥈
 
 | Fonction métier | Objet | Protection | Fichier |
