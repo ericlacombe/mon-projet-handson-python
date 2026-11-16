@@ -92,7 +92,6 @@ class Product(Base):
 > (sorties JSON + codes HTTP). Les routes protégées exigent le header
 > `Authorization: Bearer <token JWT>` (obtenu via `/api/auth/login`).
 
-
 | Fonction métier | Objet(s) manipulé(s) | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
 |---|---|---|---|---|---|---|
 | **F1** Gérer les comptes | `User` (créé) | POST | `/api/auth/register` | Public | `{email, password, ...}` | `201` · `400` · `409` |
@@ -124,7 +123,6 @@ app/
     └── produits.py      # NOUVEAU (F2) : CRUD /api/produits
     # (routes/commandes.py sera ajouté au niveau 🥇 avec F3)
 ```
-
 
 ## 4.11 — Sécuriser les accès (F4) : token JWT = donnée temporaire (4.2), contrôle 401/403 sur les routes protégées (condition : authentification/autorisation requise ✅ → ACTION)
 
@@ -178,8 +176,6 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 ---
 
-✅ **Checklist étape 4 (niveau 🥈)** : 4.3 contraintes ✅ · 4.5 FK/relations ✅ · 4.11 sécurité ✅ · contrat d'API 🥈 ✅ · arborescence 🥈 ✅ (4.6 → niveau 🥇 avec F3).
-
 ⚠️ **Piège évité** : pas de classe pour le token JWT (donnée temporaire, 4.2 — un `dict` suffit).
 
 🧰 **Bonnes pratiques** : `.env` pour SECRET_KEY (jamais commité, `.gitignore` ✅) · `PyJWT` ajouté à `requirements.txt` · README + canva mis à jour (nouveau canva `canva-structure-intermediaire.mmd`, sans écraser celui de 🥉) · commit.
@@ -211,7 +207,6 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 | (hygiène git) | — | `.gitignore` : `.env`, `*.db`, `__pycache__/`, `venv/` jamais commités | `.gitignore` |
 
 > En une phrase : *personne ne peut créer un admin via l'API, les mots de passe restent illisibles même si la base fuit, et chaque requête est prouvée par un token signé à durée limitée.*
-
 
 ### Conformité cahier des charges — sécurité (docs/attentes.md)
 
