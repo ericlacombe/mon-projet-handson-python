@@ -178,14 +178,6 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 
 ⚠️ **Piège évité** : pas de classe pour le token JWT (donnée temporaire, 4.2 — un `dict` suffit).
 
-🧰 **Bonnes pratiques** : `.env` pour SECRET_KEY (jamais commité, `.gitignore` ✅) · `PyJWT` ajouté à `requirements.txt` · README + canva mis à jour (nouveau canva `canva-structure-intermediaire.mmd`, sans écraser celui de 🥉) · commit.
-
-🧵 **Fil rouge 🥈** : « se connecter » → `POST /api/auth/login` → token JWT ; « gérer le catalogue » → CRUD `/api/produits` réservé admin.
-
-❓ **Auto-évaluation** : 1) Pourquoi ForeignKey seulement maintenant ? 2) Où va la SECRET_KEY ? 3) Quelles routes sont réservées à l'admin ?
-
-📝 **À retenir (3 lignes)** : 1) 🥈 = 🥉 + 4.3/4.5/4.6/4.11. 2) Relations → ForeignKey + relationship. 3) Sécurité → module dédié + JWT + .env + décorateurs de rôle.
-
 ### 🔐 Synthèse — toutes les protections en place au niveau 🥈
 
 | Fonction métier | Objet | Protection | Fichier |
