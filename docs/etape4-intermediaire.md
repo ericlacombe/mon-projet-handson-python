@@ -128,15 +128,14 @@ app/
 
 ### 🔐 Synthèse — la sécurité en une chaîne de 5 protections
 
-```
-BASE (role stocké, mdp haché PBKDF2+sel, jamais en clair — on recalcule et on compare)
-  → 1. REGISTER : rôle forcé "client" côté serveur (jamais depuis le JSON)
-  → 2. DÉMO : seul compte admin, mdp haché
-  → 3. LOGIN : émet un token JWT SIGNÉ (HMAC-SHA256, pas chiffré — payload lisible,
-     rôle embarqué, exp 24 h) ; token admin ≠ token client
-  → 4. ROUTES ADMIN : signature vérifiée → 401 si invalide/expiré ; rôle vérifié → 403 si client
-  → 5. .env + HTTPS : SECRET_KEY hors git (sinon tokens forgés), réseau chiffré en prod
-```
+| Fonction métier | Objet | Protection | Fichier |
+|---|---|---|---|
+| (stockage) | `User` (role, password_hash) | mdp haché PBKDF2 + sel (~600 000 itérations), jamais en clair — on recalcule et on compare | `app/modelsSQLAlchemy.py` |
+| **F1** register | `User` créé | rôle forcé `"client"` côté serveur (jamais depuis le JSON) | `app/routes/auth.py` |
+| (démo) | `User` admin | seul compte admin (aucune route publique n'en crée), mdp haché | `app/app.py` |
+| **F1+F4** login | token JWT (donnée temporaire 4.2) | token **signé** HMAC-SHA256 (pas chiffré — payload lisible), rôle embarqué, exp 24 h ; token admin ≠ token client | `app/security.py` |
+| **F4** contrôle | — | routes admin : signature vérifiée → **401** si invalide/expiré ; rôle vérifié → **403** si client | `app/security.py` |
+| (infra) | — | `SECRET_KEY` dans `.env` hors git (sinon tokens forgés) + HTTPS en prod | `.env`, `.gitignore` |
 
 > En une phrase : *personne ne peut créer un admin via l'API, les mots de passe restent illisibles même si la base fuit, et chaque requête est prouvée par un token signé à durée limitée.*
 
