@@ -125,6 +125,21 @@ app/
     # (routes/commandes.py sera ajouté au niveau 🥇 avec F3)
 ```
 
+
+### 🔐 Synthèse — la sécurité en une chaîne de 5 protections
+
+```
+BASE (role stocké, mdp haché PBKDF2+sel, jamais en clair — on recalcule et on compare)
+  → 1. REGISTER : rôle forcé "client" côté serveur (jamais depuis le JSON)
+  → 2. DÉMO : seul compte admin, mdp haché
+  → 3. LOGIN : émet un token JWT SIGNÉ (HMAC-SHA256, pas chiffré — payload lisible,
+     rôle embarqué, exp 24 h) ; token admin ≠ token client
+  → 4. ROUTES ADMIN : signature vérifiée → 401 si invalide/expiré ; rôle vérifié → 403 si client
+  → 5. .env + HTTPS : SECRET_KEY hors git (sinon tokens forgés), réseau chiffré en prod
+```
+
+> En une phrase : *personne ne peut créer un admin via l'API, les mots de passe restent illisibles même si la base fuit, et chaque requête est prouvée par un token signé à durée limitée.*
+
 ## 4.11 — Sécuriser les accès (F4) : token JWT = donnée temporaire (4.2), contrôle 401/403 sur les routes protégées (condition : authentification/autorisation requise ✅ → ACTION)
 
 Nouveau module `app/security.py` + bibliothèque **PyJWT** + fichier **`.env`** (jamais commité) :
