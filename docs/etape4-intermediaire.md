@@ -124,6 +124,30 @@ app/
     # (routes/commandes.py sera ajouté au niveau 🥇 avec F3)
 ```
 
+## 4.10 — Gestion des erreurs (niveau 🥈)
+
+Progression de 4.10 par niveau (voir `methodologie.md`) :
+- 🥉 : 4.10 **basique** = 1 gestionnaire (409 email déjà pris sur register) — voir `docs/etape4-conception-debutant.md` §4.7 (colonne « Sorties / codes ») ;
+- 🥈 : **codes par route** (try/except → 500) + 400/401/403/404/409 sur auth/produits — tableau ci-dessous ;
+- 🥇 : gestionnaire **global** `@app.errorhandler(404/405/500)` + nouveaux codes F3 — voir `docs/etape4-confirme.md` §4.10.
+
+> 🎯 **Ce qu'apporte ce tableau** : chaque **contrainte du §4.3** (les "inputs" à valider) est traduite en **code HTTP précis** — c'est le contrat d'erreur de l'API 🥈.
+
+| Fonction métier | Objet(s) manipulé(s) | Input / contrainte (voir §4.3) | Erreur 🥈 | Code | Où (rendu par la route) |
+|---|---|---|---|---|---|
+| **F1** | `User` | email + password obligatoires | champ manquant | 400 | route POST /api/auth/login |
+| **F1** | `User` | email unique | email déjà pris | 409 | route POST /api/auth/register |
+| **F1** | `User` | bon mot de passe | identifiants invalides | 401 | route POST /api/auth/login |
+| **F2+F4** | `Product` | token valide (Bearer) | token absent/invalide/expiré | 401 | routes protégées (décorateur) |
+| **F2+F4** | `Product` | rôle admin | client non admin | 403 | POST/PUT/DELETE /api/produits, POST /api/categories |
+| **F2** | `Product` | name, price, category_id obligatoires | champ manquant | 400 | route POST /api/produits |
+| **F2** | `Product`, `Category` | price ≥ 0, stock ≥ 0 | valeur négative | 400 | route POST/PUT /api/produits |
+| **F2** | `Product` | category_id existant (FK) | catégorie inexistante | 400 | route POST /api/produits |
+| **F2** | `Category` | name unique | catégorie déjà existante | 409 | route POST /api/categories |
+| **F2** | `Product` | id existant | produit introuvable | 404 | GET/PUT/DELETE /api/produits/<id> |
+
+> ① Le **gestionnaire global** `@app.errorhandler(404/405/500)` n'existe PAS encore au 🥈 : il sera ajouté au 🥇 (voir `etape4-confirme.md` §4.10).
+
 ## 4.11 — Sécuriser les accès (F4) : token JWT = donnée temporaire (4.2), contrôle 401/403 sur les routes protégées (condition : authentification/autorisation requise ✅ → ACTION)
 
 Nouveau module `app/security.py` + bibliothèque **PyJWT** + fichier **`.env`** (jamais commité) :
