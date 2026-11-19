@@ -9,8 +9,6 @@ Le code 🥉/🥈 reste fonctionnel : on AJOUTE, on ne remplace pas.
 |---|---|---|---|
 | **F3** Gérer les commandes | `Order`, `OrderItem` (nouveaux ; Order 1—N OrderItem, OrderItem N—1 Product, Order N—1 User) | `POST /api/commandes`, `GET /api/commandes`, `GET /api/commandes/<id>`, `GET /api/commandes/<id>/lignes`, `PATCH /api/commandes/<id>/statut` (admin) | `app/routes/commandes.py` (nouveau), `modelsSQLAlchemy.py` (+ Order, OrderItem) |
 
-> ⚠️ Pas de `DELETE /api/commandes/<id>` : une commande ne se supprime pas (historique CDC), elle s'annule via ce PATCH.
-
 > F1/F2/F4 déjà faits au 🥈 ✅. Au 🥇 on touche à tout le CDC (étapes 1+2+3).
 
 ## 4.1 — Base de données (vérification niveau 🥇)
