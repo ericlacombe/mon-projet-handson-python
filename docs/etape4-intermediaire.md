@@ -92,15 +92,15 @@ class Product(Base):
 > (sorties JSON + codes HTTP). Les routes protégées exigent le header
 > `Authorization: Bearer <token JWT>` (obtenu via `/api/auth/login`).
 
-| Fonction métier | Objet(s) manipulé(s) | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
-|---|---|---|---|---|---|---|
-| **F1** Gérer les comptes | `User` (créé) | POST | `/api/auth/register` | Public | `{email, password, ...}` | `201` · `400` · `409` |
+| Fonction métier | Objet(s) manipulé(s) | Action sur l'Objet | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
+|---|---|---|---|---|---|---|---|
+| **F1** Gérer les comptes | `User` | **créé** | POST | `/api/auth/register` | Public | `{email, password, ...}` | `201` · `400` · `409` |
 | **F1 + F4** (auth) | `User` (lu) → token (temporaire, 4.2) | POST | `/api/auth/login` | Public | `{email, password}` | `200` + token JWT · `401` |
-| **F2** Gérer le catalogue | `Product` (lus) | GET | `/api/produits` | Public | query `?q=` | `200` liste JSON |
-| **F2** | `Product` (lu) | GET | `/api/produits/<id>` | Public | — | `200` · `404` |
+| **F2** Gérer le catalogue | `Product` | **lu** | GET | `/api/produits` | Public | query `?q=` | `200` liste JSON |
+| **F2** | `Product` | **lu** | GET | `/api/produits/<id>` | Public | — | `200` · `404` |
 | **F2** (+ F4 contrôle) | `Product` (créé), `Category` (FK) | POST | `/api/produits` | **Admin** (token + rôle) | `{name, description, price, stock, category_id}` | `201` · `400` · `401`/`403` |
-| **F2** (+ F4) | `Product` (modifié) | PUT | `/api/produits/<id>` | Admin | idem | `200` · `404` · `401`/`403` |
-| **F2** (+ F4) | `Product` (supprimé) | DELETE | `/api/produits/<id>` | Admin | — | `204` · `404` · `401`/`403` |
+| **F2** (+ F4) | `Product` | **modifié** | PUT | `/api/produits/<id>` | Admin | idem | `200` · `404` · `401`/`403` |
+| **F2** (+ F4) | `Product` | **supprimé** | DELETE | `/api/produits/<id>` | Admin | — | `204` · `404` · `401`/`403` |
 
 > 💡 Chaque route = un cas d'utilisation (étape 1) réalisé par une **fonction métier** (étape 2, F1–F4)
 > qui agit sur un **objet** (étape 3) : la route ne fait que traduire la requête HTTP en appel à la fonction métier.
