@@ -1,4 +1,4 @@
-# ÉTAPE 4 appliquée à DigiMarket — NIVEAU 🥈 INTERMÉDIAIRE
+# ÉTAPE 4 appliquée à DigiMarket — NIVEAU 🥈 INTERMÉDIAIRE (conception AVANT code)
 
 ⏱️ sur le niveau 🥈 (en plus du niveau 🥉 déjà fait)
 

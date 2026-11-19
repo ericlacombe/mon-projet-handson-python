@@ -25,7 +25,7 @@ assert set(Base.metadata.tables) == {"users", "categories", "products", "orders"
 
 Le **panier côté client** est une donnée temporaire : elle n'existe que le temps de la session de navigation, on ne la stocke PAS en base (comme le token JWT au 🥈). → un simple `dict`/objet léger côté client suffit, **pas de table**.
 
-## 4.3 — Contraintes métier (ajouts 🥇)
+## 4.3 — Contraintes métier sur les objets (par route) — ajouts 🥇
 
 | Fonction métier | Objet(s) | Règle | Où | Erreur |
 |---|---|---|---|---|
@@ -34,7 +34,7 @@ Le **panier côté client** est une donnée temporaire : elle n'existe que le te
 | **F3** | `Product` | stock décrémenté à la validation ; restitué à l'annulation | méthodes Order + route PATCH | — |
 | **F3** | `Order.statut` | transition autorisée (4.6) | `Order.changer_statut` | 400 |
 
-## 4.5 — Relations (ajouts 🥇)
+## 4.5 — Création des objets ayant une relation 1—N — ajouts 🥇
 
 | Fonction métier | Objet(s) | Relation | Clé étrangère | relationship |
 |---|---|---|---|---|
@@ -42,7 +42,7 @@ Le **panier côté client** est une donnée temporaire : elle n'existe que le te
 | **F3** | `OrderItem` ↔ `Product` | N—1 | `order_items.product_id → products.id` | `OrderItem.product` |
 | **F3** | `Order` ↔ `User` | N—1 | `orders.user_id → users.id` | `User.orders`, `Order.user` |
 
-## 4.6 — Création des objets ayant une transition d'état (Order)
+## 4.6 — Création des objets ayant une transition d'état (Order) — ajouts 🥇
 
 `Order.statut` : `en_attente` → `validée` → `expédiée` ; `annulée` possible depuis `en_attente`/`validée`.
 
@@ -102,7 +102,7 @@ class Order(Base):
         #   annulée → restituer le stock
 ```
 
-## 4.7 — Contrat d'API niveau 🥇 (routes commandes, CDC étape 3)
+## 4.7 — Routes de l'API : contrat complet niveau 🥇 (ajouts : routes commandes, CDC étape 3)
 
 | Fonction métier | Objet(s) manipulé(s) | Action sur l'Objet | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
 |---|---|---|---|---|---|---|---|
@@ -114,7 +114,11 @@ class Order(Base):
 
 > ⚠️ Pas de `DELETE /api/commandes/<id>` : une commande ne se supprime pas (historique CDC), elle s'annule via ce PATCH.
 
-## 4.9 — Fonctions Python (transformations sans état)
+## 4.8 — Organisation du code — ajouts 🥇
+
+On ajoute, sans toucher au 🥈 : `app/routes/commandes.py` (nouveau blueprint F3, enregistré dans `app.py`) et éventuellement `app/utils.py` (fonctions pures 4.9 : `calculer_total`, `verifier_stock`). Un blueprint par fonction métier.
+
+## 4.9 — Fonctions Python (transformations sans état) — ajouts 🥇
 
 > 💡 Une fonction Python ici est **pure** : mêmes entrées → même sortie, sans effet de bord persistant (pas d'écriture en base). Ex. `calculer_total(lignes)`.
 
@@ -123,7 +127,7 @@ class Order(Base):
 | `calculer_total(commande)` | somme `quantite * prix_unitaire` des lignes | `app/routes/commandes.py` (ou `app/utils.py`) |
 | `verifier_stock(items)` | vérifie la dispo de chaque produit | idem |
 
-## 4.10 — Gestion des erreurs (niveau 🥇 : gestionnaire global + nouveaux codes F3)
+## 4.10 — Gestion des erreurs — ajouts 🥇 (gestionnaire global + nouveaux codes F3)
 
 Progression de 4.10 par niveau (voir methodologie.md) :
 - 🥉 : 4.10 **basique** = 1 gestionnaire (409 email déjà pris sur register) — voir `docs/etape4-conception-debutant.md` §4.7 (colonne « Sorties / codes » : 201/400/409) ;
@@ -155,7 +159,7 @@ Progression de 4.10 par niveau (voir methodologie.md) :
 | **F3** | `Order` | transition autorisée (§4.6) | transition interdite | 400 | route PATCH `/api/commandes/<id>/statut` (via `Order.changer_statut`, §4.6) |
 | **F3+F4** | `Order` | client_propriétaire ou admin (§4.11) | non client_propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
 
-## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
+## 4.11 — Sécuriser les accès (F4) — compléments 🥇 (chaîne de protection complétée)
 
 ```
  → 0. BASE      : role stocké ('client' par défaut, 'admin' = démo uniquement), mdp haché PBKDF2+sel
@@ -172,7 +176,8 @@ Progression de 4.10 par niveau (voir methodologie.md) :
 |---|---|---|---|
 | **F3+F4** | `Order` | client_propriétaire ou admin → sinon **403** | `app/routes/commandes.py`, `app/security.py` |
 
-## Matrice de traçabilité CDC (fin de projet 🥇)
+
+### Matrice de traçabilité CDC (fin de projet 🥇)
 
 | Exigence CDC (attentes.md) | Route | Test | Statut |
 |---|---|---|---|
@@ -196,13 +201,14 @@ Progression de 4.10 par niveau (voir methodologie.md) :
 
 📝 **À retenir (3 lignes)** : 1) 🥇 = tout le CDC (4.1→4.11 complet). 2) Transition d'état → constantes + méthode qui contrôle (4.6). 3) Sécurité = chaîne de protection 0→5 + règle client_propriétaire-ou-admin.
 
-## Backlog 🥇 (sera détaillé dans etape6-backlog-confirme.md)
+---
 
-1. Modèles `Order` + `OrderItem` (+ FK, relations, `changer_statut`) ;
-2. Routes `commandes.py` : POST (vérif stock, lignes, total), GET liste/détail/lignes (client_propriétaire ou admin), PATCH statut (admin, transition + stock) ;
-3. Tests 🥇 : unitaires (transitions, total) + intégration (création 201, stock insuffisant 400, 403 non client_propriétaire, PATCH admin 200, transition interdite 400) + **régression** (tout rejoué) ;
-4. README + canva 🥇 (`canva-structure-confirme.mmd`, sans écraser les autres) + matrice de traçabilité CDC complète.
+✅ **Checklist étape 4 (niveau 🥇)** : 4.1 ✅ · 4.2 ✅ · 4.3 ✅ · 4.5 ✅ · 4.6 ✅ · 4.7 ✅ · 4.8 ✅ · 4.9 ✅ · 4.10 ✅ · 4.11 ✅ · contrat complet ✅ · traçabilité CDC ✅.
 
-✅ **Checklist 🥇** : 4.5 N—N ✅ · 4.6 transitions ✅ · 4.7 contrat commandes ✅ · 4.3 contraintes ✅ · 4.9 fonctions ✅ · 4.10 erreurs (400/401/403/404) ✅ · 4.11 sécurité étendue (client_propriétaire-or-admin) ✅ · tests unitaires+intégration+régression ✅.
+🧵 **Fil rouge 🥇** : « passer une commande » → `POST /api/commandes` → suivi `GET /api/commandes/<id>` → `PATCH .../statut` (admin ou client_propriétaire pour annulation).
 
-*Prochaine étape (avec validation) : étape 5 niveau 🥇 (matrice de tests complète) puis étape 6 (backlog 🥇) puis CODE.*
+❓ **Auto-évaluation** : 1) Quelles transitions de `Order` sont autorisées ? 2) Pourquoi le panier n'est pas une table (4.2) ? 3) Où est contrôlée la règle « client_propriétaire ou admin » ?
+
+📝 **À retenir (3 lignes)** : 1) 🥇 = tout le CDC (4.1→4.11 complet). 2) Transition d'état → constantes + méthode qui contrôle (4.6). 3) Sécurité = chaîne 0→5 + client_propriétaire-ou-admin.
+
+*Conception 🥇 prête. Prochaine étape (avec validation) : étape 5 niveau 🥇 (matrice de tests complète), puis étape 6 : `docs/etape6-backlog-confirme.md` (le backlog 🥇 y sera détaillé).*
