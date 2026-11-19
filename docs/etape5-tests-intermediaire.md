@@ -14,13 +14,13 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 > - unitaire = on teste la fonction/classe seule (sans route) ; intégration = on teste
 >   la route complète (requête HTTP → base → réponse, y compris la sécurité 401/403).
 
-| Fonction métier | Objet(s) | Élément testé (étape 4 🥈) | Unitaire | Intégration (route+base+sécurité) | Nom du fichier |
-|---|---|---|---|---|---|
-| **F1+F4** (auth) | `User` → token | `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` | `tests/test_security.py` |
-| **F4** | token (donnée temporaire, 4.2) | `security.creer_token / verifier_token` | ✅ `test_token_invalide_401`, `test_token_expire_401` | ✅ (via login) | `tests/test_security.py` |
-| **F2** (+F4) | `Product`, `Category` | CRUD `/api/produits` | — | ✅ `test_creer_produit_sans_token_401`, `test_creer_produit_client_403`, `test_creer_produit_admin_201`, `test_creer_produit_prix_negatif_400` | `tests/test_produits.py` |
-| **F2** (+F4) | `Category` | `POST /api/categories` (création catégorie) | ✅ `test_categorie_objet_attributs` | ✅ `test_creer_categorie_admin_201`, `test_categorie_nom_unique_409`, `test_categorie_sans_token_401` | `tests/test_produits.py` |
-| **F2** | `Product` | `GET /api/produits` (public, recherche) | — | ✅ `test_liste_produits_avec_recherche` | `tests/test_produits.py` |
+| Fonction métier | Objet(s) | Élément testé (étape 4 🥈) | Unitaire | Intégration (route+base+sécurité) | Scénario | Résultat attendu | Nom du fichier |
+|---|---|---|---|---|---|---|---|
+| **F1+F4** (auth) | `User` → token | `POST /api/auth/login` | — | ✅ `test_login_ok_renvoie_token`, `test_login_mauvais_mot_de_passe_401` | login avec bon/mauvais mdp | 200 + token / 401 | `tests/test_security.py` |
+| **F4** | token (donnée temporaire, 4.2) | `security.creer_token / verifier_token` | ✅ `test_token_invalide_401`, `test_token_expire_401` | ✅ (via login) | token truqué ou expiré en header | 401 | `tests/test_security.py` |
+| **F2** (+F4) | `Product`, `Category` | CRUD `/api/produits` | — | ✅ `test_creer_produit_sans_token_401`, `test_creer_produit_client_403`, `test_creer_produit_admin_201`, `test_creer_produit_prix_negatif_400` | POST produit sans token / avec token client / admin valide / prix<0 | 401 / 403 / 201 / 400 | `tests/test_produits.py` |
+| **F2** (+F4) | `Category` | `POST /api/categories` (création catégorie) | ✅ `test_categorie_objet_attributs` | ✅ `test_creer_categorie_admin_201`, `test_categorie_nom_unique_409`, `test_categorie_sans_token_401` | POST catégorie admin / doublon / sans token | 201 / 409 / 401 (objet : attributs OK) | `tests/test_produits.py` |
+| **F2** | `Product` | `GET /api/produits` (public, recherche) | — | ✅ `test_liste_produits_avec_recherche` | GET /api/produits?q=pc avec 2 produits | 200 + seul le produit « PC » | `tests/test_produits.py` |
 
 ### Récap — tests prévus par fonction métier (F1 / F2 séparés de F4 sécurité)
 
