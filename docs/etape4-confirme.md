@@ -11,11 +11,30 @@ Le code 🥉/🥈 reste fonctionnel : on AJOUTE, on ne remplace pas.
 
 > F1/F2/F4 déjà faits au 🥈 ✅. Au 🥇 on touche à tout le CDC (étapes 1+2+3).
 
-## 4.1 — Base de données (vérification niveau 🥇)
+## 4.1 — Base de données (niveau 🥇 : la base s'étend encore, elle n'est pas recréée)
 
-Rien de nouveau à créer : les 5 tables sont déclarées dans `modelsSQLAlchemy.py`
-(`users, categories, products, orders, order_items`) et `Base.metadata.create_all`
-les crée au lancement. 🥇 = **vérifier** au démarrage :
+Condition : `Order` et `OrderItem` sont persistés ✅ → ACTION. La base `digimarket.db` existe déjà (🥉) et contient `users, categories, products` (🥈) : on **ajoute** 2 tables dans `modelsSQLAlchemy.py` ; `Base.metadata.create_all(engine)` (dans `db.py`) les crée au lancement **sans toucher aux tables existantes** :
+
+```sql
+-- Nouvelles tables au niveau 🥇 (à côté de users/categories/products) :
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL REFERENCES users(id),          -- FK : l'acheteur (N—1, §4.5)
+    address_livraison TEXT NOT NULL,
+    date_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
+    statut VARCHAR(20) NOT NULL DEFAULT 'en_attente',       -- cycle de vie 4.6
+    total FLOAT NOT NULL DEFAULT 0                          -- calculé par calculer_total (4.9)
+);
+CREATE TABLE order_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL REFERENCES orders(id),        -- FK : la commande (1—N, §4.5)
+    product_id INTEGER NOT NULL REFERENCES products(id),    -- FK : le produit (N—1, §4.5)
+    quantite INTEGER NOT NULL,                              -- 4.3 : > 0 (400 sinon)
+    prix_unitaire FLOAT NOT NULL                            -- prix figé à la commande
+);
+```
+
+🥇 = **vérifier au démarrage** que les 5 tables sont bien là :
 
 ```python
 assert set(Base.metadata.tables) == {"users", "categories", "products", "orders", "order_items"}
