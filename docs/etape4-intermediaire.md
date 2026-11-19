@@ -209,7 +209,7 @@ Routes auth 🥈 : `POST /api/auth/register` (déjà fait) + **`POST /api/auth/l
 ```
  → 0. BASE      : role stocké en base ('client' par défaut à l'inscription, 'admin' uniquement pour le compte de démo), mdp haché PBKDF2+sel, jamais en clair
  → 1. REGISTER    : rôle forcé "client" côté serveur
- → 2. DÉMO       : seul compte admin, mdp haché
+ → 2. DÉMO       : UN SEUL compte admin existe (créé par init_sample_data, app.py), mdp haché — aucune route publique n'en crée d'autre
  → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
  → 4. ROUTES ADMIN : 401 si signature invalide/expiré, 403 si client
  → 5. .env+HTTPS  : SECRET_KEY hors git, réseau chiffré en prod
