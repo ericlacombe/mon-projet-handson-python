@@ -1,4 +1,4 @@
-# ÉTAPE 4 appliquée à DigiMarket — NIVEAU 🥉 DÉBUTANT (fil rouge : « S'inscrire »)
+# ÉTAPE 4 appliquée à DigiMarket — NIVEAU 🥉 DÉBUTANT (conception AVANT code) — fil rouge « S'inscrire »
 
 ⏱️ **~2 h — difficile** (au total sur les 3 niveaux ; ici seulement le niveau 🥉)
 
@@ -7,6 +7,12 @@
 Niveau 🥉 = seules les parties **4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique** sont traitées, appliquées au **fil rouge** « S'inscrire » (Visiteur → cas étape 1 → F1 « Gérer les comptes » étape 2 → objet `Utilisateur` étape 3).
 
 ---
+
+## 📋 Tableau récap — ce qu'on crée au niveau 🥉
+
+| Fonction métier | Objet(s) | Routes | Fichiers à créer |
+|---|---|---|---|
+| **F1** Gérer les comptes | `User` | `POST /api/auth/register` | `app/app.py`, `app/db.py`, `app/modelsSQLAlchemy.py`, `app/routes/auth.py`, `requirements.txt` |
 
 ## 4.1 — Base de données (condition : `Utilisateur` est persisté ✅ → ACTION)
 
@@ -125,3 +131,15 @@ digimarket.db               # base SQLite, table utilisateurs (4.1)
 
 ---
 *Étape 4 niveau 🥉 ✅. En attente de votre accord pour l'étape 5 niveau 🥉 (1 test unitaire : `test_register_email_deja_utilise` → 409).*
+
+---
+
+✅ **Checklist étape 4 (niveau 🥉)** : 4.1 base ✅ · 4.4 classe `User` ✅ · 4.7 (1 route) ✅ · 4.8 (1 module) ✅ · 4.10 basique (409) ✅ · arborescence ✅.
+
+🧵 **Fil rouge 🥉** : « S'inscrire » → `POST /api/auth/register` → 201 (puis 409 si email pris).
+
+❓ **Auto-évaluation** : 1) Pourquoi une classe pour `User` et pas pour le token ? 2) Pourquoi un blueprint plutôt que la route dans app.py ? 3) Quels codes renvoie register ?
+
+📝 **À retenir (3 lignes)** : 1) 🥉 = 4.1 + 4.4 + 4.7 (1 route) + 4.8 + 4.10 basique. 2) Un objet persistant = une classe ; temporaire = un dict (4.2). 3) Une route = URL + endpoint dans un blueprint.
+
+*Conception 🥉 prête. Prochaine étape (avec validation) : étape 5 niveau 🥉 (1 test unitaire), puis étape 6 : `docs/etape6-backlog-debutant.md`.*
