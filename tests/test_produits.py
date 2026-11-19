@@ -1,7 +1,8 @@
 """
 tests/test_produits.py — Tests F2 « Gérer le catalogue » (produits + catégories), niveau 🥈.
 
-Fichier cible de la catégorie F2 (voir docs/etape5-tests-intermediaire.md).
+Conçus à l'étape 5 🥈 (matrice : docs/etape5-tests-intermediaire.md, fichier cible F2).
+Couvre le CRUD (201/400/401/403/409), la recherche, et un test unitaire de Category.
 Lancer depuis la racine :  pytest
 """
 from app.modelsSQLAlchemy import Category
@@ -22,6 +23,7 @@ def _creer_categorie(session_test, name="Informatique"):
     return cat
 
 
+# Scénario : POST /api/produits avec token ADMIN et produit valide. Attendu : 201.
 def test_creer_produit_admin_201(client_http, session_test, token_admin):
     """Un admin crée un produit valide → 201."""
     _creer_categorie(session_test)
@@ -31,12 +33,14 @@ def test_creer_produit_admin_201(client_http, session_test, token_admin):
     assert r.status_code == 201
 
 
+# Scénario : POST sans header Authorization. Attendu : 401 (pas authentifié).
 def test_creer_produit_sans_token_401(client_http):
     """Sans header Authorization → le décorateur admin_required renvoie 401."""
     r = client_http.post("/api/produits", json={"name": "PC", "price": 999, "category_id": 1})
     assert r.status_code == 401
 
 
+# Scénario : POST avec token CLIENT (rôle insuffisant). Attendu : 403.
 def test_creer_produit_client_403(client_http, session_test, token_client):
     """Token valide mais rôle 'client' → 403 (authentifié mais pas admin)."""
     _creer_categorie(session_test)
@@ -46,6 +50,7 @@ def test_creer_produit_client_403(client_http, session_test, token_client):
     assert r.status_code == 403
 
 
+# Scénario : prix < 0 (contrainte 4.3). Attendu : 400.
 def test_creer_produit_prix_negatif_400(client_http, session_test, token_admin):
     """Contrainte 4.3 : price < 0 → 400 (validation côté route)."""
     _creer_categorie(session_test)
@@ -55,6 +60,7 @@ def test_creer_produit_prix_negatif_400(client_http, session_test, token_admin):
     assert r.status_code == 400
 
 
+# Scénario : 2 produits créés, GET ?q=pc. Attendu : 200 + un seul résultat (PC).
 def test_liste_produits_avec_recherche(client_http, session_test, token_admin):
     """GET /api/produits?q=pc → 200 et seul le produit correspondant remonté."""
     _creer_categorie(session_test)
@@ -66,12 +72,14 @@ def test_liste_produits_avec_recherche(client_http, session_test, token_admin):
     assert len(r.get_json()) == 1 and "PC" in r.get_json()[0]["name"]
 
 
+# Scénario : POST /api/categories avec token admin. Attendu : 201.
 def test_creer_categorie_admin_201(client_http, token_admin):
     """Un admin crée une catégorie → 201."""
     r = client_http.post("/api/categories", json={"name": "Informatique"}, headers=_headers(token_admin))
     assert r.status_code == 201
 
 
+# Scénario : créer 2 fois la même catégorie (unicité 4.3). Attendu : 409.
 def test_categorie_nom_unique_409(client_http, session_test, token_admin):
     """Contrainte 4.3 : nom de catégorie unique → 2e création = 409."""
     _creer_categorie(session_test, "Info")
@@ -80,12 +88,14 @@ def test_categorie_nom_unique_409(client_http, session_test, token_admin):
     assert r.status_code == 409
 
 
+# Scénario : POST /api/categories sans token. Attendu : 401.
 def test_categorie_sans_token_401(client_http):
     """POST /api/categories sans token → 401."""
     r = client_http.post("/api/categories", json={"name": "Info"})
     assert r.status_code == 401
 
 
+# Test UNITAIRE de la classe Category : attributs + relation 1—N (backref products, 4.5).
 def test_categorie_objet_attributs():
     """Test UNITAIRE de l'objet Category : attributs + relation 1—N (4.5)."""
     c = Category(name="Informatique")

@@ -1,14 +1,20 @@
 """
-tests/conftest.py — configuration + fixtures communes à tous les tests (pytest la charge avant tout).
+tests/conftest.py — configuration + fixtures COMMUNES à tous les tests (pytest la charge avant tout).
 
-- SECRET_KEY de test (les vrais secrets restent dans .env, jamais commité) ;
-- client_http   : client HTTP de test + base SQLite EN MÉMOIRE (jetable à chaque test),
-                  avec la session de test branchée dans routes/auth.py ET routes/produits.py
-                  (la vraie base digimarket.db n'est jamais touchée) ;
-- token_admin / token_client : tokens JWT obtenus via register + login.
+Pourquoi un conftest.py ? Pour ne pas répéter la même mise en place dans chaque fichier de test.
+
+- SECRET_KEY de test : posée ici pour que app/security.py s'importe même sans .env
+  (les vrais secrets restent dans .env, jamais commité) ;
+- session_test  : base SQLite EN MÉMOIRE (jetable à chaque test) + la session de test branchée
+                  dans routes/auth.py ET routes/produits.py → la vraie base digimarket.db
+                  n'est JAMAIS touchée par les tests ;
+- client_http   : client HTTP de test (app.test_client() = « curl simulé » de Flask) ;
+- token_admin / token_client : tokens JWT obtenus via un vrai login (fixture qui crée
+                  l'utilisateur en base de test puis appelle POST /api/auth/login).
 """
 import os
 
+# Clé de test bidon (32+ caractères comme recommandé) — PAS la vraie clé (.env)
 os.environ.setdefault("SECRET_KEY", "cle_de_test_pour_pytest_32_caracteres_min")
 
 import pytest
@@ -24,7 +30,12 @@ import app.routes.produits as prod_module
 
 @pytest.fixture
 def session_test():
-    """Base SQLite en mémoire + session de test branchée dans les deux modules de routes."""
+    """Base SQLite EN MÉMOIRE (sqlite:///:memory:) + session de test branchée dans les routes.
+
+    Pourquoi en mémoire ? Un test ne doit JAMAIS toucher la vraie base digimarket.db :
+    chaque test part d'une base vide et la détruit après (drop_all) → tests isolés,
+    reproductibles, sans effet de bord.
+    """
     engine = create_engine("sqlite:///:memory:")     # base en RAM, rien sur le disque
     Base.metadata.create_all(engine)                  # crée users, categories, products
     S = sessionmaker(bind=engine)()
@@ -37,7 +48,8 @@ def session_test():
 
 @pytest.fixture
 def client_http(session_test):
-    """Client HTTP de test (app.test_client = 'navigateur/curl simulé' de Flask)."""
+    """Client HTTP de test : app.test_client() simule un navigateur/curl (appels GET/POST…)
+    sans lancer de serveur — chaque appel = une vraie requête HTTP dans l'app Flask."""
     app.config["TESTING"] = True
     yield app.test_client()
 
@@ -52,7 +64,8 @@ def _creer_user(session_test, email, password, role):
 
 @pytest.fixture
 def token_admin(client_http, session_test):
-    """Crée un admin en base de test, se loggue, renvoie son token JWT."""
+    """Token JWT d'un ADMIN : crée l'admin en base de test, appelle POST /api/auth/login,
+    renvoie le token (à mettre en header Authorization: Bearer <token>)."""
     _creer_user(session_test, "admin@x.fr", "admin123", "admin")
     r = client_http.post("/api/auth/login", json={"email": "admin@x.fr", "password": "admin123"})
     assert r.status_code == 200
@@ -61,7 +74,7 @@ def token_admin(client_http, session_test):
 
 @pytest.fixture
 def token_client(client_http, session_test):
-    """Crée un client (rôle 'client'), se loggue, renvoie son token JWT."""
+    """Token JWT d'un simple CLIENT (rôle 'client') : sert à tester le 403 (rôle insuffisant)."""
     _creer_user(session_test, "client@x.fr", "client123", "client")
     r = client_http.post("/api/auth/login", json={"email": "client@x.fr", "password": "client123"})
     assert r.status_code == 200

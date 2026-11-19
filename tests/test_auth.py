@@ -1,7 +1,7 @@
 """
-tests/test_auth.py — Tests du niveau 🥉 (fil rouge « S'inscrire »).
+tests/test_auth.py — Tests F1 « Gérer les comptes » (niveau 🥉, fil rouge « S'inscrire »).
 
-Lancer depuis la racine du projet :  pytest
+Conçus à l'étape 5 🥉 (voir docs/etape5-tests-debutant.md). Lancer depuis la racine :  pytest
 """
 
 # ------------------------------------------------------------------
@@ -56,6 +56,7 @@ def client_http():
     Base.metadata.drop_all(engine)                  # nettoyage après le test
 
 
+# Scénario : inscrire 2 fois le MÊME email → la 2e fois échoue. Résultat attendu : 409 + JSON erreur.
 def test_register_email_deja_utilise(client_http):
     """Scénario testé : inscrire 2 fois le même email → la 2e fois échoue en 409.
 
