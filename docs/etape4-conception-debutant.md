@@ -4,7 +4,7 @@
 
 **Principe** : on croise les résultats des étapes 1, 2 et 3. Règle à dire à voix haute : *« analyse → condition → si positif, ACTION de création »*, et *« si la condition est fausse, que se passe-t-il ? »*.
 
-Niveau 🥉 = seules les parties **4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique** sont traitées, appliquées au **fil rouge** « S'inscrire » (Visiteur → cas étape 1 → F1 « Gérer les comptes » étape 2 → objet `Utilisateur` étape 3).
+Niveau 🥉 = seules les parties **4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique** sont traitées, appliquées au **fil rouge** « S'inscrire » (Visiteur → cas étape 1 → F1 « Gérer les comptes » étape 2 → objet `User` étape 3).
 
 ---
 
@@ -14,7 +14,7 @@ Niveau 🥉 = seules les parties **4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique** 
 |---|---|---|---|
 | **F1** Gérer les comptes | `User` | `POST /api/auth/register` | `app/app.py`, `app/db.py`, `app/modelsSQLAlchemy.py`, `app/routes/auth.py`, `requirements.txt` |
 
-## 4.1 — Base de données (condition : `Utilisateur` est persisté ✅ → ACTION)
+## 4.1 — Base de données (condition : `User` est persisté ✅ → ACTION)
 
 Création de la base SQLite `digimarket.db` et de sa table `users`.
 
@@ -37,17 +37,17 @@ CREATE TABLE users (
 );
 ```
 
-## 4.4 — Classe `Utilisateur` (condition : objet avec état persistant ✅ → ACTION)
+## 4.4 — Classe `User` (condition : objet avec état persistant ✅ → ACTION)
 
 ```python
 # modelsSQLAlchemy.py (extrait) — même style que le projet précédent (SQLAlchemy pur, pas Flask-SQLAlchemy)
-# Pourquoi une classe ? Parce que l'objet Utilisateur a un état PERSISTANT :
+# Pourquoi une classe ? Parce que l'objet User a un état PERSISTANT :
 # il doit vivre en base au-delà d'une seule requête (règle 4.4) → on crée une classe.
 # (Un objet temporaire, ex. le token JWT décodé, n'aurait PAS de classe — règle 4.2.)
 from sqlalchemy import Column, Integer, String, Text
 
-class Utilisateur(Base):                                  # Base = declarative_base(), définie dans modelsSQLAlchemy.py
-    __tablename__ = "utilisateurs"                        # nom de la table en base
+class User(Base):                                  # Base = declarative_base(), définie dans modelsSQLAlchemy.py
+    __tablename__ = "users"                        # nom de la table en base
 
     id = Column(Integer, primary_key=True)                # PK : id unique, auto-incrémenté
     email = Column(String(255), unique=True, nullable=False)   # UK : unicité de l'email garantie en base
@@ -58,7 +58,7 @@ class Utilisateur(Base):                                  # Base = declarative_b
     role = Column(String(20), nullable=False, default="client")  # 'client' par défaut, 'admin' sinon
 
     def __repr__(self):                                   # affichage lisible avec print()
-        return f"<Utilisateur {self.email}>"
+        return f"<User {self.email}>"
 ```
 
 ## 4.7 — La route du fil rouge : `POST /api/auth/register` (condition : API REST ✅ → ACTION)
@@ -84,7 +84,7 @@ def register():                                    # l'endpoint = la fonction ex
     # 4.10 : si un champ obligatoire manque → erreur 400 renvoyée en JSON
     if not data.get("email") or not data.get("mot_de_passe"):
         return jsonify({"erreur": "email et mot_de_passe requis"}), 400   # réponse JSON + code HTTP 400
-    # ... création de l'Utilisateur en base (session.add + commit) ...
+    # ... création de l'User en base (session.add + commit) ...
     return jsonify({"message": "utilisateur créé", "email": data["email"]}), 201  # 201 = ressource créée
 ```
 
