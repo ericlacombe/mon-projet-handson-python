@@ -11,20 +11,27 @@
 |---|---|---|---|---|
 | route `POST /api/auth/register` | unitaire (de la route) | `test_register_email_deja_utilise` | on inscrit un email, puis on réessaie avec le **même email** | **`409`** + JSON `{"erreur": "email déjà utilisé"}` |
 
-## Le test (code, avec commentaires)
+### Récap — tests prévus par fonction métier
+
+**F1 — Gérer les comptes** (auth) : 1 test unitaire → `tests/test_auth.py` : `test_register_email_deja_utilise` (409).
+
+## Les tests (extraits, avec commentaires)
 
 ```python
+# ============================================================
+# CATÉGORIE F1 — Gérer les comptes (authentification) → fichier : tests/test_auth.py
+# ============================================================
 # tests/test_auth.py
 import pytest
 from app import app, session          # l'app Flask + la session SQLAlchemy (votre style)
-from modelsSQLAlchemy import Base, Utilisateur
+from app.modelsSQLAlchemy import Base, User
 
 @pytest.fixture
 def client():
     """Crée un client de test Flask avec une base SQLite temporaire (en mémoire)."""
     app.config["TESTING"] = True                     # mode test : pas de vrai serveur
     engine = create_engine("sqlite:///:memory:")    # base en mémoire, jetable
-    Base.metadata.create_all(engine)                 # crée la table utilisateurs
+    Base.metadata.create_all(engine)                 # crée la table users
     yield app.test_client()                          # le client qui appelle les routes
     Base.metadata.drop_all(engine)                   # nettoyage après le test
 
@@ -32,13 +39,13 @@ def test_register_email_deja_utilise(client):
     """Scénario : inscrire 2 fois le même email → la 2e fois doit échouer en 409."""
     # 1er appel : l'inscription fonctionne → 201
     r1 = client.post("/api/auth/register", json={
-        "email": "a@b.c", "mot_de_passe": "secret", "nom": "A", "prenom": "B"
+        "email": "a@b.c", "password": "secret", "first_name": "A", "last_name": "B"
     })
     assert r1.status_code == 201                     # assert = vérifie le résultat attendu
 
     # 2e appel avec le MÊME email → doit échouer → 409 (conflit, car email unique)
     r2 = client.post("/api/auth/register", json={
-        "email": "a@b.c", "mot_de_passe": "autre", "nom": "A", "prenom": "B"
+        "email": "a@b.c", "password": "autre", "first_name": "A", "last_name": "B"
     })
     assert r2.status_code == 409                     # le résultat attendu du test
     assert r2.get_json()["erreur"] == "email déjà utilisé"
@@ -48,9 +55,9 @@ def test_register_email_deja_utilise(client):
 
 ## Matrice élément × type de test (niveau 🥉 = 1 cellule)
 
-| | unitaire | intégration | régression |
-|---|---|---|---|
-| `POST /api/auth/register` | ✅ `test_register_email_deja_utilise` | (niveau 🥈) | (niveau 🥇) |
+| Fonction métier | Objet(s) | Élément testé (étape 4 🥉) | Unitaire | Intégration (route+base) | Nom du fichier |
+|---|---|---|---|---|---|
+| **F1** Gérer les comptes | `User` | `POST /api/auth/register` | ✅ `test_register_email_deja_utilise` | (niveau 🥈) | `tests/test_auth.py` |
 
 ---
 
