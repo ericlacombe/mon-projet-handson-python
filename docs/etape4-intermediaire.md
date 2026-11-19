@@ -25,6 +25,28 @@ Le fil rouge 🥈 : **« un administrateur gère le catalogue (produits) »** + 
 
 ---
 
+## 4.1 — Base de données (niveau 🥈 : la base s'étend, elle n'est pas recréée)
+
+Condition : `Category` et `Product` sont persistés ✅ → ACTION. La base `digimarket.db` existe déjà (créée au 🥉, voir `etape4-conception-debutant.md` §4.1) : on **ajoute** 2 tables dans `modelsSQLAlchemy.py` (`categories`, `products` — voir §4.5 pour la FK) ; `Base.metadata.create_all(engine)` (dans `db.py`) les crée au lancement, comme `users`, sans toucher aux tables existantes.
+
+```sql
+-- Nouvelles tables au niveau 🥈 (à côté de users) :
+CREATE TABLE categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(100) NOT NULL UNIQUE          -- nom de catégorie unique (4.3 → 409)
+);
+CREATE TABLE products (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price FLOAT NOT NULL,                       -- 4.3 : >= 0 validé côté route (400)
+    stock INTEGER NOT NULL DEFAULT 0,           -- 4.3 : >= 0 validé côté route (400)
+    category_id INTEGER NOT NULL REFERENCES categories(id)   -- FK : relation 1—N (§4.5)
+);
+```
+
+> Au niveau 🥇, même principe : `orders` + `order_items` s'ajouteront, `create_all` créera les 5 tables au lancement (voir `etape4-confirme.md` §4.1).
+
 ## 4.3 — Contraintes métier sur les objets (par route) (condition : règle de validité sur un attribut ✅ → ACTION)
 
 | Fonction métier | Objet(s) | Attribut | Règle | Où | Erreur | Route concernée |
