@@ -16,17 +16,23 @@ Niveau 🥉 = seules les parties **4.1, 4.4, 4.7 (1 route), 4.8, 4.10 basique** 
 
 ## 4.1 — Base de données (condition : `Utilisateur` est persisté ✅ → ACTION)
 
-Création de la base SQLite `digimarket.db` et de la table `utilisateurs` :
+Création de la base SQLite `digimarket.db` et de sa table `users`.
+
+Deux choses différentes :
+- **`digimarket.db`** = le FICHIER de base SQLite, créé automatiquement par `db.py` :
+  `engine = create_engine("sqlite:///digimarket.db")` (chemin relatif = dossier du projet).
+- **la table `users`** = créée par `Base.metadata.create_all(engine)` (dans `db.py`) à partir
+  de la classe `User` définie dans `modelsSQLAlchemy.py` (`__tablename__ = "users"`, §4.4) :
 
 ```sql
--- Table des comptes utilisateurs (objet Utilisateur persisté, étape 3)
-CREATE TABLE utilisateurs (
+-- Table des comptes (objet User persisté, étape 3) — créée via la classe User, pas à la main
+CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,       -- PK : identifiant unique, auto-incrémenté
-    email VARCHAR(255) NOT NULL UNIQUE,          -- UK + obligatoire : un seul compte par email
-    mot_de_passe_hash VARCHAR(255) NOT NULL,     -- mot de passe JAMAIS en clair, toujours haché
-    nom VARCHAR(100) NOT NULL,                   -- obligatoire
-    prenom VARCHAR(100) NOT NULL,                -- obligatoire
-    adresse TEXT,                                -- optionnelle
+    email VARCHAR(255) NOT NULL UNIQUE,          -- UK + obligatoire : un seul compte par email (409)
+    password_hash VARCHAR(255) NOT NULL,         -- mot de passe JAMAIS en clair, toujours haché
+    first_name VARCHAR(100) NOT NULL,            -- obligatoire
+    last_name VARCHAR(100) NOT NULL,             -- obligatoire
+    address TEXT,                                -- optionnelle
     role VARCHAR(20) NOT NULL DEFAULT 'client'  -- 'client' par défaut, 'admin' pour les administrateurs
 );
 ```
@@ -95,42 +101,12 @@ def register():                                    # l'endpoint = la fonction ex
 app/
 ├── app.py                  # point d'entrée Flask (crée l'app, enregistre auth_bp)
 ├── models/
-│   └── utilisateur.py      # classe Utilisateur (4.4)
+│   └── modelsSQLAlchemy.py # classe User, table users (4.4)
 └── routes/
     └── auth.py             # blueprint auth_bp + POST /api/auth/register (4.7, 4.8)
-digimarket.db               # base SQLite, table utilisateurs (4.1)
+digimarket.db               # FICHIER base SQLite créé par db.py (create_engine), table users créée par create_all (4.1)
 ```
 
----
-
-✅ **Checklist étape 4 (niveau 🥉)** :
-- [x] 4.1 base créée (condition persisté ✅) → table `utilisateurs` ;
-- [x] 4.4 classe créée → `Utilisateur` ;
-- [x] 4.7 une route créée → `POST /api/auth/register` + contrat ;
-- [x] 4.8 un module créé → `routes/auth.py` ;
-- [x] 4.10 erreurs basiques → 400/409 en JSON ;
-- [x] arborescence de fichiers produite (ci-dessus).
-
-⚠️ **Piège évité** : pas de classe pour le token JWT (donnée temporaire, 4.2 — hors niveau 🥉).
-
-🧰 **Bonnes pratiques à ce stade** :
-- README : section « Structure du projet » = l'arborescence ci-dessus ;
-- commit Git de cette étape (ce push).
-
-🧵 **Fil rouge** : « S'inscrire » → table `utilisateurs` + classe `Utilisateur` + route `POST /api/auth/register` + module `auth.py` + erreurs 400/409.
-
-❓ **Auto-évaluation** :
-1. Quelle est la règle de l'étape 4 (à dire à voix haute) ?
-2. Pourquoi une classe `Utilisateur` mais pas de classe pour le token ?
-3. Quelles sont les sorties de la route `POST /api/auth/register` ?
-
-📝 **À retenir (3 lignes)** :
-1) Étape 4 : analyse → condition → si positif, ACTION de création (et si faux, on demande ce qui se passe).
-2) Niveau 🥉 = 4.1 base + 4.4 classe + 4.7 une route + 4.8 un module + 4.10 erreurs basiques, sur UN fil rouge.
-3) Sortie de l'étape 4 = l'arborescence de fichiers à créer.
-
----
-*Étape 4 niveau 🥉 ✅. En attente de votre accord pour l'étape 5 niveau 🥉 (1 test unitaire : `test_register_email_deja_utilise` → 409).*
 
 ---
 
