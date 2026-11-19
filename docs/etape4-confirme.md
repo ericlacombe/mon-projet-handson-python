@@ -160,7 +160,7 @@ Progression de 4.10 par niveau (voir methodologie.md) :
 ```
  → 0. BASE      : role stocké ('client' par défaut, 'admin' = démo uniquement), mdp haché PBKDF2+sel
  → 1. REGISTER    : rôle forcé "client" côté serveur
- → 2. DÉMO       : seul compte admin, mdp haché
+ → 2. DÉMO       : UN SEUL compte admin existe (créé par init_sample_data, app.py), mdp haché — aucune route publique n'en crée d'autre
  → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
  → 4. ROUTES      : 401 si signature invalide/expiré · 403 si rôle insuffisant
       + 🥇 NOUVEAU : 403 si client NON PROPRIÉTAIRE sur /api/commandes/<id>
