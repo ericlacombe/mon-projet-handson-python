@@ -21,6 +21,7 @@
 | **F3** (🥇) | `Product` | effet de bord stock (validation/annulation) | ✅ `test_stock_decremente_a_validation`, `test_stock_restitue_a_annulation` | ✅ (via PATCH) | valider décrémente, annuler restitue | stock -qté / +qté | `tests/test_commandes.py` |
 | **F3** (🥇) | `Order` | `changer_statut` (transitions 4.6) | ✅ `test_transition_autorisee`, `test_transition_interdite` | — | en_attente→validée OK ; expédiée→annulée KO | statut changé / ValueError→400 | `tests/test_commandes.py` |
 | **F3** (🥇) | `Order`, `OrderItem` | `calculer_total` (4.9, fonction pure) | ✅ `test_calculer_total` | — | 2 lignes (2×10€ + 1×5€) | total = 25 | `tests/test_commandes.py` |
+| **F3** (🥇) | `Product` | `verifier_stock` (4.9, fonction pure) | ✅ `test_verifier_stock_ok`, `test_verifier_stock_insuffisant` | — | stock suffisant / insuffisant | True / lève 400 | `tests/test_commandes.py` |
 | **F1–F4** (tout) | toutes les tables | **régression** (🥇) | — | ✅ `pytest` tout rejoué à chaque incrément | lancer toute la suite | tout vert | `tests/` (tout) |
 
 ### Récap — tests prévus par fonction métier (F1/F2/F3 séparés de F4 sécurité)
@@ -34,8 +35,8 @@
 ---
 
 ✅ **Checklist étape 5 (niveau 🥇)** :
-- [ ] chaque fonction/classe créée a au moins un test unitaire prévu (matrice) ;
-- [ ] chaque route a son test d'intégration avec codes (201/400/401/403/404/409) ;
+- [x] chaque fonction/classe créée a au moins un test unitaire prévu (matrice) : Order.changer_statut, calculer_total, verifier_stock, stock ;
+- [x] chaque route a son test d'intégration avec codes : POST 201/400/401 · GET 200/403/404 · PATCH 200/400/403 ;
 - [ ] régression prévue (tout rejoué) ;
 - [ ] chaque test a un nom explicite (scénario + résultat attendu) + son fichier ;
 - [ ] README « Comment tester » à jour (`pytest`).
