@@ -134,6 +134,8 @@ class Product(Base):
 
 ## 4.8 — Organisation du code niveau 🥈 : app.py + db.py + security.py + routes/*.py (un blueprint par fonction métier)
 
+🎨 Canva visuel de cette structure : `docs/canva-structure-intermediaire.mmd` (à rendre sur https://mermaid.live) — les canva des niveaux précédents ne sont jamais écrasés.
+
 ```
 app/
 ├── app.py               # + enregistre les nouveaux blueprints

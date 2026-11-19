@@ -135,6 +135,8 @@ class Order(Base):
 
 ## 4.8 — Organisation du code (arborescence complète au niveau 🥇)
 
+🎨 Canva visuel de cette structure : `docs/canva-structure-confirme.mmd` (à rendre sur https://mermaid.live) — les canva des niveaux précédents ne sont jamais écrasés.
+
 Un blueprint par fonction métier ; app.py reste l'assemblage. **Ajouts 🥇** marqués 🥇 :
 
 ```

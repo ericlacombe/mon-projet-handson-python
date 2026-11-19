@@ -90,6 +90,8 @@ def register():                                    # l'endpoint = la fonction ex
 
 ## 4.8 — Organisation du code : arborescence des fichiers (condition : fonction métier F1 ✅ → ACTION)
 
+🎨 Canva visuel de cette structure : `docs/canva-structure-debutant.mmd` (à rendre sur https://mermaid.live) — les canva des niveaux précédents ne sont jamais écrasés.
+
 Un module par fonction métier (blueprint), app.py reste l'assemblage :
 
 ```
