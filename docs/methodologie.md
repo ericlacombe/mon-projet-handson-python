@@ -178,27 +178,6 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 
 **Principe** : on croise les résultats des étapes 1, 2 et 3. Règle à dire à voix haute : *« analyse → condition → si positif, ACTION de création »*, et *« si la condition est fausse, que se passe-t-il ? »*.
 
-**Consignes de présentation du fichier `etape4-<niveau>.md`** (appliqué à chaque niveau) :
-1. Commencer le fichier par un **tableau récap** : Fonction métier | Objet(s) | Routes | Fichiers à créer ;
-2. Dans **tous les tableaux** du chapitre (récap, 4.3, 4.5, 4.7…), les deux premières colonnes sont **Fonction métier** puis **Objet(s)** ;
-3. Un objet/fonction avec **relation 1—N** → niveau 🥈 ; avec **changement d'état (transitions)** → niveau 🥇 (voir règle de répartition par complexité).
-**Ordre conseillé** : Groupe A (données) d'abord — le Groupe B (comportement) s'appuie sur les données.
-
-**Structure type du fichier `etape4-<niveau>.md`** (à suivre à chaque niveau) :
-
-```
-# ÉTAPE 4 appliquée à <projet> — NIVEAU <🥉/🥈/🥇> (conception AVANT code)
-## 📋 Tableau récap — Fonction métier | Objet(s) | Routes | Fichiers à créer
-## 4.1 → 4.11 dans l'ordre numérique (Groupe A d'abord, puis Groupe B)
-   - titres identiques d'un niveau à l'autre + « — ajouts <niveau> »
-   - 4.7 : colonnes « Objet(s) manipulé(s) » + « Action sur l'Objet »
-   - 4.11 : chaîne de protection numérotée (→ 0. BASE … → n.) + tableau + conformité CDC en ###
----
-✅ Checklist · 🧵 Fil rouge · ❓ Auto-évaluation · 📝 À retenir (3 lignes)
-```
-
-⚠️ Le **backlog n'est PAS dans etape4** : il ira dans `etape6-backlog-<niveau>.md` (étape 6). Au niveau 🥇, ajouter en fin de document la **matrice de traçabilité CDC complète** (besoin → cas → route → test → statut).
-
 ### Niveaux de l'étape 4 (🥉 débutant / 🥈 intermédiaire / 🥇 confirmé)
 
 | Niveau | Parties 4.x traitées | Laissé pour plus tard |
@@ -262,6 +241,28 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 - **4.11** — module sécurité : hachage (jamais de mot de passe en clair), création/vérification des tokens, décorateurs de rôle (`@admin_required`).
 
 👉 **Sortie de l'étape 4** : l'arborescence de fichiers à créer (base, classes, modules, routes, sécurité, utilitaires).
+
+**Consignes de présentation du fichier `etape4-<niveau>.md`** (appliqué à chaque niveau) :
+1. Commencer le fichier par un **tableau récap** : Fonction métier | Objet(s) | Routes | Fichiers à créer ;
+2. Dans **tous les tableaux** du chapitre (récap, 4.3, 4.5, 4.7…), les deux premières colonnes sont **Fonction métier** puis **Objet(s)** ;
+3. Un objet/fonction avec **relation 1—N** → niveau 🥈 ; avec **changement d'état (transitions)** → niveau 🥇 (voir règle de répartition par complexité).
+**Ordre conseillé** : Groupe A (données) d'abord — le Groupe B (comportement) s'appuie sur les données.
+
+**Structure type du fichier `etape4-<niveau>.md`** (à suivre à chaque niveau) :
+
+```
+# ÉTAPE 4 appliquée à <projet> — NIVEAU <🥉/🥈/🥇> (conception AVANT code)
+## 📋 Tableau récap — Fonction métier | Objet(s) | Routes | Fichiers à créer
+## 4.1 → 4.11 dans l'ordre numérique (Groupe A d'abord, puis Groupe B)
+   - titres identiques d'un niveau à l'autre + « — ajouts <niveau> »
+   - 4.7 : colonnes « Objet(s) manipulé(s) » + « Action sur l'Objet »
+   - 4.11 : chaîne de protection numérotée (→ 0. BASE … → n.) + tableau + conformité CDC en ###
+---
+✅ Checklist · 🧵 Fil rouge · ❓ Auto-évaluation · 📝 À retenir (3 lignes)
+```
+
+⚠️ Le **backlog n'est PAS dans etape4** : il ira dans `etape6-backlog-<niveau>.md` (étape 6). Au niveau 🥇, ajouter en fin de document la **matrice de traçabilité CDC complète** (besoin → cas → route → test → statut).
+
 
 **Exemple générique appliqué** : 3 objets persistés → 4.1 base (3 tables) + 4.4 3 classes ; cycle de vie → 4.6 méthodes de transition ; API → 4.7 routes dans 4.8 modules ; matrice des rôles → 4.11 sécurité ; donnée temporaire → 4.2 `dict`.
 
