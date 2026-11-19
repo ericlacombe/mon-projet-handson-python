@@ -109,19 +109,6 @@ digimarket.db               # FICHIER base SQLite créé par db.py (create_engin
 | `400` | JSON invalide / champs manquants | `{"erreur": "..."}` |
 | `409` | email déjà utilisé | `{"erreur": "email déjà utilisé"}` |
 
-## 👉 Sortie de l'étape 4 (niveau 🥉) : arborescence de fichiers à créer
-
-```
-app/
-├── app.py                  # point d'entrée Flask (crée l'app, enregistre auth_bp)
-├── models/
-│   └── modelsSQLAlchemy.py # classe User, table users (4.4)
-└── routes/
-    └── auth.py             # blueprint auth_bp + POST /api/auth/register (4.7, 4.8)
-digimarket.db               # FICHIER base SQLite créé par db.py (create_engine), table users créée par create_all (4.1)
-```
-
-
 ---
 
 ✅ **Checklist étape 4 (niveau 🥉)** : 4.1 base ✅ · 4.4 classe `User` ✅ · 4.7 (1 route) ✅ · 4.8 (1 module) ✅ · 4.10 basique (409) ✅ · arborescence ✅.
