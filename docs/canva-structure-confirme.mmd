@@ -1,0 +1,70 @@
+%% Canva structure de fichiers - mon-projet-handson-python - NIVEAU CONFIRME (🥇)
+%% Créé à l'étape 4 🥇 (§4.8), mis à jour à l'étape 6 quand le code est écrit. Canva 🥉/🥈 non touchés.
+%% Rendu : copier ce bloc sur https://mermaid.live
+%% Legende : fleche pleine = arborescence ; fleche pointillee + texte = import Python (le texte = le nom importe)
+%% Sous-graphe docs/ supprimé pour la lisibilité : la liste des docs est dans README.md (section Structure du projet)
+%% Niveau precedent conserve tel quel dans docs/canva-structure-debutant.mmd (jamais ecrase)
+flowchart TB
+    ROOT["mon-projet-handson-python - niveau confirme 🥇"]
+
+    ROOT --> README["README.md"]
+    ROOT --> REQ["requirements.txt - flask sqlalchemy pytest PyJWT"]
+    ROOT --> ENV[".env - SECRET_KEY jamais commit"]
+    ROOT --> GITIGN[".gitignore - .env, *.db, __pycache__/, venv/ jamais commités"]
+    ROOT --> DBFILE["digimarket.db - base SQLite cree au lancement"]
+
+    subgraph APP["app - code API"]
+        A_APP["app.py - Flask : crée l'app + enregistre les blueprints + run"]
+        A_DB["db.py - engine SQLite + session partagée (évite l'import circulaire)"]
+        A_SEC["security.py - F4 : creer/verifier token JWT, hachage, @login_required (401), @admin_required (403) - partie 4.11"]
+        A_MODELS["modelsSQLAlchemy.py - objets : User (F1, 🥉) · Category+Product (F2, 🥈, FK 1-N 4.5) · Order+OrderItem (F3, 🥇, FK + cycle de vie 4.6)"]
+        A_AUTH["routes/auth.py - F1 : POST /api/auth/register (🥉) · POST /api/auth/login (🥈)"]
+        A_PROD["routes/produits.py - F2 : GET /api/produits · GET /api/produits/<id> · POST/PUT/DELETE /api/produits[/<id>] (admin) · POST /api/categories (admin)"]
+        A_CMD["routes/commandes.py - F3 🥇 : POST /api/commandes (client) · GET /api/commandes[/<id>] (+lignes, client_propriétaire ou admin) · PATCH /api/commandes/<id>/statut (admin, ou client_propriétaire pour annulée)"]
+        A_UTILS["utils.py - 🥇 fonctions pures 4.9 : calculer_total, verifier_stock"]
+    end
+
+    subgraph TESTS["tests - tests"]
+        T_AUTH["test_auth.py - F1 : POST /api/auth/register → 409 doublon (🥉)"]
+        T_CONF["conftest.py - fixtures 🥈 : base en mémoire + client_http + token_admin/token_client"]
+        T_SEC["test_security.py - F1 login + F4 : token invalide/expiré → 401"]
+        T_PROD["test_produits.py - F2 : CRUD produits/catégories → 201/400/401/403/409"]
+        T_CMD["test_commandes.py - 🥇 F3 : transitions 4.6, stock, client_propriétaire 403 + régression (tout rejoué)"]
+    end
+
+    ROOT --> APP
+    ROOT --> TESTS
+
+    A_APP -.->|auth_bp produits_bp| A_AUTH
+    A_APP -.->|auth_bp produits_bp commandes_bp| A_PROD
+    A_APP -.->|commandes_bp| A_CMD
+    A_APP -.->|session| A_DB
+    A_APP -.->|models| A_MODELS
+    A_DB -.->|Base| A_MODELS
+    A_DB -.->|"ecrit lit"| DBFILE
+    A_AUTH -.->|session User| A_DB
+    A_AUTH -.->|User creer_token verifier| A_MODELS
+    A_AUTH -.->|security| A_SEC
+    A_PROD -.->|session Product| A_DB
+    A_PROD -.->|Product Category| A_MODELS
+    A_PROD -.->|admin_required login_required| A_SEC
+    A_CMD -.->|session Order OrderItem| A_DB
+    A_CMD -.->|Order OrderItem Product| A_MODELS
+    A_CMD -.->|login_required + règle client_propriétaire| A_SEC
+    A_CMD -.->|calculer_total verifier_stock| A_UTILS
+    A_UTILS -.->|Product| A_MODELS
+    A_SEC -.->|User check_password_hash| A_MODELS
+    A_SEC -.->|"SECRET_KEY"| ENV
+    T_CONF -.->|models| A_MODELS
+    T_AUTH -.->|app models auth_module| A_APP
+    T_SEC -.->|security app| A_SEC
+    T_CONF -.->|app models routes| A_APP
+    T_PROD -.->|app models produits| A_PROD
+    T_CMD -.->|app models commandes utils| A_CMD
+
+    FLOW["flux d'une requête : client → app.py → routes (auth/produits/commandes) → security (vérif token 401/403 + client_propriétaire) → db.py → models → digimarket.db"]
+    A_APP -.-> FLOW
+
+    style APP fill:#e8f4ff,stroke:#3b82f6
+    style TESTS fill:#f0fdf4,stroke:#22c55e
+    style FLOW fill:#fef3c7,stroke:#d97706
