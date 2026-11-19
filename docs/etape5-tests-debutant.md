@@ -9,9 +9,9 @@
 
 ## Matrice élément × type de test (niveau 🥉 = 1 cellule)
 
-| **Fonction métier** | **Objet(s)** | **Élément testé (étape 4 🥉)** | **Unitaire** | **Intégration (route+base)** | **Nom du fichier** |
-| --- | --- | --- | --- | --- | --- |
-| **F1** Gérer les comptes | `User` | `POST /api/auth/register` | ✅ `test_register_email_deja_utilise` | (niveau 🥈) | `tests/test_auth.py` |
+| **Fonction métier** | **Objet(s)** | **Élément testé (étape 4 🥉)** | **Unitaire** | **Intégration (route+base)** | **Scénario** | **Résultat attendu** | **Nom du fichier** |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| **F1** Gérer les comptes | `User` | `POST /api/auth/register` | ✅ `test_register_email_deja_utilise` | (niveau 🥈) | on inscrit un email, puis on réessaie avec le **même email** | **`409`** + JSON `{"error": "email déjà utilisé"}` | `tests/test_auth.py` |
 
 ## Niveau 🥉 : UN seul test unitaire, sur le fil rouge « S'inscrire »
 
