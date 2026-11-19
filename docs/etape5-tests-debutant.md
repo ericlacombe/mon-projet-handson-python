@@ -5,6 +5,8 @@
 **Principe** : on conçoit les tests à partir de **ce qui a été créé en étape 4** (`etape4-conception-debutant.md`), pas avant.
 **Règle du test** : un test = **une fonction/classe testée + UN scénario + le résultat attendu**, avec un **nom explicite** qui dit le scénario et le résultat.
 
+💡 **Pourquoi ce test ?** Parce que l'étape 4 a prévu le cas d'erreur `409` (email déjà pris, contrainte `unique`) : le test prouve que la route le renvoie bien.
+
 ## Matrice élément × type de test (niveau 🥉 = 1 cellule)
 
 | Élément créé (étape 4) | Type de test | Nom du test | Scénario | Résultat attendu |
@@ -52,8 +54,6 @@ def test_register_email_deja_utilise(client):
     assert r2.status_code == 409                     # le résultat attendu du test
     assert r2.get_json()["erreur"] == "email déjà utilisé"
 ```
-
-💡 **Pourquoi ce test ?** Parce que l'étape 4 a prévu le cas d'erreur `409` (email déjà pris, contrainte `unique`) : le test prouve que la route le renvoie bien.
 
 | Fonction métier | Objet(s) | Élément testé (étape 4 🥉) | Unitaire | Intégration (route+base) | Nom du fichier |
 |---|---|---|---|---|---|
