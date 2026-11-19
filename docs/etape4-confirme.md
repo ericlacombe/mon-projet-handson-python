@@ -112,7 +112,9 @@ class Order(Base):
 | **F3** | `Order` | **lue** (liste : soi-même, ou toutes si admin) | GET | `/api/commandes` | Client = ses commandes ; admin = toutes | — | `200` · `401` |
 | **F3** | `Order` | **lue** (détail) | GET | `/api/commandes/<id>` | client_propriétaire ou admin | — | `200` · `403` · `404` |
 | **F3** | `OrderItem` | **lues** (lignes de la commande) | GET | `/api/commandes/<id>/lignes` | client_propriétaire ou admin | — | `200` · `403` · `404` |
-| **F3+F4** | `Order.statut` | **modifié** (transition contrôlée 4.6 + stock) | PATCH | `/api/commandes/<id>/statut` | **Admin** | `{statut: "validée"}` | `200` · `400` (transition interdite) · `401`/`403` · `404` |
+| **F3+F4** | `Order.statut` | **modifié** (transition contrôlée 4.6 + stock) | PATCH | `/api/commandes/<id>/statut` | **Admin** (toutes transitions) **ou client_propriétaire** (uniquement `annulée`, si en_attente/validée) | `{statut: "validée"}` | `200` · `400` (transition interdite) · `401`/`403` · `404` |
+
+> ⚠️ Pas de `DELETE /api/commandes/<id>` : une commande ne se supprime pas (historique CDC), elle s'annule via ce PATCH.
 
 ## 4.9 — Fonctions Python (transformations sans état)
 
