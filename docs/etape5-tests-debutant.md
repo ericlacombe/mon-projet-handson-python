@@ -7,11 +7,11 @@
 
 ## Matrice élément × type de test (niveau 🥉 = 1 cellule)
 
-## Niveau 🥉 : UN seul test unitaire, sur le fil rouge « S'inscrire »
-
 | Élément créé (étape 4) | Type de test | Nom du test | Scénario | Résultat attendu |
 |---|---|---|---|---|
 | route `POST /api/auth/register` | unitaire (de la route) | `test_register_email_deja_utilise` | on inscrit un email, puis on réessaie avec le **même email** | **`409`** + JSON `{"erreur": "email déjà utilisé"}` |
+
+## Niveau 🥉 : UN seul test unitaire, sur le fil rouge « S'inscrire »
 
 ### Récap — tests prévus par fonction métier
 
