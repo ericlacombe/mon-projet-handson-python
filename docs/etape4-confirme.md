@@ -104,13 +104,13 @@ class Order(Base):
 
 ## 4.7 — Contrat d'API niveau 🥇 (routes commandes, CDC étape 3)
 
-| Fonction métier | Objet(s) | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
-|---|---|---|---|---|---|---|
-| **F3** | `Order` créé | POST | `/api/commandes` | Client connecté (`@login_required`) | `{adresse_livraison, items: [{product_id, quantite}]}` | `201` · `400` (stock insuffisant, qté ≤ 0) · `401` |
-| **F3** | `Order` lus | GET | `/api/commandes` | Client = ses commandes ; admin = toutes | — | `200` · `401` |
-| **F3** | `Order` lu | GET | `/api/commandes/<id>` | propriétaire ou admin | — | `200` · `403` · `404` |
-| **F3** | `OrderItem` lus | GET | `/api/commandes/<id>/lignes` | propriétaire ou admin | — | `200` · `403` · `404` |
-| **F3+F4** | `Order.statut` modifié | PATCH | `/api/commandes/<id>/statut` | **Admin** | `{statut: "validée"}` | `200` · `400` (transition interdite) · `401`/`403` · `404` |
+| Fonction métier | Objet(s) | Action réalisée | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
+|---|---|---|---|---|---|---|---|
+| **F3** | `Order` + `OrderItem` | **créée** (commande + lignes + total) | POST | `/api/commandes` | Client connecté (`@login_required`) | `{adresse_livraison, items: [{product_id, quantite}]}` | `201` · `400` (stock insuffisant, qté ≤ 0) · `401` |
+| **F3** | `Order` | **lue** (liste : soi-même, ou toutes si admin) | GET | `/api/commandes` | Client = ses commandes ; admin = toutes | — | `200` · `401` |
+| **F3** | `Order` | **lue** (détail) | GET | `/api/commandes/<id>` | propriétaire ou admin | — | `200` · `403` · `404` |
+| **F3** | `OrderItem` | **lues** (lignes de la commande) | GET | `/api/commandes/<id>/lignes` | propriétaire ou admin | — | `200` · `403` · `404` |
+| **F3+F4** | `Order.statut` | **modifié** (transition contrôlée 4.6 + stock) | PATCH | `/api/commandes/<id>/statut` | **Admin** | `{statut: "validée"}` | `200` · `400` (transition interdite) · `401`/`403` · `404` |
 
 ## 4.9 — Fonctions Python (transformations sans état)
 
