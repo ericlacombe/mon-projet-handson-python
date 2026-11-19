@@ -126,8 +126,8 @@ class Order(Base):
 ## 4.10 — Gestion des erreurs (niveau 🥇 : gestionnaire global + nouveaux codes F3)
 
 Progression de 4.10 par niveau (voir methodologie.md) :
-- 🥉 : 4.10 **basique** = 1 gestionnaire (409 email déjà pris sur register) — voir `docs/etape4-conception-debutant.md` §4.10 ;
-- 🥈 : codes par route (try/except → 500) + 400/401/403/404/409 sur auth/produits — voir `docs/etape4-intermediaire.md` §4.10 ;
+- 🥉 : 4.10 **basique** = 1 gestionnaire (409 email déjà pris sur register) — voir `docs/etape4-conception-debutant.md` §4.7 (colonne « Sorties / codes » : 201/400/409) ;
+- 🥈 : codes par route (try/except → 500) + 400/401/403/404/409 sur auth/produits — voir `docs/etape4-intermediaire.md` §4.7 (colonne « Sorties / codes » : 200/201/204/400/401/403/404/409) ;
 - 🥇 : on complète avec un **gestionnaire global** `@app.errorhandler` (réponse JSON uniforme pour toute l'app, y compris 404/405/500 hors routes) + les nouveaux codes F3 ci-dessous :
 
 ```python
