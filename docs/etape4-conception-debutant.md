@@ -88,7 +88,7 @@ def register():                                    # l'endpoint = la fonction ex
     return jsonify({"message": "utilisateur créé", "email": data["email"]}), 201  # 201 = ressource créée
 ```
 
-## 4.8 — Organisation du code : arborescence des fichiers (condition : fonction métier F1 ✅ → ACTION)
+## 4.8 — Organisation du code en modules (un blueprint par fonction métier) — niveau 🥉 : arborescence (condition : F1 ✅ → ACTION)
 
 🎨 Canva visuel de cette structure : `docs/canva-structure-debutant.mmd` (à rendre sur https://mermaid.live) — les canva des niveaux précédents ne sont jamais écrasés.
 
@@ -97,8 +97,8 @@ Un module par fonction métier (blueprint), app.py reste l'assemblage :
 ```
 app/
 ├── app.py                  # point d'entrée Flask (crée l'app, enregistre auth_bp)
-├── models/
-│   └── modelsSQLAlchemy.py # classe User, table users (4.4)
+├── db.py                   # engine SQLite + session (4.1)
+├── modelsSQLAlchemy.py     # classe User, table users (4.4)
 └── routes/
     └── auth.py             # blueprint auth_bp + POST /api/auth/register (4.7, 4.8)
 digimarket.db               # FICHIER base SQLite créé par db.py (create_engine), table users créée par create_all (4.1)

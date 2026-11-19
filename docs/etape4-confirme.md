@@ -133,7 +133,7 @@ class Order(Base):
 
 > ⚠️ Pas de `DELETE /api/commandes/<id>` : une commande ne se supprime pas (historique CDC), elle s'annule via ce PATCH.
 
-## 4.8 — Organisation du code (arborescence complète au niveau 🥇)
+## 4.8 — Organisation du code en modules (un blueprint par fonction métier) — niveau 🥇 : arborescence complète
 
 🎨 Canva visuel de cette structure : `docs/canva-structure-confirme.mmd` (à rendre sur https://mermaid.live) — les canva des niveaux précédents ne sont jamais écrasés.
 

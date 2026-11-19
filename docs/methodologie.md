@@ -278,7 +278,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 - choisir l'arborescence de fichiers **compatible avec les conventions déjà utilisées** dans d'autres projets (ex. modèles SQLAlchemy dans un fichier séparé `modelsSQLAlchemy.py`, routes par blueprint…) ;
 - commit Git de l'étape 4 (arborescence de fichiers créée).
 
-🧵 **Fil rouge** : pour « S'inscrire » → 4.1 table `utilisateurs` ; 4.3 contrainte `unique` sur email ; 4.4 classe `Utilisateur` ; 4.7 route `POST /api/auth/register` ; 4.8 module `auth.py` ; 4.10 gestionnaire d'erreur 409 ; 4.11 hachage du mot de passe.
+🧵 **Fil rouge** : pour « S'inscrire » → 4.1 table `users` ; 4.3 contrainte `unique` sur email ; 4.4 classe `User` ; 4.7 route `POST /api/auth/register` ; 4.8 module `auth.py` ; 4.10 gestionnaire d'erreur 409 ; 4.11 hachage du mot de passe.
 ❓ **Auto-évaluation** : 1) Pourquoi une classe pour Utilisateur et pas pour le token ? 2) Quelle partie crée la route POST /api/auth/register ? 3) Que se passe-t-il si la condition du 4.1 est fausse ?
 📝 **À retenir (3 lignes)** : 1) Analyse → condition → si positif, action de création. 2) Persisté → base + classe ; temporaire → dict. 3) Groupe A (données) avant Groupe B (comportement).
 

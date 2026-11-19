@@ -132,7 +132,7 @@ class Product(Base):
 - `403` = token valide mais rôle insuffisant (client au lieu d'admin) · `404` = ressource introuvable ;
 - `GET /api/produits` est **public** (Visiteur) : catalogue consultable sans compte, avec recherche `?q=texte`.
 
-## 4.8 — Organisation du code niveau 🥈 : app.py + db.py + security.py + routes/*.py (un blueprint par fonction métier)
+## 4.8 — Organisation du code en modules (un blueprint par fonction métier) — niveau 🥈 : app.py + db.py + security.py + routes/*.py
 
 🎨 Canva visuel de cette structure : `docs/canva-structure-intermediaire.mmd` (à rendre sur https://mermaid.live) — les canva des niveaux précédents ne sont jamais écrasés.
 
