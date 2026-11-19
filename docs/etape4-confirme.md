@@ -52,7 +52,7 @@ Le **panier côté client** est une donnée temporaire : elle n'existe que le te
 |---|---|---|---|---|
 | **F3** | `Order` | en_attente → validée | `Order.valider()` | admin uniquement (route PATCH) + stock suffisant → décrément |
 | **F3** | `Order` | validée → expédiée | `Order.expedier()` | admin uniquement |
-| **F3** | `Order` | en_attente/validée → annulée | `Order.annuler()` | admin ou propriétaire + RESTITUTION du stock |
+| **F3** | `Order` | en_attente/validée → annulée | `Order.annuler()` | admin ou client_propriétaire + RESTITUTION du stock |
 
 ```python
 class Order(Base):
@@ -108,8 +108,8 @@ class Order(Base):
 |---|---|---|---|---|---|---|---|
 | **F3** | `Order` + `OrderItem` | **créée** (commande + lignes + total) | POST | `/api/commandes` | Client connecté (`@login_required`) | `{adresse_livraison, items: [{product_id, quantite}]}` | `201` · `400` (stock insuffisant, qté ≤ 0) · `401` |
 | **F3** | `Order` | **lue** (liste : soi-même, ou toutes si admin) | GET | `/api/commandes` | Client = ses commandes ; admin = toutes | — | `200` · `401` |
-| **F3** | `Order` | **lue** (détail) | GET | `/api/commandes/<id>` | propriétaire ou admin | — | `200` · `403` · `404` |
-| **F3** | `OrderItem` | **lues** (lignes de la commande) | GET | `/api/commandes/<id>/lignes` | propriétaire ou admin | — | `200` · `403` · `404` |
+| **F3** | `Order` | **lue** (détail) | GET | `/api/commandes/<id>` | client_propriétaire ou admin | — | `200` · `403` · `404` |
+| **F3** | `OrderItem` | **lues** (lignes de la commande) | GET | `/api/commandes/<id>/lignes` | client_propriétaire ou admin | — | `200` · `403` · `404` |
 | **F3+F4** | `Order.statut` | **modifié** (transition contrôlée 4.6 + stock) | PATCH | `/api/commandes/<id>/statut` | **Admin** | `{statut: "validée"}` | `200` · `400` (transition interdite) · `401`/`403` · `404` |
 
 ## 4.9 — Fonctions Python (transformations sans état)
@@ -139,7 +139,7 @@ def server_error(e):  return jsonify({"error": "erreur serveur"}), 500
 | **F3** | `OrderItem` | quantité ≤ 0 | 400 | route POST /api/commandes |
 | **F3** | `Product` | stock insuffisant | 400 | route POST /api/commandes |
 | **F3** | `Order` | transition interdite (4.6) | 400 | `Order.changer_statut` → route PATCH |
-| **F3+F4** | `Order` | non propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
+| **F3+F4** | `Order` | non client_propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
 
 ## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
 
@@ -150,13 +150,13 @@ def server_error(e):  return jsonify({"error": "erreur serveur"}), 500
  → 3. LOGIN       : token JWT SIGNÉ (HMAC-SHA256, pas chiffré, rôle embarqué, exp 24 h)
  → 4. ROUTES      : 401 si signature invalide/expiré · 403 si rôle insuffisant
       + 🥇 NOUVEAU : 403 si client NON PROPRIÉTAIRE sur /api/commandes/<id>
-        (règle « propriétaire ou admin » : commande.user_id == user_id du token, ou role == admin)
+        (règle « client_propriétaire ou admin » : commande.user_id == user_id du token, ou role == admin)
  → 5. .env+HTTPS  : SECRET_KEY hors git, réseau chiffré en prod
 ```
 
 | Fonction métier | Objet | Protection 🥇 | Fichier |
 |---|---|---|---|
-| **F3+F4** | `Order` | propriétaire ou admin → sinon **403** | `app/routes/commandes.py`, `app/security.py` |
+| **F3+F4** | `Order` | client_propriétaire ou admin → sinon **403** | `app/routes/commandes.py`, `app/security.py` |
 
 ## Matrice de traçabilité CDC (fin de projet 🥇)
 
@@ -178,17 +178,17 @@ def server_error(e):  return jsonify({"error": "erreur serveur"}), 500
 
 🧵 **Fil rouge 🥇** : « passer une commande » → `POST /api/commandes` (client connecté, stock vérifié, lignes créées, total calculé) → suivi via `GET /api/commandes/<id>` → `PATCH .../statut` (admin, transition contrôlée, stock décrémenté).
 
-❓ **Auto-évaluation** : 1) Quelles transitions de `Order` sont autorisées ? 2) Pourquoi le panier n'est pas une table (4.2) ? 3) Où est contrôlée la règle « propriétaire ou admin » ?
+❓ **Auto-évaluation** : 1) Quelles transitions de `Order` sont autorisées ? 2) Pourquoi le panier n'est pas une table (4.2) ? 3) Où est contrôlée la règle « client_propriétaire ou admin » ?
 
-📝 **À retenir (3 lignes)** : 1) 🥇 = tout le CDC (4.1→4.11 complet). 2) Transition d'état → constantes + méthode qui contrôle (4.6). 3) Sécurité = chaîne de protection 0→5 + règle propriétaire-ou-admin.
+📝 **À retenir (3 lignes)** : 1) 🥇 = tout le CDC (4.1→4.11 complet). 2) Transition d'état → constantes + méthode qui contrôle (4.6). 3) Sécurité = chaîne de protection 0→5 + règle client_propriétaire-ou-admin.
 
 ## Backlog 🥇 (sera détaillé dans etape6-backlog-confirme.md)
 
 1. Modèles `Order` + `OrderItem` (+ FK, relations, `changer_statut`) ;
-2. Routes `commandes.py` : POST (vérif stock, lignes, total), GET liste/détail/lignes (propriétaire ou admin), PATCH statut (admin, transition + stock) ;
-3. Tests 🥇 : unitaires (transitions, total) + intégration (création 201, stock insuffisant 400, 403 non propriétaire, PATCH admin 200, transition interdite 400) + **régression** (tout rejoué) ;
+2. Routes `commandes.py` : POST (vérif stock, lignes, total), GET liste/détail/lignes (client_propriétaire ou admin), PATCH statut (admin, transition + stock) ;
+3. Tests 🥇 : unitaires (transitions, total) + intégration (création 201, stock insuffisant 400, 403 non client_propriétaire, PATCH admin 200, transition interdite 400) + **régression** (tout rejoué) ;
 4. README + canva 🥇 (`canva-structure-confirme.mmd`, sans écraser les autres) + matrice de traçabilité CDC complète.
 
-✅ **Checklist 🥇** : 4.5 N—N ✅ · 4.6 transitions ✅ · 4.7 contrat commandes ✅ · 4.3 contraintes ✅ · 4.9 fonctions ✅ · 4.10 erreurs (400/401/403/404) ✅ · 4.11 sécurité étendue (propriétaire-or-admin) ✅ · tests unitaires+intégration+régression ✅.
+✅ **Checklist 🥇** : 4.5 N—N ✅ · 4.6 transitions ✅ · 4.7 contrat commandes ✅ · 4.3 contraintes ✅ · 4.9 fonctions ✅ · 4.10 erreurs (400/401/403/404) ✅ · 4.11 sécurité étendue (client_propriétaire-or-admin) ✅ · tests unitaires+intégration+régression ✅.
 
 *Prochaine étape (avec validation) : étape 5 niveau 🥇 (matrice de tests complète) puis étape 6 (backlog 🥇) puis CODE.*
