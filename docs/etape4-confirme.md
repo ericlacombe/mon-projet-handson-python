@@ -104,7 +104,7 @@ class Order(Base):
 
 ## 4.7 — Contrat d'API niveau 🥇 (routes commandes, CDC étape 3)
 
-| Fonction métier | Objet(s) | Action réalisée | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
+| Fonction métier | Objet(s) manipulé(s) | Action sur l'Objet | Méthode | Route | Accès | Entrée (JSON) | Sorties / codes |
 |---|---|---|---|---|---|---|---|
 | **F3** | `Order` + `OrderItem` | **créée** (commande + lignes + total) | POST | `/api/commandes` | Client connecté (`@login_required`) | `{adresse_livraison, items: [{product_id, quantite}]}` | `201` · `400` (stock insuffisant, qté ≤ 0) · `401` |
 | **F3** | `Order` | **lue** (liste : soi-même, ou toutes si admin) | GET | `/api/commandes` | Client = ses commandes ; admin = toutes | — | `200` · `401` |
