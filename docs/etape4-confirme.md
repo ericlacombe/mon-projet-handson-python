@@ -144,14 +144,16 @@ Progression de 4.10 par niveau (voir methodologie.md) :
 @app.errorhandler(500)   # exception non rattrapée
 ```
 
-**② Le tableau = erreurs MÉTIER F3**, rendues **explicitement par chaque route** (`return jsonify({"error": ...}), 400`) — ce ne sont pas des exceptions Flask, le gestionnaire global ne les voit pas :
+**② Le tableau = erreurs MÉTIER F3**, rendues **explicitement par chaque route** (`return jsonify({"error": ...}), 400`) — ce ne sont pas des exceptions Flask, le gestionnaire global ne les voit pas.
 
-| Fonction métier | Objet(s) manipulé(s) | Erreur 🥇 (métier) | Code | Où (rendu par la route) |
-|---|---|---|---|---|
-| **F3** | `OrderItem` | quantité ≤ 0 | 400 | route POST /api/commandes |
-| **F3** | `Product` | stock insuffisant | 400 | route POST /api/commandes |
-| **F3** | `Order` | transition interdite (4.6) | 400 | `Order.changer_statut` → route PATCH |
-| **F3+F4** | `Order` | non client_propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
+> 🎯 **Ce qu'apporte ce tableau** : il traduit chaque **contrainte métier du §4.3** (les "inputs" à valider) en **code HTTP précis** + le message d'erreur — c'est le contrat d'erreur de l'API.
+
+| Fonction métier | Objet(s) manipulé(s) | Input / contrainte (voir §4.3) | Erreur 🥇 (métier) | Code | Où (rendu par la route) |
+|---|---|---|---|---|---|
+| **F3** | `OrderItem` | `quantite > 0` (entrée JSON `items[]`) | quantité ≤ 0 | 400 | route POST /api/commandes |
+| **F3** | `Product` | stock suffisant (entrée `product_id`) | stock insuffisant | 400 | route POST /api/commandes |
+| **F3** | `Order` | transition autorisée (§4.6) | transition interdite | 400 | `Order.changer_statut` → route PATCH |
+| **F3+F4** | `Order` | client_propriétaire ou admin (§4.11) | non client_propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
 
 ## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
 
