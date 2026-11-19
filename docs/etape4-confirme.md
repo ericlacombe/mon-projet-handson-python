@@ -152,7 +152,7 @@ Progression de 4.10 par niveau (voir methodologie.md) :
 |---|---|---|---|---|---|
 | **F3** | `OrderItem` | `quantite > 0` (entrée JSON `items[]`) | quantité ≤ 0 | 400 | route POST /api/commandes |
 | **F3** | `Product` | stock suffisant (entrée `product_id`) | stock insuffisant | 400 | route POST /api/commandes |
-| **F3** | `Order` | transition autorisée (§4.6) | transition interdite | 400 | `Order.changer_statut` → route PATCH |
+| **F3** | `Order` | transition autorisée (§4.6) | transition interdite | 400 | route PATCH `/api/commandes/<id>/statut` (via `Order.changer_statut`, §4.6) |
 | **F3+F4** | `Order` | client_propriétaire ou admin (§4.11) | non client_propriétaire, non admin | 403 | routes GET /api/commandes/<id>… |
 
 ## 4.11 — Sécurité étendue au niveau 🥇 (chaîne de protection complétée)
