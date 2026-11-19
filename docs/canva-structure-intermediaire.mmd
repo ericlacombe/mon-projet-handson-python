@@ -8,6 +8,7 @@ flowchart TB
     ROOT --> README["README.md"]
     ROOT --> REQ["requirements.txt - flask sqlalchemy pytest PyJWT"]
     ROOT --> ENV[".env - SECRET_KEY jamais commit"]
+    ROOT --> GITIGN[".gitignore - .env, *.db, __pycache__/, venv/ jamais commités"]
     ROOT --> DBFILE["digimarket.db - base SQLite cree au lancement"]
 
     subgraph APP["app - code API"]
@@ -27,8 +28,15 @@ flowchart TB
     end
 
     subgraph DOCS["docs - documentation"]
-        D_ET4["etape4-intermediaire.md"]
+        D_CDC["attentes.md - cahier des charges"]
+        D_METH["methodologie.md + methodologie-canva.mmd - la méthode (étapes 0-6)"]
+        D_ET0["etape0-AFB.md … etape3-objets.md - étapes 0-3 (une seule fois)"]
+        D_ET4B["etape4-conception-debutant.md - 🥉 fige"]
+        D_ET4["etape4-intermediaire.md - ce niveau 🥈"]
+        D_ET4C["etape4-confirme.md - 🥇 en préparation"]
         D_ET5["etape5-tests-intermediaire.md"]
+        D_ET5B["etape5-tests-debutant.md - 🥉"]
+        D_ET6B["etape6-backlog-debutant.md - 🥉"]
         D_ET6["etape6-backlog-intermediaire.md - fait, 8/8 cochées"]
         D_CANVA_B["canva-structure-debutant.mmd - niveau bronze fige"]
         D_CANVA_I["canva-structure-intermediaire.mmd - ce canva"]
@@ -51,11 +59,17 @@ flowchart TB
     A_PROD -.->|Product Category| A_MODELS
     A_PROD -.->|admin_required login_required| A_SEC
     A_SEC -.->|User check_password_hash| A_MODELS
+    A_SEC -.->|"SECRET_KEY"| ENV
+    T_CONF -.->|models| A_MODELS
     T_AUTH -.->|app models auth_module| A_APP
     T_SEC -.->|security app| A_SEC
     T_CONF -.->|app models routes| A_APP
     T_PROD -.->|app models produits| A_PROD
 
+    FLOW["flux d'une requête : client → app.py → routes → security (vérif token 401/403) → db.py → models → digimarket.db"]
+    A_APP -.-> FLOW
+
     style APP fill:#e8f4ff,stroke:#3b82f6
     style TESTS fill:#f0fdf4,stroke:#22c55e
     style DOCS fill:#fdf2f8,stroke:#ec4899
+    style FLOW fill:#fef3c7,stroke:#d97706
