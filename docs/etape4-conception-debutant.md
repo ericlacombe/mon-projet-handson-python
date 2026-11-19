@@ -67,7 +67,7 @@ class User(Base):                                  # Base = declarative_base(), 
 |---|---|---|---|---|
 | POST | `/api/auth/register` | Public | `{email, mot_de_passe, nom, prenom, adresse}` | `201` utilisateur créé (JSON) · `400` données invalides · `409` email déjà utilisé |
 
-## 4.8 — Module `routes/auth.py` (condition : fonction métier F1 ✅ → ACTION)
+### Le module `routes/auth.py` (code de la route, dans 4.7)
 
 ```python
 # routes/auth.py
