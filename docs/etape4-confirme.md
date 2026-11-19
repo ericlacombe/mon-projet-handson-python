@@ -133,6 +133,12 @@ Progression de 4.10 par niveau (voir methodologie.md) :
 **① Le bloc de code = gestionnaire GLOBAL** (dans `app/app.py`) : il intercepte les erreurs génériques de Flask **partout** (même hors des routes) et renvoie toujours du JSON uniforme :
 
 ```python
+# Pourquoi SEULEMENT 404/405/500 ici ?
+# - 2xx (200/201/204) = SUCCÈS : la route renvoie sa réponse normalement, pas d'erreur à intercepter.
+# - 400/401/403/409 = ERREURS MÉTIER rendues volontairement par les routes
+#   (return jsonify({...}), 400) : ce ne sont PAS des exceptions Flask, ce gestionnaire ne les voit pas.
+# - 404/405/500 = ERREURS SYSTÈME levées par Flask lui-même (route inconnue, mauvaise méthode,
+#   exception non rattrapée) → c'est ELLES qu'on intercepte ici pour toujours répondre en JSON.
 @app.errorhandler(404)   # route inconnue
 @app.errorhandler(405)   # mauvaise méthode HTTP sur une route existante
 @app.errorhandler(500)   # exception non rattrapée
