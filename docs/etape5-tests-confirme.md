@@ -17,10 +17,10 @@
 | **F2** (+F4) | `Product`, `Category` | CRUD `/api/produits`, `/api/categories` | ✅ (🥈) | ✅ (🥈) | admin/sans token/prix<0/doublon | 201/401/403/400/409 | `tests/test_produits.py` |
 | **F3** (🥇) | `Order` + `OrderItem` | `POST /api/commandes` | — | ✅ `test_creer_commande_201`, `test_stock_insuffisant_400`, `test_quantite_zero_400`, `test_sans_token_401` | client connecté passe commande / stock insuffisant / qté=0 / sans token | 201 / 400 / 400 / 401 | `tests/test_commandes.py` |
 | **F3+F4** (🥇) | `Order` | `GET /api/commandes`, `/<id>`, `/<id>/lignes` | — | ✅ `test_liste_mes_commandes`, `test_commande_autre_client_403`, `test_commande_inexistante_404` | client voit ses commandes / lit celle d'un autre / id inconnu | 200 / 403 / 404 | `tests/test_commandes.py` |
-| **F3** (🥇) | `Order`, `OrderItem` | `calculer_total` (4.9, fonction pure) | ✅ `test_calculer_total` | — | 2 lignes (2×10€ + 1×5€) | total = 25 | `tests/test_commandes.py` |
 | **F3+F4** (🥇) | `Order.statut` | `PATCH /api/commandes/<id>/statut` | — | ✅ `test_patch_admin_valide_200`, `test_patch_client_proprietaire_annule_200`, `test_patch_transition_interdite_400`, `test_patch_client_non_proprietaire_403` | admin valide / client_propriétaire annule / transition interdite / autre client | 200 / 200 / 400 / 403 | `tests/test_commandes.py` |
 | **F3** (🥇) | `Product` | effet de bord stock (validation/annulation) | ✅ `test_stock_decremente_a_validation`, `test_stock_restitue_a_annulation` | ✅ (via PATCH) | valider décrémente, annuler restitue | stock -qté / +qté | `tests/test_commandes.py` |
 | **F3** (🥇) | `Order` | `changer_statut` (transitions 4.6) | ✅ `test_transition_autorisee`, `test_transition_interdite` | — | en_attente→validée OK ; expédiée→annulée KO | statut changé / ValueError→400 | `tests/test_commandes.py` |
+| **F3** (🥇) | `Order`, `OrderItem` | `calculer_total` (4.9, fonction pure) | ✅ `test_calculer_total` | — | 2 lignes (2×10€ + 1×5€) | total = 25 | `tests/test_commandes.py` |
 | **F1–F4** (tout) | toutes les tables | **régression** (🥇) | — | ✅ `pytest` tout rejoué à chaque incrément | lancer toute la suite | tout vert | `tests/` (tout) |
 
 ### Récap — tests prévus par fonction métier (F1/F2/F3 séparés de F4 sécurité)
