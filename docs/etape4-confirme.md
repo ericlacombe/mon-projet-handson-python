@@ -133,9 +133,40 @@ class Order(Base):
 
 > ⚠️ Pas de `DELETE /api/commandes/<id>` : une commande ne se supprime pas (historique CDC), elle s'annule via ce PATCH.
 
-## 4.8 — Organisation du code — ajouts 🥇
+## 4.8 — Organisation du code (arborescence complète au niveau 🥇)
 
-On ajoute, sans toucher au 🥈 : `app/routes/commandes.py` (nouveau blueprint F3, enregistré dans `app.py`) et éventuellement `app/utils.py` (fonctions pures 4.9 : `calculer_total`, `verifier_stock`). Un blueprint par fonction métier.
+Un blueprint par fonction métier ; app.py reste l'assemblage. **Ajouts 🥇** marqués 🥇 :
+
+```
+mon-projet-handson-python/
+├── README.md                   # page d'entrée (install, lancement, API, sécurité)
+├── requirements.txt            # flask, sqlalchemy, pytest, PyJWT
+├── .env                        # SECRET_KEY (jamais commité, .gitignore)
+├── .gitignore                  # venv/, .env, __pycache__/, *.db, .pytest_cache/
+├── app/                        # 💻 code de l'API (package Python)
+│   ├── __init__.py
+│   ├── app.py                  # point d'entrée Flask (app, blueprints, init_sample_data, errorhandlers 🥇)
+│   ├── db.py                   # engine SQLite + session partagée + create_all
+│   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 Category, Product · 🥇 Order, OrderItem (FK 1—N, N—1)
+│   ├── security.py             # 🥈 F4 : JWT, hachage, @login_required/@admin_required
+│   ├── utils.py                # 🥇 fonctions pures 4.9 : calculer_total, verifier_stock
+│   └── routes/
+│       ├── auth.py             # 🥉 register · 🥈 login
+│       ├── produits.py         # 🥈 F2 : CRUD /api/produits + /api/categories
+│       └── commandes.py        # 🥇 F3 : /api/commandes (POST/GET/PATCH)
+├── tests/
+│   ├── conftest.py             # 🥈 fixtures (base en mémoire, tokens admin/client)
+│   ├── test_auth.py            # 🥉 409
+│   ├── test_security.py        # 🥈 F1 login + F4 tokens
+│   ├── test_produits.py        # 🥈 F2 CRUD
+│   └── test_commandes.py       # 🥇 F3 : transitions, stock, propriétaire-or-admin + régression
+└── docs/                       # 📚 documentation (méthode + étapes 0-6 par niveau + canva)
+    ├── attentes.md             # cahier des charges
+    ├── methodologie.md / methodologie-canva.mmd
+    ├── etape0…etape6-*.md       # résultats des étapes (🥉 fait, 🥈 fait, 🥇 ce fichier…)
+    └── canva-structure-debutant.mmd / -intermediaire.mmd / -confirme.mmd 🥇 (jamais écrasés)
+```
+(digimarket.db est créé automatiquement au lancement, à la racine — jamais commité)
 
 ## 4.9 — Fonctions Python (transformations sans état) — ajouts 🥇
 
