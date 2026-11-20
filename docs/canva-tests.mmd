@@ -10,17 +10,11 @@ flowchart TB
         TP["test_produits.py<br/>F2 201/400/403/409"]
     end
 
-    subgraph CONFTEST["conftest.py et ses fixtures (conftest à gauche)"]
-        direction LR
-        CONF["conftest.py<br/>fixtures communes"]
-        subgraph FIXTURES["fixtures fournies"]
-            direction TB
-            F1["session_test<br/>base en mémoire<br/>session branchée"]
-            F2["client_http<br/>test_client"]
-            F3["token_admin"]
-            F4["token_client (403)"]
-        end
-        CONF --> F1 & F2 & F3 & F4
+    subgraph FIXTURES["les fixtures créées par conftest.py<br/>(lancé par pytest avant tous les fichiers de tests)"]
+        F1["session_test<br/>base en mémoire<br/>session branchée"]
+        F2["client_http<br/>test_client"]
+        F3["token_admin"]
+        F4["token_client (403)"]
     end
 
     subgraph APP["app/ (testé)"]
@@ -42,8 +36,7 @@ flowchart TB
     A_PROD -.-> A_DB & A_SEC
     F3 -.->|"Bearer"| A_SEC
 
-    class CONF,TA,TS,TP,F1,F2,F3,F4,A_APP,A_AUTH,A_PROD,A_DB,A_SEC petit;
-    style CONF fill:#fef3c7,stroke:#d97706
+    class TA,TS,TP,F1,F2,F3,F4,A_APP,A_AUTH,A_PROD,A_DB,A_SEC petit;
     style FIXTURES fill:#fff7e6,stroke:#f59e0b
     style TESTS fill:#f0fdf4,stroke:#22c55e
     style APP fill:#e8f4ff,stroke:#3b82f6
