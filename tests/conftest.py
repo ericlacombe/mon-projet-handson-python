@@ -28,15 +28,17 @@ import pytest
 from sqlalchemy import create_engine
 # sessionmaker : fabrique de sessions (conversations avec la base de test)
 from sqlalchemy.orm import sessionmaker
-# generate_password_hash : hache un mot de passe (pour créer les comptes de test, comme au register)
+# generate_password_hash : hache un mot de passe (création des comptes de test, comme au register)
 from werkzeug.security import generate_password_hash
 
 # app : l'application Flask (créée dans app/app.py) — app.test_client() sert de client HTTP de test
 from app.app import app
 # Base (métadonnée des tables, pour create_all/drop_all) + modèles User, Category
 from app.modelsSQLAlchemy import Base, User, Category
-# les modules de routes, importés comme modules pour pouvoir remplacer leur `session`
-# par la session de test (base en mémoire) — sinon les tests écriraient dans digimarket.db
+# auth_module / prod_module = les modules routes/*.py importés sous ce nom.
+# Ils servent de « poignée » : on va remplacer LEUR session (celle de db.py, liée à la
+# vraie base digimarket.db) par une session de test en mémoire — comme ça, les
+# session.add/commit des routes écrivent dans la base de TEST, jamais dans la vraie base.
 import app.routes.auth as auth_module
 import app.routes.produits as prod_module
 
