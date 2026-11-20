@@ -5,17 +5,22 @@ flowchart TB
     classDef petit font-size:11px;
 
     subgraph TESTS["tests/"]
-        CONF["conftest.py<br/>fixtures communes"]
         TA["test_auth.py<br/>F1 🥉 409"]
         TS["test_security.py<br/>F1/F4 401"]
         TP["test_produits.py<br/>F2 201/400/403/409"]
     end
 
-    subgraph FIXTURES["fixtures de conftest.py"]
-        F1["session_test<br/>base en mémoire<br/>session branchée"]
-        F2["client_http<br/>test_client"]
-        F3["token_admin"]
-        F4["token_client (403)"]
+    subgraph CONFTEST["conftest.py et ses fixtures (conftest à gauche)"]
+        direction LR
+        CONF["conftest.py<br/>fixtures communes"]
+        subgraph FIXTURES["fixtures fournies"]
+            direction TB
+            F1["session_test<br/>base en mémoire<br/>session branchée"]
+            F2["client_http<br/>test_client"]
+            F3["token_admin"]
+            F4["token_client (403)"]
+        end
+        CONF --> F1 & F2 & F3 & F4
     end
 
     subgraph APP["app/ (testé)"]
@@ -26,7 +31,6 @@ flowchart TB
         A_SEC["security.py"]
     end
 
-    CONF --> F1 & F2 & F3 & F4
     TA --> F2
     TS --> F2 & F1 & F3
     TP --> F2 & F1 & F3 & F4
