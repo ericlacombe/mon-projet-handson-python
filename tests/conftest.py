@@ -12,18 +12,31 @@ Pourquoi un conftest.py ? Pour ne pas répéter la même mise en place dans chaq
 - token_admin / token_client : tokens JWT obtenus via un vrai login (fixture qui crée
                   l'utilisateur en base de test puis appelle POST /api/auth/login).
 """
+# ------------------------------------------------------------------
+# Importations
+# ------------------------------------------------------------------
+# os : lire/écrire les variables d'environnement (ici poser SECRET_KEY de test AVANT
+#      d'importer app.security, sinon KeyError à l'import)
 import os
 
-# Clé de test bidon (32+ caractères comme recommandé) — PAS la vraie clé (.env)
+# Clé de test bidon (32+ caractères comme recommandé) — PAS la vraie clé (.env, .gitignore)
 os.environ.setdefault("SECRET_KEY", "cle_de_test_pour_pytest_32_caracteres_min")
 
+# pytest : le lanceur de tests — fournit @pytest.fixture (fonctions exécutées avant chaque test)
 import pytest
+# create_engine : crée le moteur SQLite EN MÉMOIRE (sqlite:///:memory: = base en RAM, jetable)
 from sqlalchemy import create_engine
+# sessionmaker : fabrique de sessions (conversations avec la base de test)
 from sqlalchemy.orm import sessionmaker
+# generate_password_hash : hache un mot de passe (pour créer les comptes de test, comme au register)
 from werkzeug.security import generate_password_hash
 
+# app : l'application Flask (créée dans app/app.py) — app.test_client() sert de client HTTP de test
 from app.app import app
+# Base (métadonnée des tables, pour create_all/drop_all) + modèles User, Category
 from app.modelsSQLAlchemy import Base, User, Category
+# les modules de routes, importés comme modules pour pouvoir remplacer leur `session`
+# par la session de test (base en mémoire) — sinon les tests écriraient dans digimarket.db
 import app.routes.auth as auth_module
 import app.routes.produits as prod_module
 
