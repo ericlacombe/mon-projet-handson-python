@@ -24,8 +24,7 @@ flowchart TB
         D_ETAPES["etape0 a etape6"]
     end
 
-    %% flux d'une requête : client → app.py → routes → security (vérif token 401/403) → db.py → models → digimarket.db
-    subgraph CLIENT["client externe : curl / Thunder Client / navigateur"]
+    subgraph CLIENT["client externe : curl / Thunder Client<br/>flux : client → app.py → routes → security (token 401/403) → db.py → models → digimarket.db"]
         REQ1["POST /api/auth/register"]
     end
 

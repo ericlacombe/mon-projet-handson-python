@@ -25,8 +25,7 @@ flowchart TB
     end
 
 
-    %% flux d'une requête : client → app.py → routes → security (vérif token 401/403) → db.py → models → digimarket.db
-    subgraph CLIENT["client externe : curl / Thunder Client / navigateur"]
+    subgraph CLIENT["client externe : curl / Thunder Client<br/>flux : client → app.py → routes → security (token 401/403) → db.py → models → digimarket.db"]
         REQ1["POST /api/auth/register"]
         REQ2["POST /api/auth/login -> token"]
         REQ3["GET /api/produits?q=..."]
