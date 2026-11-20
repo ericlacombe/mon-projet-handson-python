@@ -16,9 +16,6 @@ flowchart TB
         A_ROUTES["routes/auth.py - POST /api/auth/register"]
     end
 
-    subgraph TESTS["tests - tests"]
-        T_AUTH["test_auth.py"]
-    end
 
     subgraph DOCS["docs - documentation"]
         D_ATT["attentes.md"]
@@ -27,8 +24,15 @@ flowchart TB
         D_ETAPES["etape0 a etape6"]
     end
 
+    subgraph CLIENT["client externe (hors code) : curl / Thunder Client / navigateur"]
+        REQ1["POST /api/auth/register"]
+        REQ2["POST /api/auth/login -> token"]
+        REQ3["GET /api/produits?q=..."]
+        REQ4["POST /api/produits (Bearer admin)"]
+    end
+
+    CLIENT -->|HTTP| A_APP
     ROOT --> APP
-    ROOT --> TESTS
     ROOT --> DOCS
 
     A_APP -.->|auth_bp| A_ROUTES
@@ -38,10 +42,6 @@ flowchart TB
     A_DB -.->|"ecrit lit"| DBFILE
     A_ROUTES -.->|session User| A_DB
     A_ROUTES -.->|User| A_MODELS
-    T_AUTH -.->|app| A_APP
-    T_AUTH -.->|Base User| A_MODELS
-    T_AUTH -.->|auth_module| A_ROUTES
 
     style APP fill:#e8f4ff,stroke:#3b82f6
-    style TESTS fill:#f0fdf4,stroke:#22c55e
     style DOCS fill:#fdf2f8,stroke:#ec4899

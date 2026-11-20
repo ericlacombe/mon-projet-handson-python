@@ -24,16 +24,17 @@ flowchart TB
         A_UTILS["utils.py - 🥇 fonctions pures 4.9 : calculer_total, verifier_stock"]
     end
 
-    subgraph TESTS["tests - tests"]
-        T_AUTH["test_auth.py - F1 : POST /api/auth/register → 409 doublon (🥉)"]
-        T_CONF["conftest.py - fixtures 🥈 : base en mémoire + client_http + token_admin/token_client"]
-        T_SEC["test_security.py - F1 login + F4 : token invalide/expiré → 401"]
-        T_PROD["test_produits.py - F2 : CRUD produits/catégories → 201/400/401/403/409"]
-        T_CMD["test_commandes.py - 🥇 F3 : transitions 4.6, stock, client_propriétaire 403 + régression (tout rejoué)"]
+
+    subgraph CLIENT["client externe (hors code) : curl / Thunder Client / navigateur"]
+        REQ1["POST /api/auth/register"]
+        REQ2["POST /api/auth/login -> token"]
+        REQ3["GET /api/produits?q=..."]
+        REQ4["POST /api/produits (Bearer admin)"]
+        REQ5["POST /api/commandes (Bearer) · PATCH .../statut"]
     end
 
+    CLIENT -->|HTTP| A_APP
     ROOT --> APP
-    ROOT --> TESTS
 
     A_APP -.->|auth_bp produits_bp| A_AUTH
     A_APP -.->|auth_bp produits_bp commandes_bp| A_PROD
@@ -55,16 +56,9 @@ flowchart TB
     A_UTILS -.->|Product| A_MODELS
     A_SEC -.->|User check_password_hash| A_MODELS
     A_SEC -.->|"SECRET_KEY"| ENV
-    T_CONF -.->|models| A_MODELS
-    T_AUTH -.->|app models auth_module| A_APP
-    T_SEC -.->|security app| A_SEC
-    T_CONF -.->|app models routes| A_APP
-    T_PROD -.->|app models produits| A_PROD
-    T_CMD -.->|app models commandes utils| A_CMD
 
     FLOW["flux d'une requête : client → app.py → routes (auth/produits/commandes) → security (vérif token 401/403 + client_propriétaire) → db.py → models → digimarket.db"]
     A_APP -.-> FLOW
 
     style APP fill:#e8f4ff,stroke:#3b82f6
-    style TESTS fill:#f0fdf4,stroke:#22c55e
     style FLOW fill:#fef3c7,stroke:#d97706
