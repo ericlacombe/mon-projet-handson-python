@@ -48,3 +48,81 @@
 📝 **À retenir (3 lignes)** : 1) Un test = 1 élément + 1 scénario + 1 résultat attendu, nommé, avec son fichier. 2) 🥇 = matrice complète + régression. 3) Les tests se conçoivent APRÈS l'étape 4, et se jouent à chaque incrément (étape 6).
 
 *Conception des tests 🥇 prête. Prochaine étape (avec validation) : étape 6 niveau 🥇 — `docs/etape6-backlog-confirme.md` (backlog 🥇, à valider AVANT le code).*
+
+---
+
+## 🎨 Canva des interactions entre les tests (voir aussi `docs/canva-tests.mmd` + `docs/canva-tests.md`)
+
+```mermaid
+%% Canva des interactions tests — qui fournit quoi à qui
+%% Rendu : https://mermaid.live  (police réduite pour éviter les textes coupés)
+%%{init: {'flowchart': {'htmlLabels': true}}}%%
+flowchart TB
+    classDef petit font-size:11px;
+
+    subgraph TESTS["tests/"]
+        TA["test_auth.py<br/>F1 🥉 409"]
+        TS["test_security.py<br/>F1/F4 401"]
+        TP["test_produits.py<br/>F2 201/400/403/409"]
+    end
+
+    subgraph FIXTURES["les fixtures créées par conftest.py<br/>(lancé par pytest avant tous les fichiers de tests)"]
+        F1["session_test<br/>base en mémoire<br/>session branchée"]
+        F2["client_http<br/>test_client"]
+        F3["token_admin"]
+        F4["token_client (403)"]
+    end
+
+    subgraph APP["app/ (testé)"]
+        A_APP["app.py"]
+        A_AUTH["routes/auth.py"]
+        A_PROD["routes/produits.py"]
+        A_DB["db.py"]
+        A_SEC["security.py"]
+    end
+
+    TA -->|"test_auth"| F2
+    TS -->|"test_security"| F2 & F1 & F3
+    TP -->|"test_produits"| F2 & F1 & F3 & F4
+
+    F1 -.->|"remplace la session"| A_AUTH & A_PROD
+    F2 -.-> A_APP
+    A_APP --> A_AUTH & A_PROD
+    A_AUTH -.-> A_DB & A_SEC
+    A_PROD -.-> A_DB & A_SEC
+    F3 -.->|"Bearer"| A_SEC
+
+    class TA,TS,TP,F1,F2,F3,F4,A_APP,A_AUTH,A_PROD,A_DB,A_SEC petit;
+    %% code couleur des flèches : bleu = test_auth.py, violet = test_security.py, vert = test_produits.py
+    linkStyle 0 stroke:#3b82f6,stroke-width:2px;
+    linkStyle 1 stroke:#8b5cf6,stroke-width:2px;
+    linkStyle 2 stroke:#22c55e,stroke-width:2px;
+    linkStyle 3 stroke:#22c55e,stroke-width:2px;
+    linkStyle 4 stroke:#22c55e,stroke-width:2px;
+    style FIXTURES fill:#fff7e6,stroke:#f59e0b
+    style TESTS fill:#f0fdf4,stroke:#22c55e
+    style APP fill:#e8f4ff,stroke:#3b82f6
+```
+
+### Descriptif écrit
+
+## Rôle de `conftest.py`
+pytest le charge **avant tous les fichiers de tests**. Il définit 4 fixtures communes :
+
+- `session_test` — crée une base SQLite **en mémoire** (`sqlite:///:memory:`), y branche la session dans `routes/auth.py` et `routes/produits.py` (elle **remplace** celle de `db.py` liée à la vraie `digimarket.db`) ;
+- `client_http` — `app.test_client()`, le « curl simulé » de Flask (appelle les routes sans serveur) ;
+- `token_admin` / `token_client` — créent un compte en base de test, appellent `POST /api/auth/login`, renvoient le token JWT.
+
+## Qui demande quoi (code couleur des flèches dans le canva)
+
+| Couleur | Fichier de test | Demande |
+|---|---|---|
+| 🔵 bleu | `test_auth.py` (F1 🥉, 409) | → `client_http` |
+| 🟣 violet | `test_security.py` (F1 login + F4 tokens 401) | → `client_http` + `session_test` + `token_admin` |
+| 🟢 vert | `test_produits.py` (F2 CRUD 201/400/401/403/409) | → `client_http` + `session_test` + `token_admin` + `token_client` (pour tester le 403) |
+
+## Côté app testé
+`client_http` appelle `app/app.py`, qui dispatche vers `routes/auth.py` et `routes/produits.py` ; celles-ci utilisent la **session de test** (jamais la vraie base) et passent par `security.py` (`creer_token`/`verifier_token`/`admin_required`) — les tokens vont en header `Authorization: Bearer <token>`.
+
+👉 **L'essentiel** : les tests sont isolés (base en mémoire, jetable à chaque test) et ne touchent **jamais** `digimarket.db`.
+
