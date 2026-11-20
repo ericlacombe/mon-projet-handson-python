@@ -22,7 +22,7 @@ flowchart TB
     end
 
 
-    subgraph CLIENT["client externe (hors code) : curl / Thunder Client / navigateur"]
+    subgraph CLIENT["client externe (hors code) : curl / Thunder Client / navigateur<br/>flux d'une requête : client → app.py → routes → security (vérif token 401/403) → db.py → models → digimarket.db"]
         REQ1["POST /api/auth/register"]
         REQ2["POST /api/auth/login -> token"]
         REQ3["GET /api/produits?q=..."]
@@ -47,8 +47,5 @@ flowchart TB
     A_SEC -.->|User check_password_hash| A_MODELS
     A_SEC -.->|"SECRET_KEY"| ENV
 
-    FLOW["flux d'une requête : client → app.py → routes → security (vérif token 401/403) → db.py → models → digimarket.db"]
-    A_APP -.-> FLOW
 
     style APP fill:#e8f4ff,stroke:#3b82f6
-    style FLOW fill:#fef3c7,stroke:#d97706
