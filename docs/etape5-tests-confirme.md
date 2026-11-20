@@ -108,6 +108,9 @@ flowchart TB
     style APP fill:#e8f4ff,stroke:#3b82f6
 ```
 
+`client_http` appelle `app/app.py`, qui dispatche vers `routes/auth.py` et `routes/produits.py` ; celles-ci utilisent la **session de test** (jamais la vraie base) et passent par `security.py` (`creer_token`/`verifier_token`/`admin_required`) — les tokens vont en header `Authorization: Bearer <token>`.
+
+
 ### Descriptif écrit
 
 ## Rôle de `conftest.py`
