@@ -51,7 +51,7 @@
 
 ---
 
-## 🎨 Canva des interactions entre les tests — niveau 🥇 (voir `docs/canva-tests-confirme.mmd`)
+## 🎨 Canva des interactions entre les tests — niveau 🥇 (voir `docs/canva-tests.mmd`)
 
 ```mermaid
 %% Canva des interactions tests — NIVEAU 🥇 (avec test_commandes.py)
