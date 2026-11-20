@@ -16,7 +16,7 @@
 |---|---|---|
 | 🥉 débutant | **F1 — Gérer les comptes** (register + hachage) | ✅ fait et testé (`pytest` = 1 passed) — aussi figé dans `mon-premier-projet` |
 | 🥈 intermédiaire | **F2 — catalogue** + **F4 — sécurité JWT** | ✅ fait — code + 13 tests (`pytest` = 14 passed) |
-| 🥇 confirmé | **F3 — Gérer les commandes** (états, stock, historique) | ⏳ à venir |
+| 🥇 confirmé | **F3 — Gérer les commandes** (états, stock, historique) | 🚧 en cours — conception faite (`docs/etape4-confirme.md`, `docs/etape5-tests-confirme.md`), code à venir |
 
 ## Conventions (étape 0)
 - snake_case pour les variables et fonctions
@@ -44,7 +44,7 @@
 Liens : Utilisateur 1—N Commande · Categorie 1—N Produit · Produit 1—N LigneCommande · Commande 1—N LigneCommande
 (détail complet dans `etape3-objets.md`, schéma ER + PK/FK/UK)
 
-## Structure du projet (étape 4 → code étape 6, niveaux 🥉 fait / 🥈 en cours)
+## Structure du projet (étape 4 → code étape 6, niveaux 🥉 ✅ fait / 🥈 ✅ fait / 🥇 🚧 conception faite)
 ```
 mon-projet-handson-python/
 ├── README.md                   # ce fichier (page d'entrée)
@@ -55,7 +55,8 @@ mon-projet-handson-python/
 │   ├── __init__.py           # rend app/ importable comme package Python
 │   ├── app.py                  # point d'entrée Flask (app, blueprints, app.run)
 │   ├── db.py                   # engine SQLite + session partagée (SQLAlchemy pur)
-│   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 Category, Product (relation 1—N)
+│   ├── utils.py                # 🥇 fonctions pures 4.9 (à venir)
+│   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 Category, Product · 🥇 Order, OrderItem (🥇 à venir)
 │   └── routes/
 │       ├── auth.py             # 🥉 register · 🥈 login (token JWT)
 │       └── produits.py       # 🥈 F2 : CRUD /api/produits + /api/categories
@@ -63,14 +64,17 @@ mon-projet-handson-python/
 │   ├── test_auth.py            # 🥉 test_register_email_deja_utilise (409)
 │   ├── conftest.py             # 🥈 fixtures communes (base en mémoire, tokens)
 │   ├── test_security.py        # 🥈 F1 login + F4 tokens (401)
-│   └── test_produits.py        # 🥈 F2 CRUD produits/catégories (201/400/401/403/409)
+│   ├── test_produits.py        # 🥈 F2 CRUD produits/catégories (201/400/401/403/409)
+│   └── test_commandes.py       # 🥇 F3 (à venir)
 └── docs/                       # 📚 toute la documentation
     ├── attentes.md             # cahier des charges
     ├── methodologie.md         # la méthode (étapes 0–6 + niveaux)
     ├── methodologie-canva.mmd  # schéma visuel (Mermaid)
     ├── etape0-AFB.md … etape6-backlog-debutant.md   # résultat de chaque étape (🥉)
     ├── etape4-intermediaire.md, etape5-tests-intermediaire.md   # 🥈
-    └── canva-structure-debutant.mmd / canva-structure-intermediaire.mmd   # canva par niveau
+    ├── canva-structure-debutant.mmd / -intermediaire.mmd / -confirme.mmd  # canva structure par niveau
+    ├── canva-tests.mmd + canva-tests-debutant/intermediaire.mmd          # canva des interactions tests
+    └── etape4-confirme.md, etape5-tests-confirme.md                      # conception 🥇 (à venir)
 ```
 (digimarket.db est créée automatiquement au lancement, à la racine)
 
@@ -112,6 +116,7 @@ python -m app.app               # lance l'API sur http://127.0.0.1:5000 (depuis 
 ```bash
 pytest            # depuis la racine : lance tous les tests (14 tests : 🥉 1 + 🥈 13)
 ```
+🎨 Schéma des interactions entre les tests (fixtures conftest.py ↔ fichiers de tests ↔ app/) : `docs/canva-tests.mmd`.
 
 ## Fichiers du projet (avec niveau)
 | Fichier | Niveau | Description |
