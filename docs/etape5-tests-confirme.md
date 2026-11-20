@@ -110,7 +110,6 @@ flowchart TB
 
 `client_http` appelle `app/app.py`, qui dispatche vers `routes/auth.py` et `routes/produits.py` ; celles-ci utilisent la **session de test** (jamais la vraie base) et passent par `security.py` (`creer_token`/`verifier_token`/`admin_required`) — les tokens vont en header `Authorization: Bearer <token>`.
 
-
 ### Descriptif écrit
 
 ## Rôle de `conftest.py`
@@ -130,7 +129,6 @@ pytest le charge **avant tous les fichiers de tests**. Il définit 4 fixtures co
 | 🟠 orange | `test_commandes.py` (F3 🥇 : 201/400/401/403/404) | → `client_http` + `session_test` + `token_admin` + `token_client` |
 
 ## Côté app testé
-`client_http` appelle `app/app.py`, qui dispatche vers `routes/auth.py` et `routes/produits.py` ; celles-ci utilisent la **session de test** (jamais la vraie base) et passent par `security.py` (`creer_token`/`verifier_token`/`admin_required`) — les tokens vont en header `Authorization: Bearer <token>`.
 
 👉 **L'essentiel** : les tests sont isolés (base en mémoire, jetable à chaque test) et ne touchent **jamais** `digimarket.db`.
 
