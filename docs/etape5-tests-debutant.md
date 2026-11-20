@@ -82,3 +82,50 @@ def test_register_email_deja_utilise(client):
 
 ---
 *Étape 5 niveau 🥉 ✅. En attente de votre accord pour l'étape 6 niveau 🥉 (backlog + premier code : `app.py`, `modelsSQLAlchemy.py`, `routes/auth.py`, `requirements.txt`, le test).*
+
+---
+
+## 🎨 Canva des tests de ce niveau (`docs/canva-tests-debutant.mmd`)
+
+```mermaid
+%% Canva des interactions tests — NIVEAU 🥉 (uniquement le fil rouge « S'inscrire » : test_auth.py)
+%% Rendu : https://mermaid.live
+%%{init: {'flowchart': {'htmlLabels': true}}}%%
+flowchart TB
+    classDef petit font-size:11px;
+
+    subgraph TESTS["tests/ (niveau 🥉)"]
+        TA["test_auth.py<br/>F1 🥉 : register 409"]
+    end
+
+    subgraph FIXTURES["les fixtures créées par conftest.py<br/>(lancé par pytest avant tous les fichiers de tests)"]
+        F2["client_http<br/>test_client"]
+    end
+
+    subgraph APP["app/ (testé)"]
+        A_APP["app.py"]
+        A_AUTH["routes/auth.py"]
+        A_DB["db.py"]
+    end
+
+    TA -->|"test_auth (bleu)"| F2
+    F2 -.-> A_APP
+    A_APP --> A_AUTH
+    A_AUTH -.-> A_DB
+
+    class TA,F2,A_APP,A_AUTH,A_DB petit;
+    linkStyle 0 stroke:#3b82f6,stroke-width:2px;
+    style TESTS fill:#f0fdf4,stroke:#22c55e
+    style APP fill:#e8f4ff,stroke:#3b82f6
+```
+
+### Descriptif écrit
+
+Un seul fichier de test au niveau 🥉 (fil rouge « S'inscrire ») :
+
+| Couleur | Fichier | Demande |
+|---|---|---|
+| 🔵 bleu | `test_auth.py` (F1 🥉 : `test_register_email_deja_utilise` → 409) | `client_http` (créé par conftest.py, lancé par pytest avant tout) |
+
+Côté app : `client_http` → `app/app.py` → `routes/auth.py` → session de test (base en mémoire, jamais `digimarket.db`).
+

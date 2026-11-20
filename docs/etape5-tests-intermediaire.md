@@ -161,3 +161,68 @@ def test_liste_produits_avec_recherche(client_http, token_admin):
 
 ---
 *Conception des tests 🥈 prête. Prochaine étape (avec validation) : étape 6 niveau 🥈 — backlog puis code (security.py, login, produits).*
+
+---
+
+## 🎨 Canva des tests de ce niveau (`docs/canva-tests-intermediaire.mmd`)
+
+```mermaid
+%% Canva des interactions tests — NIVEAU 🥈 (sans le test 🥉 test_auth.py)
+%% Rendu : https://mermaid.live  (police réduite pour éviter les textes coupés)
+%%{init: {'flowchart': {'htmlLabels': true}}}%%
+flowchart TB
+    classDef petit font-size:11px;
+
+    subgraph TESTS["tests/"]
+        TS["test_security.py<br/>F1/F4 401"]
+        TP["test_produits.py<br/>F2 201/400/403/409"]
+    end
+
+    subgraph FIXTURES["les fixtures créées par conftest.py<br/>(lancé par pytest avant tous les fichiers de tests)"]
+        F1["session_test<br/>base en mémoire<br/>session branchée"]
+        F2["client_http<br/>test_client"]
+        F3["token_admin"]
+        F4["token_client (403)"]
+    end
+
+    subgraph APP["app/ (testé)"]
+        A_APP["app.py"]
+        A_AUTH["routes/auth.py"]
+        A_PROD["routes/produits.py"]
+        A_DB["db.py"]
+        A_SEC["security.py"]
+    end
+
+    TS -->|"test_security"| F2 & F1 & F3
+    TP -->|"test_produits"| F2 & F1 & F3 & F4
+
+    F1 -.->|"remplace la session"| A_AUTH & A_PROD
+    F2 -.-> A_APP
+    A_APP --> A_AUTH & A_PROD
+    A_AUTH -.-> A_DB & A_SEC
+    A_PROD -.-> A_DB & A_SEC
+    F3 -.->|"Bearer"| A_SEC
+
+    class TS,TP,F1,F2,F3,F4,A_APP,A_AUTH,A_PROD,A_DB,A_SEC petit;
+    %% code couleur des flèches : bleu = test_auth.py, violet = test_security.py, vert = test_produits.py
+        linkStyle 0 stroke:#8b5cf6,stroke-width:2px;
+    linkStyle 1 stroke:#22c55e,stroke-width:2px;
+    linkStyle 2 stroke:#22c55e,stroke-width:2px;
+    linkStyle 3 stroke:#22c55e,stroke-width:2px;
+    style FIXTURES fill:#fff7e6,stroke:#f59e0b
+    style TESTS fill:#f0fdf4,stroke:#22c55e
+    style APP fill:#e8f4ff,stroke:#3b82f6
+```
+
+### Descriptif écrit
+
+`conftest.py` (chargé par pytest avant tout) fournit : `session_test` (base en mémoire, session branchée dans auth.py/produits.py), `client_http` (test_client = curl simulé), `token_admin`, `token_client`.
+
+| Couleur | Fichier (niveau 🥈) | Demande |
+|---|---|---|
+| 🟣 violet | `test_security.py` (F1 login + F4 tokens 401) | client_http + session_test + token_admin |
+| 🟢 vert | `test_produits.py` (F2 CRUD 201/400/401/403/409) | client_http + session_test + token_admin + token_client (403) |
+
+(Le test 🥉 `test_auth.py` est retiré de ce canva — voir `docs/canva-tests-debutant.mmd`.)
+Côté app : `client_http` → `app/app.py` → routes → `security.py` (Bearer). Tests isolés : jamais `digimarket.db`.
+
