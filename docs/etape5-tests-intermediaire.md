@@ -54,6 +54,46 @@ F3 (commandes) n'est PAS testée ici (réservée au 🥇).
 
 ## Les tests (extraits, avec commentaires)
 
+### Les fixtures communes (niveau 🥈) — extraits de `tests/conftest.py`
+
+```python
+# tests/conftest.py — pytest le charge AVANT tous les fichiers de tests
+
+@pytest.fixture
+def session_test():
+    """Base SQLite EN MÉMOIRE + session branchée dans les routes (auth.py, produits.py).
+    → la vraie base digimarket.db n'est JAMAIS touchée par les tests."""
+    engine = create_engine("sqlite:///:memory:")   # base en RAM, jetable
+    Base.metadata.create_all(engine)                # crée users, categories, products
+    S = sessionmaker(bind=engine)()
+    auth_module.session = S                         # « poignée » : on remplace la session
+    prod_module.session = S                         #   de db.py par celle-ci dans les routes
+    yield S
+    Base.metadata.drop_all(engine)                  # nettoyage après le test
+
+@pytest.fixture
+def client_http(session_test):
+    """Client HTTP de test : app.test_client() = curl simulé (appelle les routes sans serveur)."""
+    app.config["TESTING"] = True
+    yield app.test_client()
+
+@pytest.fixture
+def token_admin(client_http, session_test):
+    """Token JWT d'un ADMIN : crée l'admin en base de test, login, renvoie le token."""
+    ...  # POST /api/auth/login → {"token": ...}
+    return token
+
+@pytest.fixture
+def token_client(client_http, session_test):
+    """Token JWT d'un CLIENT (rôle 'client') → sert à tester le 403 (rôle insuffisant)."""
+    ...
+```
+
+> 💡 Mécanisme clé : les routes font `from app.db import session` (elles utilisent la variable `session`).
+> En faisant `auth_module.session = S`, on **redirige** cette variable vers la base en mémoire :
+> toutes les opérations des routes passent par la base de TEST, jamais par `digimarket.db`.
+
+
 ```python
 # ============================================================
 # CATÉGORIE F1 — Gérer les comptes (authentification) → fichier : tests/test_security.py
