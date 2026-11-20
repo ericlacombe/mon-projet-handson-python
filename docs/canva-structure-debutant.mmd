@@ -26,9 +26,6 @@ flowchart TB
 
     subgraph CLIENT["client externe (hors code) : curl / Thunder Client / navigateur"]
         REQ1["POST /api/auth/register"]
-        REQ2["POST /api/auth/login -> token"]
-        REQ3["GET /api/produits?q=..."]
-        REQ4["POST /api/produits (Bearer admin)"]
     end
 
     CLIENT -->|HTTP| A_APP
