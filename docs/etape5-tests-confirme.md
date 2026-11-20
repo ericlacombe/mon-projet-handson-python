@@ -51,7 +51,7 @@
 
 ---
 
-## 🎨 Canva des interactions entre les tests (voir aussi `docs/canva-tests.mmd` + `docs/canva-tests.md`)
+## 🎨 Canva des interactions entre les tests (voir aussi `docs/canva-tests.mmd`)
 
 ```mermaid
 %% Canva des interactions tests — qui fournit quoi à qui
