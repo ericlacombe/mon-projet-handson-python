@@ -1,50 +1,44 @@
-%% Canva des interactions tests — qui fournit quoi à qui (pytest charge conftest.py avant tout)
-%% Rendu : https://mermaid.live
+%% Canva des interactions tests — qui fournit quoi à qui
+%% Rendu : https://mermaid.live  (police réduite pour éviter les textes coupés)
+%%{init: {'flowchart': {'htmlLabels': true}}}%%
 flowchart TB
-    subgraph TESTS["tests/ — fichiers de tests"]
-        CONF["conftest.py<br/>fixtures COMMUNES (chargé avant tout par pytest)"]
-        TA["test_auth.py<br/>F1 🥉 : register 409"]
-        TS["test_security.py<br/>F1 login + F4 tokens 401"]
-        TP["test_produits.py<br/>F2 CRUD 201/400/401/403/409"]
+    classDef petit font-size:11px;
+
+    subgraph TESTS["tests/"]
+        CONF["conftest.py<br/>fixtures communes"]
+        TA["test_auth.py<br/>F1 🥉 409"]
+        TS["test_security.py<br/>F1/F4 401"]
+        TP["test_produits.py<br/>F2 201/400/403/409"]
     end
 
-    subgraph FIXTURES["fixtures fournies par conftest.py"]
-        F1["session_test<br/>base SQLite EN MÉMOIRE<br/>+ session branchée dans auth.py / produits.py"]
-        F2["client_http<br/>app.test_client() = curl simulé"]
-        F3["token_admin<br/>admin créé en base test + login → token"]
-        F4["token_client<br/>client créé en base test + login → token"]
+    subgraph FIXTURES["fixtures de conftest.py"]
+        F1["session_test<br/>base en mémoire<br/>session branchée"]
+        F2["client_http<br/>test_client"]
+        F3["token_admin"]
+        F4["token_client (403)"]
     end
 
-    subgraph APP["app/ — code testé"]
-        A_APP["app/app.py<br/>app Flask + blueprints"]
+    subgraph APP["app/ (testé)"]
+        A_APP["app.py"]
         A_AUTH["routes/auth.py"]
         A_PROD["routes/produits.py"]
-        A_DB["db.py<br/>engine + session (VRAIE base digimarket.db)"]
-        A_SEC["security.py<br/>JWT : creer/verifier token"]
+        A_DB["db.py"]
+        A_SEC["security.py"]
     end
 
-    CONF -->|"définit"| F1
-    CONF -->|"définit"| F2
-    CONF -->|"définit"| F3
-    CONF -->|"définit"| F4
+    CONF --> F1 & F2 & F3 & F4
+    TA --> F2
+    TS --> F2 & F1 & F3
+    TP --> F2 & F1 & F3 & F4
 
-    TA -->|"demande client_http"| F2
-    TS -->|"demande client_http + session_test"| F2
-    TS -->|"demande token_admin"| F3
-    TP -->|"demande client_http + session_test + token_admin/token_client"| F2
-    TP -->|"token_client pour tester le 403"| F4
+    F1 -.->|"remplace la session"| A_AUTH & A_PROD
+    F2 -.-> A_APP
+    A_APP --> A_AUTH & A_PROD
+    A_AUTH -.-> A_DB & A_SEC
+    A_PROD -.-> A_DB & A_SEC
+    F3 -.->|"Bearer"| A_SEC
 
-    F1 -.->|"REMPLACE la session de"| A_AUTH
-    F1 -.->|"REMPLACE la session de"| A_PROD
-    F2 -.->|"appelle les routes de"| A_APP
-    A_APP --> A_AUTH
-    A_APP --> A_PROD
-    A_AUTH -.->|"session (test) + User"| A_DB
-    A_PROD -.->|"session (test) + Product/Category"| A_DB
-    A_AUTH -.->|"creer_token/verifier"| A_SEC
-    A_PROD -.->|"admin_required"| A_SEC
-    F3 -.->|"header Bearer"| A_SEC
-
+    class CONF,TA,TS,TP,F1,F2,F3,F4,A_APP,A_AUTH,A_PROD,A_DB,A_SEC petit;
     style CONF fill:#fef3c7,stroke:#d97706
     style FIXTURES fill:#fff7e6,stroke:#f59e0b
     style TESTS fill:#f0fdf4,stroke:#22c55e
