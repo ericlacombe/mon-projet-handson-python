@@ -31,8 +31,9 @@ commandes_bp = Blueprint("commandes", __name__, url_prefix="/api")
 
 
 def _peut_voir(order, user) -> bool:
-    """Règle 4.11 étendue (🥇) : on voit une commande si on est admin OU son propriétaire."""
-    return user.role == "admin" or order.user_id == user.id
+    """Règle 4.11 étendue (🥇) : on voit une commande si on est admin OU son propriétaire.
+    `user` = payload du token JWT (dict : {"user_id":..., "role":...}), pas un objet User."""
+    return user["role"] == "admin" or order.user_id == user["user_id"]
 
 
 def _serialize(order):
@@ -67,7 +68,7 @@ def creer_commande(user):
     if not adresse or not items:
         return jsonify({"error": "address_livraison et items (non vide) requis"}), 400
 
-    order = Order(user_id=user.id, address_livraison=adresse)   # statut = en_attente (défaut)
+    order = Order(user_id=user["user_id"], address_livraison=adresse)   # statut = en_attente (défaut)
     for it in items:
         product_id = it.get("product_id")
         quantite = it.get("quantite")
@@ -98,8 +99,8 @@ def creer_commande(user):
 def liste_commandes(user):
     """Renvoie les commandes : celles de l'utilisateur (client) ou toutes (admin)."""
     q = session.query(Order)
-    if user.role != "admin":
-        q = q.filter_by(user_id=user.id)           # client ne voit que les siennes
+    if user["role"] != "admin":
+        q = q.filter_by(user_id=user["user_id"])           # client ne voit que les siennes
     return jsonify([_serialize(o) for o in q.all()]), 200
 
 
@@ -138,7 +139,7 @@ def changer_statut(oid, user):
     body = request.get_json() or {}
     nouveau = body.get("statut")
     # client non admin ne peut QUE annuler sa propre commande (pas admin ici puisqu'on a passé _peut_voir)
-    if user.role != "admin" and nouveau != "annulée":
+    if user["role"] != "admin" and nouveau != "annulée":
         return jsonify({"error": "un client ne peut qu'annuler sa commande"}), 403
     ancien = order.statut
     try:
