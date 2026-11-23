@@ -243,6 +243,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 👉 **Sortie de l'étape 4** : l'arborescence de fichiers à créer (base, classes, modules, routes, sécurité, utilitaires).
 
 **Consignes de présentation du fichier `etape4-<niveau>.md`** (appliqué à chaque niveau) :
+0. La partie **4.8** contient l'arborescence complète + la référence au canva `docs/canva-structure-<niveau>.mmd` ; chaque partie 4.x se termine par un **bloc livrable concret** (tableau ou extrait de code).
 1. Commencer le fichier par un **tableau récap** : Fonction métier | Objet(s) | Routes | Fichiers à créer ;
 2. Dans **tous les tableaux** du chapitre (récap, 4.3, 4.5, 4.7…), les deux premières colonnes sont **Fonction métier** puis **Objet(s)** ;
 3. Un objet/fonction avec **relation 1—N** → niveau 🥈 ; avec **changement d'état (transitions)** → niveau 🥇 (voir règle de répartition par complexité).
@@ -301,7 +302,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 | 🥇 Confirmé | + tests de régression automatisés, matrice complète élément × type de test, tests de sécurité (401/403) et de validation (400/409) |
 
 **Outil** : une matrice « élément créé (étape 4) × type de test (unitaire / intégration / régression) ».
-> Consigne de présentation : dans la matrice, les 2 premières colonnes sont **Fonction métier** puis **Objet(s)**, puis l'élément testé, puis les types de test.
+> Consigne de présentation : colonnes de la matrice = **Fonction métier | Objet(s) | Élément testé | Unitaire | Intégration | Scénario | Résultat attendu | Nom du fichier** (+ **Régression** au 🥇).
 💡 **Explications** :
 - Règle du test : **un test = une fonction Python/classe testée + UN scénario + le résultat attendu** — un seul comportement par test, nom explicite.
 - **Ordre d'écriture** : d'abord les unitaires (chaque élément isolé), puis l'intégration (ensemble), et la régression se rejoue automatiquement à chaque modification.
@@ -326,6 +327,18 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 ⏱️ **variable (c'est le codage) — moyenne**
 
 **Règle de départ** : à l'étape 6, on crée et on valide d'abord le **BACKLOG** (lignes cochables et testables) avant d'écrire une seule ligne de code.
+
+**Structure type du fichier `etape6-backlog-<niveau>.md`** (à suivre à chaque niveau) :
+```
+# ÉTAPE 6 — NIVEAU <🥉/🥈/🥇> : BACKLOG (à valider AVANT le code)
+Règle : validation du backlog avant le 1er code, reprise des livrables étapes 4/5, tâche suivante après validation de la tâche en cours.
+**BACKLOG des tâches (à valider AVANT le code)**
+| ✅ | # | Tâches de code à réaliser | Source (étape · FM) | Dépend de | Fichier | Testable (preuve) |
+Ordre conseillé : 1 → … (tests à chaque incrément)
+## 📊 Résultats d'exécution des tâches (template : fichiers / commandes→résultat / tests exécutés par niveau / nouveaux tests / backlog coché + cohérence des commentaires)
+**DoD niveau <…>** (chaque critère + « Vérifié par »)
+🎉 bloc final : récap des tâches + commits
+```
 
 **Principe** : à chaque niveau (🥉 débutant → 🥈 intermédiaire → 🥇 confirmé), on exécute la boucle **étape 4 → étape 5 → étape 6** : conception du niveau → tests du niveau → backlog du niveau → **code de l'incrément**. **Chaque ligne du backlog doit être cochable et testable seule ; après chaque incrément le code reste fonctionnel ; on coche le backlog au fur et à mesure (**1 tâche cochée = 1 commit** avec un message clair) ; on ne change pas de niveau tant que la DoD du niveau courant n'est pas validée** (code ✅ + test ✅ + doc ✅ + commit ✅), et on ne mélange jamais deux niveaux dans le même incrément.
 
