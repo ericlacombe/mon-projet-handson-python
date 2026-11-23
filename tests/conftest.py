@@ -41,6 +41,7 @@ from app.modelsSQLAlchemy import Base, User, Category
 # session.add/commit des routes écrivent dans la base de TEST, jamais dans la vraie base.
 import app.routes.auth as auth_module
 import app.routes.produits as prod_module
+import app.routes.commandes as cmd_module   # 🥇 F3 : à brancher aussi sur la session de test
 
 
 @pytest.fixture
