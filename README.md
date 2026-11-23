@@ -16,7 +16,7 @@
 |---|---|---|
 | 🥉 débutant | **F1 — Gérer les comptes** (register + hachage) | ✅ fait et testé (`pytest` = 1 passed) — aussi figé dans `mon-premier-projet` |
 | 🥈 intermédiaire | **F2 — catalogue** + **F4 — sécurité JWT** | ✅ fait — code + 13 tests (`pytest` = 14 passed) |
-| 🥇 confirmé | **F3 — Gérer les commandes** (états, stock, historique) | 🚧 en cours — conception faite (`docs/etape4-confirme.md`, `docs/etape5-tests-confirme.md`), code à venir |
+| 🥇 confirmé | **F3 — Gérer les commandes** (états, stock, historique) | ✅ fait — code + tests (`pytest` = 32 passed) · conception : `docs/etape4-confirme.md`, `docs/etape5-tests-confirme.md`, `docs/etape6-backlog-confirme.md` |
 
 ## Conventions (étape 0)
 - snake_case pour les variables et fonctions
@@ -44,7 +44,7 @@
 Liens : Utilisateur 1—N Commande · Categorie 1—N Produit · Produit 1—N LigneCommande · Commande 1—N LigneCommande
 (détail complet dans `etape3-objets.md`, schéma ER + PK/FK/UK)
 
-## Structure du projet (étape 4 → code étape 6, niveaux 🥉 ✅ fait / 🥈 ✅ fait / 🥇 🚧 conception faite)
+## Structure du projet (étape 4 → code étape 6, niveaux 🥉 ✅ fait / 🥈 ✅ fait / 🥇 ✅ fait)
 ```
 mon-projet-handson-python/
 ├── README.md                   # ce fichier (page d'entrée)
@@ -55,7 +55,7 @@ mon-projet-handson-python/
 │   ├── __init__.py           # rend app/ importable comme package Python
 │   ├── app.py                  # point d'entrée Flask (app, blueprints, app.run)
 │   ├── db.py                   # engine SQLite + session partagée (SQLAlchemy pur)
-│   ├── utils.py                # 🥇 fonctions pures 4.9 (à venir)
+│   ├── utils.py                # 🥇 fonctions pures 4.9 : calculer_total, verifier_stock
 │   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 Category, Product · 🥇 Order, OrderItem (🥇 à venir)
 │   └── routes/
 │       ├── auth.py             # 🥉 register · 🥈 login (token JWT)
@@ -65,7 +65,7 @@ mon-projet-handson-python/
 │   ├── conftest.py             # 🥈 fixtures communes (base en mémoire, tokens)
 │   ├── test_security.py        # 🥈 F1 login + F4 tokens (401)
 │   ├── test_produits.py        # 🥈 F2 CRUD produits/catégories (201/400/401/403/409)
-│   └── test_commandes.py       # 🥇 F3 (à venir)
+│   └── test_commandes.py       # 🥇 F3 : transitions, stock, client_propriétaire 403
 └── docs/                       # 📚 toute la documentation
     ├── attentes.md             # cahier des charges
     ├── methodologie.md         # la méthode (étapes 0–6 + niveaux)
@@ -74,13 +74,13 @@ mon-projet-handson-python/
     ├── etape4-intermediaire.md, etape5-tests-intermediaire.md   # 🥈
     ├── canva-structure-debutant.mmd / -intermediaire.mmd / -confirme.mmd  # canva structure par niveau
     ├── canva-tests.mmd + canva-tests-debutant/intermediaire.mmd          # canva des interactions tests
-    └── etape4-confirme.md, etape5-tests-confirme.md                      # conception 🥇 (à venir)
+    └── etape4-confirme.md, etape5-tests-confirme.md                      # 🥇 faits
 ```
 (digimarket.db est créée automatiquement au lancement, à la racine)
 
-📊 Cette structure est illustrée dans les canva : 🥉 **[docs/canva-structure-debutant.mmd](docs/canva-structure-debutant.mmd)** (figé) · 🥈 **[docs/canva-structure-intermediaire.mmd](docs/canva-structure-intermediaire.mmd)** (en cours).
+📊 Cette structure est illustrée dans les canva : 🥉 **[canva-structure-debutant.mmd](docs/canva-structure-debutant.mmd)** · 🥈 **[canva-structure-intermediaire.mmd](docs/canva-structure-intermediaire.mmd)** · 🥇 **[canva-structure-confirme.mmd](docs/canva-structure-confirme.mmd)** (jamais écrasés).
 
-## API — routes du niveau 🥈 (contrat complet dans docs/etape4-intermediaire.md §4.7)
+## API — routes des niveaux 🥈+🥇 (contrat complet : docs/etape4-intermediaire.md §4.7, docs/etape4-confirme.md §4.7)
 
 | Fonction métier | Objet(s) | Méthode | Route | Accès | Codes |
 |---|---|---|---|---|---|
@@ -88,7 +88,10 @@ mon-projet-handson-python/
 | F1+F4 | `User` → token | POST | `/api/auth/login` | Public | 200 + JWT · 401 (🥈 🚧) |
 | F2 | `Product` | GET | `/api/produits` (`?q=` recherche) | Public | 200 (🥈 🚧) |
 | F2 | `Product` | GET | `/api/produits/<id>` | Public | 200 · 404 (🥈 🚧) |
-| F2+F4 | `Product`, `Category` | POST/PUT/DELETE | `/api/produits[/<id>]` | **Admin** (Bearer token) | 201/200/204 · 400 · 401 · 403 (🥈 🚧) |
+| F2+F4 | `Product`, `Category` | POST/PUT/DELETE | `/api/produits[/<id>]` | **Admin** (Bearer token) | 201/200/204 · 400 · 401 · 403 (🥈 ✅) |
+| F3+F4 | `Order`, `OrderItem` | POST | `/api/commandes` | Client (Bearer) | 201 · 400 (stock/qte) · 401 (🥇 ✅) |
+| F3+F4 | `Order` | GET | `/api/commandes[/<id>[/lignes]]` | Client **propriétaire** ou admin | 200 · 403 · 404 (🥇 ✅) |
+| F3+F4 | `Order.statut` | PATCH | `/api/commandes/<id>/statut` | Admin (tout) / client_propriétaire (annulée) | 200 · 400 (transition 4.6) · 403 · 404 (🥇 ✅) |
 
 ## Sécurité — la chaîne de protection de bout en bout
 
@@ -114,7 +117,7 @@ python -m app.app               # lance l'API sur http://127.0.0.1:5000 (depuis 
 
 ## Comment tester (étape 5)
 ```bash
-pytest            # depuis la racine : lance tous les tests (14 tests : 🥉 1 + 🥈 13)
+pytest            # depuis la racine : lance tous les tests (32 tests : 🥉 1 + 🥈 13 + 🥇 18)
 ```
 🎨 Schéma des interactions entre les tests (fixtures conftest.py ↔ fichiers de tests ↔ app/) : `docs/canva-tests.mmd`.
 
@@ -142,3 +145,16 @@ pytest            # depuis la racine : lance tous les tests (14 tests : 🥉 1 +
 | 🥉 | `app/routes/auth.py` | Route POST /api/auth/register |
 | 🥉 | `tests/test_auth.py` | 🧪 Test 409 email déjà pris |
 | 🥉 | `README.md` | Ce fichier |
+
+## Traçabilité CDC (exigence → réalisation → test)
+
+| Exigence CDC | Réalisation | Test |
+|---|---|---|
+| S'inscrire / se connecter (F1) | `routes/auth.py` (register 🥉, login 🥈) | `test_auth.py`, `test_security.py` |
+| Catalogue produits + catégories (F2) | `routes/produits.py` (🥈) | `test_produits.py` |
+| Sécurité JWT 401/403 (F4) | `security.py` (🥈) | `test_security.py` |
+| Passer une commande (F3) | `routes/commandes.py` POST (🥇) | `test_creer_commande_201`, `test_stock_insuffisant_400`, `test_quantite_zero_400`, `test_sans_token_401` |
+| Historique + suivi de statut (F3) | `routes/commandes.py` GET/PATCH (🥇) | `test_liste_mes_commandes`, `test_patch_*`, `test_transition_*` |
+| Règle client_propriétaire (F4 étendu) | `_peut_voir` dans `commandes.py` (🥇) | `test_commande_autre_client_403`, `test_patch_client_non_proprietaire_403` |
+| Stock décrémenté/restitué (F3) | PATCH statut (🥇) | `test_stock_decremente/restitue_*` |
+| Erreurs globales JSON (4.10) | `app/app.py` errorhandlers 404/405/500 (🥇) | vérifié au lancement (404/405 JSON) |
