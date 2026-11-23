@@ -2,7 +2,7 @@
 
 Règle : on valide ce backlog avant la 1ʳᵉ ligne de code 🥇. Chaque tâche a son « testable » = la preuve que c'est fait. Le code 🥉/🥈 reste fonctionnel (on ajoute, on ne remplace pas).
 
-| ✅ | # | Tâche | Depuis étape 4 🥇 | Fichier | Testable (preuve) |
+| ✅ | # | Tâches de code à réaliser | Depuis étape 4 🥇 | Fichier | Testable (preuve) |
 |---|---|---|---|---|---|
 | [ ] | 1 | Modèles `Order` + `OrderItem` (FK, relations 4.5, `STATUTS`/`TRANSITIONS`/`changer_statut` 4.6) | objets F3 (4.5/4.6) | `app/modelsSQLAlchemy.py` | import OK + `create_all` crée orders/order_items + `test_transition_autorisee/interdite` |
 | [ ] | 2 | Fonctions pures 4.9 : `calculer_total`, `verifier_stock` | 4.9 | `app/utils.py` | `test_calculer_total`, `test_verifier_stock_*` passent |
