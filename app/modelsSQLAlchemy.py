@@ -134,7 +134,12 @@ class Order(Base):
     # Total calculé par calculer_total (4.9, app/utils.py) à la validation
     total = Column(Float, nullable=False, default=0.0)
 
-    # RELATIONS (4.5) : user = l'acheteur (N—1) ; items = lignes (1—N)
+    # RELATIONS (4.5), même style que Category/Product :
+    # - user  : côté "N" vers users — relationship("User") + backref="orders"
+    #           (crée user.orders : toutes les commandes de l'acheteur)
+    # - items : côté "1" vers order_items — backref="order" (accès inverse item.order)
+    # - lazy=True (défaut) : les lignes sont chargées seulement quand on y accède
+    # - cascade="all, delete-orphan" : supprimer une commande supprime ses lignes
     user = relationship("User", backref="orders")
     items = relationship("OrderItem", backref="order", lazy=True,
                          cascade="all, delete-orphan")
@@ -178,7 +183,7 @@ class OrderItem(Base):
     # Prix unitaire FIGÉ à la commande (le prix du produit peut changer après)
     prix_unitaire = Column(Float, nullable=False)
 
-    # Accès inverse vers le produit (N—1)
+    # RELATION (4.5) côté "N" vers products : backref="order_items" (product.order_items)
     product = relationship("Product", backref="order_items")
 
     def __repr__(self):
