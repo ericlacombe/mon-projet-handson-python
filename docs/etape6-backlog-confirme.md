@@ -1,6 +1,6 @@
 # ÉTAPE 6 — NIVEAU 🥇 : BACKLOG (à valider AVANT le code)
 
-Règle : on valide ce backlog avant la 1ʳᵉ ligne de code 🥇. Chaque tâche a son « testable » = la preuve que c'est fait. Le code 🥉/🥈 reste fonctionnel (on ajoute, on ne remplace pas).
+Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend les résultats des livrables md de l'étape 4 et de l'étape 5. Le code 🥉/🥈 reste fonctionnel (on ajoute, on ne remplace pas). Chaque tâche a son « testable » = la preuve que c'est fait. On exécute la tâche suivante uniquement lorsque la tâche en cours est validée.
 
 | ✅ | # | Tâches de code à réaliser | Depuis étape 4 🥇 | Fichier | Testable (preuve) |
 |---|---|---|---|---|---|
