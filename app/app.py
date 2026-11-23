@@ -47,10 +47,12 @@ from app.routes.auth import auth_bp
 #   Pourquoi un 2e blueprint ? Chaque domaine fonctionnel a son fichier (CDC) :
 #   app.py ne fait qu'assembler.
 from app.routes.produits import produits_bp
+from app.routes.commandes import commandes_bp   # 🥇 F3
 # register_blueprint : enregistre les routes du blueprint dans l'app
 # → accessibles sous /api/auth/... et /api/produits, /api/categories
 app.register_blueprint(auth_bp)
 app.register_blueprint(produits_bp)
+app.register_blueprint(commandes_bp)   # 🥇 F3
 
 # ------------------------------------------------------------------
 # Données de DÉMO (si la base est vide) : 🥉 compte admin · 🥈 + catalogue
