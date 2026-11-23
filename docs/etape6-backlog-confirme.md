@@ -29,7 +29,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 | Résultat | … |
 | Tests exécutés | `pytest tests/ -q` → X passed = 🥉 (1 : `test_auth.py`) + 🥈 (13 : `test_security.py`, `test_produits.py`) → régression OK |
 | Nouveaux tests 🥇 écrits | aucun (prévus tâche 6) — ou liste |
-| Backlog | tâche N cochée + commit poussé + **résultat de la tâche mis à jour dans cette section** (sous-tâche : remplir le bloc ✅ de la tâche) |
+| Backlog | tâche N cochée + commit poussé + **résultat de la tâche mis à jour dans cette section** (sous-tâches : remplir le bloc ✅ de la tâche · **s'assurer de la cohérence des commentaires explicatifs du code** avec les autres fichiers) |
 
 ### ✅ Tâche 1 — Modèles `Order` + `OrderItem`
 - **Fichiers** : `app/modelsSQLAlchemy.py`
