@@ -29,7 +29,7 @@ from flask import Flask, jsonify
 # importer app.py)
 from app.db import session
 # modèles (définis dans modelsSQLAlchemy.py) : User (🥉), Category + Product (🥈)
-from app.modelsSQLAlchemy import User, Category, Product
+from app.modelsSQLAlchemy import User, Category, Product, Order, OrderItem
 # hachage du mot de passe de démo (werkzeug, inclus avec Flask)
 from werkzeug.security import generate_password_hash
 
@@ -87,6 +87,7 @@ def init_sample_data():
 
     🥉 : un compte admin (admin@digimarket.fr) pour se connecter tout de suite.
     🥈 : + 1 catégorie + 2 produits (catalogue visible sans rien créer).
+    🥇 : + 1 compte client de démo + 1 commande exemple (Order + OrderItem, en_attente).
 
     Utilité : avoir un compte prêt pour essayer l'API À LA MAIN
     (curl, navigateur, Thunder Client) sans passer par l'inscription.
@@ -115,8 +116,26 @@ def init_sample_data():
                             price=899.99, stock=10, category_id=cat.id))
         session.add(Product(name="Clavier mécanique", description="Switchs silencieux",
                             price=79.90, stock=25, category_id=cat.id))
+        # --- Niveau 🥇 : compte CLIENT de démo + 1 commande exemple (indépendant des tests) ---
+        # (les tests utilisent leur propre base en mémoire — ceci ne sert qu'à la démo manuelle)
+        client = User(
+            email="client@digimarket.fr",
+            password_hash=generate_password_hash("client123"),
+            first_name="Chloé",
+            last_name="Demo",
+            role="client",                  # Jamais 'admin' ici (chaîne de protection §4.11)
+        )
+        session.add(client)
+        session.flush()                     # id du client pour la FK de la commande
+        produit = session.query(Product).filter_by(name="PC portable").first()
+        cmd = Order(user_id=client.id, address_livraison="12 rue des Lilas, Paris",
+                    statut="en_attente")    # cycle 4.6 : en_attente par défaut
+        cmd.items.append(OrderItem(product_id=produit.id, quantite=1,
+                                   prix_unitaire=produit.price))   # prix figé à la commande
+        cmd.total = sum(i.quantite * i.prix_unitaire for i in cmd.items)  # 4.9 (calcul manuel ici)
+        session.add(cmd)
         session.commit()
-        print("Données de démo initialisées (admin + catalogue).")
+        print("Données de démo initialisées (admin + client + catalogue + 1 commande).")
 
 # ------------------------------------------------------------------
 # Point d'entrée : lance le serveur Flask
