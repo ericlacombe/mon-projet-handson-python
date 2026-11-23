@@ -16,6 +16,10 @@ import pytest
 # modèles + fonctions pures testées
 from app.modelsSQLAlchemy import Base, Order, OrderItem, Product, Category
 
+# ============================================================
+# CATÉGORIE F3 — Gérer les commandes (order, statut, stock) → ce fichier
+# ============================================================
+
 
 # ------------------------------------------------------------------
 # Helper : créer une catégorie + un produit en base de test (via l'admin)
@@ -28,8 +32,8 @@ def _creer_produit(client_http, token_admin, session_test, stock=5, price=10.0):
                          json={"name": "PC Gamer", "price": price, "stock": stock,
                                "category_id": 1},
                          headers=H)
-    assert r.status_code == 201
-    return r.get_json()["id"]
+    assert r.status_code == 201            # produit créé en base de test
+    return r.get_json()["id"]               # id du produit pour les commandes
 
 
 # ==================================================================
@@ -40,7 +44,7 @@ def _creer_produit(client_http, token_admin, session_test, stock=5, price=10.0):
 def test_transition_autorisee():
     o = Order(statut="en_attente")
     o.changer_statut("validée")
-    assert o.statut == "validée"
+    assert o.statut == "validée"           # transition appliquée (4.6)
 
 # Scénario : validée -> livrée est INTERDIT (4.6). Attendu : ValueError.
 def test_transition_interdite():
@@ -54,12 +58,12 @@ def test_calculer_total():
     order = Order()
     order.items = [OrderItem(quantite=2, prix_unitaire=10.0),
                    OrderItem(quantite=1, prix_unitaire=5.0)]
-    assert calculer_total(order) == 25.0
+    assert calculer_total(order) == 25.0  # Σ qte×prix = 2×10 + 1×5
 
 # Scénario : stock suffisant (5 >= 2). Attendu : True.
 def test_verifier_stock_ok():
     from app.utils import verifier_stock
-    assert verifier_stock(Product(stock=5), 2) is True
+    assert verifier_stock(Product(stock=5), 2) is True   # 5 >= 2 : assez de stock
 
 # Scénario : stock insuffisant (5 < 9) ou qte <= 0. Attendu : False / ValueError.
 def test_verifier_stock_insuffisant():
@@ -83,7 +87,7 @@ def test_creer_commande_201(client_http, token_client, session_test, token_admin
                          headers=H)
     assert r.status_code == 201
     body = r.get_json()
-    assert body["total"] == 20.0 and body["statut"] == "en_attente"
+    assert body["total"] == 20.0 and body["statut"] == "en_attente"  # 2×10, statut initial
 
 # Scénario : quantité > stock. Attendu : 400.
 def test_stock_insuffisant_400(client_http, token_client, session_test, token_admin):
@@ -130,7 +134,7 @@ def test_liste_mes_commandes(client_http, token_client, session_test, token_admi
     _commande(client_http, token_client, session_test, token_admin)
     H = {"Authorization": f"Bearer {token_client}"}
     r = client_http.get("/api/commandes", headers=H)
-    assert r.status_code == 200 and len(r.get_json()) == 1
+    assert r.status_code == 200 and len(r.get_json()) == 1   # une seule commande (la sienne)
 
 # Scénario : un AUTRE client lit la commande d'un autre. Attendu : 403 (4.11 client_propriétaire).
 def test_commande_autre_client_403(client_http, token_client, session_test, token_admin):
@@ -156,14 +160,14 @@ def test_patch_admin_valide_200(client_http, token_client, session_test, token_a
     oid = _commande(client_http, token_client, session_test, token_admin)
     r = client_http.patch(f"/api/commandes/{oid}/statut", json={"statut": "validée"},
                           headers={"Authorization": f"Bearer {token_admin}"})
-    assert r.status_code == 200 and r.get_json()["statut"] == "validée"
+    assert r.status_code == 200 and r.get_json()["statut"] == "validée"  # admin a validé
 
 # Scénario : le client PROPRIÉTAIRE annule sa commande. Attendu : 200 + annul\u00e9e.
 def test_patch_client_proprietaire_annule_200(client_http, token_client, session_test, token_admin):
     oid = _commande(client_http, token_client, session_test, token_admin)
     r = client_http.patch(f"/api/commandes/{oid}/statut", json={"statut": "annulée"},
                           headers={"Authorization": f"Bearer {token_client}"})
-    assert r.status_code == 200 and r.get_json()["statut"] == "annulée"
+    assert r.status_code == 200 and r.get_json()["statut"] == "annulée"  # proprio a annulé
 
 # Scénario : transition interdite (en_attente -> livrée, 4.6). Attendu : 400.
 def test_patch_transition_interdite_400(client_http, token_client, session_test, token_admin):
@@ -195,7 +199,7 @@ def test_stock_decremente_a_validation(client_http, token_client, session_test, 
                            headers=H).get_json()["id"]
     client_http.patch(f"/api/commandes/{oid}/statut", json={"statut": "validée"},
                       headers={"Authorization": f"Bearer {token_admin}"})
-    assert session_test.get(Product, pid).stock == 3
+    assert session_test.get(Product, pid).stock == 3   # 5 - 2 : décrémenté à la validation
 
 # Scénario : annulation d'une commande validée de 2 unités. Attendu : stock restitué = 5.
 def test_stock_restitue_a_annulation(client_http, token_client, session_test, token_admin):
@@ -207,4 +211,4 @@ def test_stock_restitue_a_annulation(client_http, token_client, session_test, to
     Ha = {"Authorization": f"Bearer {token_admin}"}
     client_http.patch(f"/api/commandes/{oid}/statut", json={"statut": "validée"}, headers=Ha)
     client_http.patch(f"/api/commandes/{oid}/statut", json={"statut": "annulée"}, headers=Ha)
-    assert session_test.get(Product, pid).stock == 5
+    assert session_test.get(Product, pid).stock == 5   # restitué à l'annulation
