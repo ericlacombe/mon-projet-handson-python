@@ -17,17 +17,17 @@ flowchart TB
 
         subgraph ETAPE4["ETAPE 4 — les 11 parties (analyse -> condition -> ACTION) — une fois par niveau"]
             direction LR
-            A41["4.1 Base — tables a creer ? -> ACTION"]
-            A42["4.2 Temporaires — non persistant ? -> dict"]
-            A43["4.3 Contraintes — regle de validite ? -> contrainte + code"]
-            A44["4.4 Objets simples — etat persistant ? -> classe + table"]
-            A45["4.5 Relations 1-N — objets lies ? -> FK + relationship"]
-            A46["4.6 Transitions — cycle de vie ? -> methodes + controle (🥇)"]
-            B47["4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
-            B48["4.8 Modules — 1 blueprint par fonction metier"]
-            B49["4.9 Fonctions pures — transformation sans etat ?"]
-            B410["4.10 Erreurs — branches d'erreur ? -> codes HTTP"]
-            B411["4.11 Securite — auth ? -> token JWT, 401/403"]
+            A41["🥉 4.1 Base — tables a creer ? -> ACTION"]
+            A42["🥇 4.2 Temporaires — non persistant ? -> dict"]
+            A43["🥈 4.3 Contraintes — regle de validite ? -> contrainte + code"]
+            A44["🥉 4.4 Objets simples — etat persistant ? -> classe + table"]
+            A45["🥈 4.5 Relations 1-N — objets lies ? -> FK + relationship"]
+            A46["🥇 4.6 Transitions — cycle de vie ? -> methodes + controle (🥇)"]
+            B47["🥉 4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
+            B48["🥉 4.8 Modules — 1 blueprint par fonction metier"]
+            B49["🥇 4.9 Fonctions pures — transformation sans etat ?"]
+            B410["🥉 4.10 Erreurs — branches d'erreur ? -> codes HTTP"]
+            B411["🥈 4.11 Securite — auth ? -> token JWT, 401/403"]
             A41 --> A42 --> A43 --> A44 --> A45 --> A46
             A46 --> B47
             B47 --> B48 --> B49 --> B410 --> B411
