@@ -4,7 +4,7 @@ flowchart TB
     classDef petit font-size:11px;
 
     subgraph PHASE1["ETAPES 0-3 : faites UNE SEULE FOIS (conception globale)"]
-        direction TB
+        direction LR
         E0["(0) AFB<br/>besoins + contraintes<br/>30 min"]
         E1["(1) USE CASES<br/>acteurs + cas + matrice des roles<br/>45 min"]
         E2["(2) FONCTIONS METIER<br/>diagramme fonctionnel + 1 flux detaille<br/>1 h"]
@@ -16,9 +16,9 @@ flowchart TB
         direction TB
 
         subgraph ETAPE4["ETAPE 4 — les 11 parties (analyse -> condition -> si positif, ACTION) — appelee UNE FOIS PAR NIVEAU"]
-            direction TB
+            direction LR
             subgraph GA["Groupe A — DONNEES (d'apres l'etape 3)"]
-                direction TB
+                direction LR
                 A41["4.1 Base de donnees — tables a creer ? -> ACTION"]
                 A42["4.2 Donnees temporaires — donnee non persistante ? -> dict/objet leger"]
                 A43["4.3 Contraintes metier — regle de validite ? -> contrainte + code erreur"]
@@ -27,7 +27,7 @@ flowchart TB
                 A46["4.6 Transitions d'etat — cycle de vie ? -> methodes + controle (🥇)"]
             end
             subgraph GB["Groupe B — COMPORTEMENT (d'apres etapes 1-2)"]
-                direction TB
+                direction LR
                 B47["4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
                 B48["4.8 Organisation du code — 1 module/blueprint par fonction metier"]
                 B49["4.9 Fonctions Python pures — transformation sans etat ?"]
