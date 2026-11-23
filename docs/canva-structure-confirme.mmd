@@ -31,7 +31,9 @@ flowchart TB
         REQ2["POST /api/auth/login -> token"]
         REQ3["GET /api/produits?q=..."]
         REQ4["POST /api/produits (Bearer admin)"]
-        REQ5["POST /api/commandes (Bearer) · PATCH .../statut"]
+        REQ5["POST /api/commandes (Bearer)"]
+        REQ6["GET /api/commandes[/<id>] (Bearer)"]
+        REQ7["PATCH /api/commandes/<id>/statut (admin ou proprio)"]
     end
 
     CLIENT -->|HTTP| A_APP
