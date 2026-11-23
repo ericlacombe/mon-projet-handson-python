@@ -37,6 +37,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Résultat** : 5 tables (`users, categories, products, orders, order_items`) · `en_attente→validée` OK · `validée→livrée` → ValueError (interdite)
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (prévus tâche 6 : `test_transition_autorisee/interdite`)
+- **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 1 cochée `[x]`, commits `e0c0b59` (code) + `765393e` (backlog)
 
 ### ✅ Tâche 2 — `app/utils.py` (`calculer_total`, `verifier_stock`)
@@ -45,6 +46,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Résultat** : `calculer_total` = 25.0 (2×10 + 1×5) · `verifier_stock` qte 2 → True, qte 9 → False, qte 0 → ValueError
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (prévus tâche 6 : `test_calculer_total`, `test_verifier_stock_*`)
+- **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 2 cochée `[x]`, commit `b06d4fe`
 
 ### ✅ Tâche 3 — `routes/commandes.py` (POST/GET/PATCH + règle 403 client_propriétaire)
@@ -53,6 +55,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Résultat** : POST 201 (total 20.0, en_attente) · 400 stock insuffisant/qte 0 · 401 sans token · GET liste 200 · autre client 403 · admin 200 · inconnu 404 · PATCH validée 200 (stock 5→3) · transition interdite 400 · client non-proprio 403 · client proprio annule 200 (stock restitué 5)
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (prévus tâche 6)
+- **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 3 cochée `[x]`, commits `06cfa6e` + `a31b8fb`
 
 ### ✅ Tâche 4 — Gestionnaire d'erreurs global (4.10)
@@ -61,6 +64,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Résultat** : 404 `{"error": "ressource introuvable"}` · 405 `{"error": "méthode non autorisée"}` · 500 handler posé
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (prévus tâche 6)
+- **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 4 cochée `[x]`, commit `b9958c3`
 
 ### ✅ Tâche 5 — `conftest.py` (branche `commandes_module`)
@@ -69,6 +73,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Résultat** : la session de test est branchée dans auth.py, produits.py **et commandes.py** → les tests 🥇 n'écriront pas dans `digimarket.db`
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (tâche 6)
+- **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 5 cochée `[x]`, commit `08f08a8`
 
 ### ✅ Tâche 6 — `tests/test_commandes.py` (tests 🥇 + régression)
@@ -76,6 +81,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Commandes** : `./venv/bin/python -m pytest tests/ -q` → **32 passed**
 - **Résultat** : unitaires 4.6/4.9 (transitions, calculer_total, verifier_stock) + intégration POST 201/400/401, GET 200/403/404, PATCH 200/400/403 + stock 5→3→5 — tout vert
 - **Tests exécutés** : `pytest` → **32 passed** (🥉 1 + 🥈 13 + 🥇 18) — régression complète OK
+- **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 6 cochée `[x]`, commits `0594f03` (tests) + `a947a13` (fix conftest)
 
 ### ⬜ Tâche 7 — Données de démo (indépendant des tests)
