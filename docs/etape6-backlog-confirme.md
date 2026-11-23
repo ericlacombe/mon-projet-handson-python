@@ -18,6 +18,48 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 
 **Ordre conseillé** : 1 → 2 → 3 → 4 → 5 (conftest) → 6 (tests) → 7 → 8 (tests à chaque incrément, régression à la fin).
 
+---
+
+## 📊 Résultats d'exécution des tâches (template)
+
+| Élément | Détail |
+|---|---|
+| Fichiers modifiés/créés | … |
+| Commandes exécutées | `pytest tests/ -q`, vérif manuelle `python -c "..."` |
+| Résultat | … |
+| Tests exécutés | `pytest tests/ -q` → X passed = 🥉 (1 : `test_auth.py`) + 🥈 (13 : `test_security.py`, `test_produits.py`) → régression OK |
+| Nouveaux tests 🥇 écrits | aucun (prévus tâche 6) — ou liste |
+| Backlog | tâche N cochée + commit poussé |
+
+### ✅ Tâche 1 — Modèles `Order` + `OrderItem`
+- **Fichiers** : `app/modelsSQLAlchemy.py`
+- **Commandes** : `python -c "..."` (import + tables + transitions) · `pytest tests/ -q`
+- **Résultat** : 5 tables (`users, categories, products, orders, order_items`) · `en_attente→validée` OK · `validée→livrée` → ValueError (interdite)
+- **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
+- **Nouveaux tests 🥇** : aucun (prévus tâche 6 : `test_transition_autorisee/interdite`)
+- **Backlog** : tâche 1 cochée `[x]`, commits `e0c0b59` (code) + `765393e` (backlog)
+
+### ⬜ Tâche 2 — `app/utils.py` (`calculer_total`, `verifier_stock`)
+…
+
+### ⬜ Tâche 3 — `routes/commandes.py`
+…
+
+### ⬜ Tâche 4 — Gestionnaire d'erreurs global (4.10)
+…
+
+### ⬜ Tâche 5 — `conftest.py` (branche `commandes_module`)
+…
+
+### ⬜ Tâche 6 — `tests/test_commandes.py` (~12 tests + régression)
+…
+
+### ⬜ Tâche 7 — Données de démo (indépendant des tests)
+…
+
+### ⬜ Tâche 8 — README + canva 🥇 + traçabilité
+…
+
 **DoD niveau 🥇** :
 - [ ] code 🥇 fonctionnel (tout le CDC : étapes 1+2+3) ;
 - [ ] `pytest` tout vert (unitaires + intégration + régression) ;
