@@ -22,6 +22,9 @@ flowchart TB
         A_APP["app.py"]
         A_AUTH["routes/auth.py"]
         A_PROD["routes/produits.py"]
+        A_CMD["routes/commandes.py<br/>F3 🥇"]
+        A_MODELS["modelsSQLAlchemy.py<br/>User/Category/Product/Order/OrderItem"]
+        A_UTILS["utils.py<br/>calculer_total, verifier_stock"]
         A_DB["db.py"]
         A_SEC["security.py"]
     end
@@ -31,14 +34,17 @@ flowchart TB
     TP -->|"test_produits"| F2 & F1 & F3 & F4
     TC -->|"test_commandes"| F2 & F1 & F3 & F4
 
-    F1 -.->|"remplace la session"| A_AUTH & A_PROD
+    F1 -.->|"remplace la session"| A_AUTH & A_PROD & A_CMD
     F2 -.-> A_APP
-    A_APP --> A_AUTH & A_PROD
+    A_APP --> A_AUTH & A_PROD & A_CMD
+    A_CMD -.-> A_DB & A_MODELS & A_SEC & A_UTILS
+    A_AUTH -.-> A_MODELS
+    A_PROD -.-> A_MODELS
     A_AUTH -.-> A_DB & A_SEC
     A_PROD -.-> A_DB & A_SEC
     F3 -.->|"Bearer"| A_SEC
 
-    class TA,TS,TP,TC,F1,F2,F3,F4,A_APP,A_AUTH,A_PROD,A_DB,A_SEC petit;
+    class TA,TS,TP,TC,F1,F2,F3,F4,A_APP,A_AUTH,A_PROD,A_CMD,A_MODELS,A_UTILS,A_DB,A_SEC petit;
     %% code couleur des flèches : bleu = test_auth.py, violet = test_security.py, vert = test_produits.py
     linkStyle 0 stroke:#3b82f6,stroke-width:2px;
     linkStyle 1 stroke:#8b5cf6,stroke-width:2px;
