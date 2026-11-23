@@ -3,6 +3,7 @@ modelsSQLAlchemy.py — Modèles SQLAlchemy (ORM) pour DigiMarket.
 
 Niveau 🥉 : table users (fil rouge « S'inscrire »).
 Niveau 🥈 : + tables categories et products (relation 1—N, partie 4.5).
+Niveau 🥇 : + tables orders et order_items (relations N—1/1—N, cycle de vie 4.6).
 Ce fichier définit (sous forme de classes) les modèles des tables de la base SQL, importés par :
 - app/app.py          (l'API Flask : point d'entrée, blueprints, endpoints)
 - app/db.py           (moteur + session partagée, create_all)
@@ -18,7 +19,8 @@ Même style que l'ancien projet (SQLAlchemy pur, pas Flask-SQLAlchemy).
 # ------------------------------------------------------------------
 # Column               : définit une colonne dans une table
 # Integer, String, Text : types de données des colonnes
-from sqlalchemy import Column, Integer, String, Text, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Float, ForeignKey, DateTime
+from datetime import datetime, timezone
 from sqlalchemy.orm import relationship
 
 # declarative_base : fonction qui génère la classe de base des modèles
@@ -112,7 +114,78 @@ class Product(Base):
         return f"<Product {self.name} ({self.price}€)>"
 
 # ------------------------------------------------------------------
-# Schéma des tables (niveau 🥈 : users + categories + products) :
+# Niveau 🥇 — Objets F3 (partie 4.5 + 4.6) : Order 1—N OrderItem,
+# Order N—1 User, OrderItem N—1 Product
+# ------------------------------------------------------------------
+
+class Order(Base):
+    # Nom de la table : orders (pluriel)
+    __tablename__ = "orders"
+
+    id = Column(Integer, primary_key=True)
+    # Côté "N" vers users (4.5) : FK vers l'acheteur
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    # Adresse de livraison figée à la commande
+    address_livraison = Column(Text, nullable=False)
+    # Date de création (défaut = maintenant, UTC)
+    date_creation = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    # Cycle de vie (4.6) : en_attente → validée → expédiée → livrée ; annulable depuis en_attente/validée
+    statut = Column(String(20), nullable=False, default="en_attente")
+    # Total calculé par calculer_total (4.9, app/utils.py) à la validation
+    total = Column(Float, nullable=False, default=0.0)
+
+    # RELATIONS (4.5) : user = l'acheteur (N—1) ; items = lignes (1—N)
+    user = relationship("User", backref="orders")
+    items = relationship("OrderItem", backref="order", lazy=True,
+                         cascade="all, delete-orphan")
+
+    # ------------------------------------------------------------------
+    # CYCLE DE VIE (partie 4.6) : transitions autorisées entre statuts
+    # ------------------------------------------------------------------
+    STATUTS = ("en_attente", "validée", "expédiée", "livrée", "annulée")
+    # TRANSITIONS autorisées : (de, vers). Hors de là → ValueError (→ 400 côté route)
+    TRANSITIONS = {
+        "en_attente": {"validée", "annulée"},
+        "validée":    {"expédiée", "annulée"},
+        "expédiée":   {"livrée"},
+        "livrée":     set(),
+        "annulée":    set(),
+    }
+
+    def changer_statut(self, nouveau: str):
+        """Change le statut si la transition est autorisée (4.6), sinon lève ValueError."""
+        if nouveau not in self.STATUTS:
+            raise ValueError(f"statut inconnu : {nouveau}")
+        if nouveau not in self.TRANSITIONS.get(self.statut, set()):
+            raise ValueError(f"transition interdite : {self.statut} → {nouveau}")
+        self.statut = nouveau
+
+    def __repr__(self):
+        return f"<Order {self.id} ({self.statut}) user={self.user_id}>"
+
+
+class OrderItem(Base):
+    # Nom de la table : order_items (pluriel)
+    __tablename__ = "order_items"
+
+    id = Column(Integer, primary_key=True)
+    # FK vers la commande (côté "N" de Order 1—N OrderItem, 4.5)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    # FK vers le produit (N—1)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    # Quantité — contrainte 4.3 : > 0 (validée côté route → 400)
+    quantite = Column(Integer, nullable=False)
+    # Prix unitaire FIGÉ à la commande (le prix du produit peut changer après)
+    prix_unitaire = Column(Float, nullable=False)
+
+    # Accès inverse vers le produit (N—1)
+    product = relationship("Product", backref="order_items")
+
+    def __repr__(self):
+        return f"<OrderItem order={self.order_id} product={self.product_id} x{self.quantite}>"
+
+# ------------------------------------------------------------------
+# Schéma des tables (niveau 🥇 : users + categories + products + orders + order_items) :
 # ------------------------------------------------------------------
 #
 #   users
@@ -138,3 +211,18 @@ class Product(Base):
 #   ├── stock       int, défaut 0       (>= 0 validé côté route)
 #   └── category_id FK int, obligatoire
 #
+
+#   orders  (user_id → users.id, FK)
+#   ├── id                PK int
+#   ├── user_id           FK int, obligatoire
+#   ├── address_livraison text, obligatoire
+#   ├── date_creation     datetime, défaut = maintenant (UTC)
+#   ├── statut            string, défaut 'en_attente' (cycle 4.6)
+#   └── total             float, défaut 0 (calculé par calculer_total, 4.9)
+#
+#   order_items  (order_id → orders.id, product_id → products.id, FK)
+#   ├── id            PK int
+#   ├── order_id      FK int, obligatoire
+#   ├── product_id    FK int, obligatoire
+#   ├── quantite      int, obligatoire (> 0 validé côté route, 4.3 → 400)
+#   └── prix_unitaire float, obligatoire (figé à la commande)
