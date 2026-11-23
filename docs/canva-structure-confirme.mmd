@@ -15,6 +15,7 @@ flowchart TB
 
     subgraph APP["app - code API"]
         A_APP["app.py - Flask : crée l'app + enregistre les blueprints + run"]
+        A_INIT["__init__.py - rend app/ importable comme package Python"]
         A_DB["db.py - engine SQLite + session partagée (évite l'import circulaire)"]
         A_SEC["security.py - F4 : creer/verifier token JWT, hachage, @login_required (401), @admin_required (403) - partie 4.11"]
         A_MODELS["modelsSQLAlchemy.py - objets : User (F1, 🥉) · Category+Product (F2, 🥈, FK 1-N 4.5) · Order+OrderItem (F3, 🥇, FK + cycle de vie 4.6)"]
