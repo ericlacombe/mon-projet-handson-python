@@ -33,7 +33,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 
 ### ✅ Tâche 1 — Modèles `Order` + `OrderItem`
 - **Fichiers** : `app/modelsSQLAlchemy.py`
-- **Commandes** : `./venv/bin/python -c "from app.modelsSQLAlchemy import Base, Order, OrderItem; print(sorted(Base.metadata.tables))"` + vérif `changer_statut` (OK/interdite) · `./venv/bin/python -m pytest tests/ -q`
+- **Commandes** : `./venv/bin/python -c "from app.modelsSQLAlchemy import Base, Order, OrderItem; print(sorted(Base.metadata.tables))"` → 5 tables · vérif `changer_statut` → OK / ValueError · `./venv/bin/python -m pytest tests/ -q` → **14 passed**
 - **Résultat** : 5 tables (`users, categories, products, orders, order_items`) · `en_attente→validée` OK · `validée→livrée` → ValueError (interdite)
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (prévus tâche 6 : `test_transition_autorisee/interdite`)
@@ -41,7 +41,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 
 ### ✅ Tâche 2 — `app/utils.py` (`calculer_total`, `verifier_stock`)
 - **Fichiers** : `app/utils.py` (créé)
-- **Commandes** : `./venv/bin/python -c "from app.utils import calculer_total, verifier_stock; ..."` (total=25.0, stock True/False, qte 0 → ValueError) · `./venv/bin/python -m pytest tests/ -q`
+- **Commandes** : `./venv/bin/python -c "from app.utils import calculer_total, verifier_stock; ..."` → total=25.0, stock True/False, qte 0 → ValueError · `./venv/bin/python -m pytest tests/ -q` → **14 passed**
 - **Résultat** : `calculer_total` = 25.0 (2×10 + 1×5) · `verifier_stock` qte 2 → True, qte 9 → False, qte 0 → ValueError
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (prévus tâche 6 : `test_calculer_total`, `test_verifier_stock_*`)
@@ -49,7 +49,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 
 ### ✅ Tâche 3 — `routes/commandes.py` (POST/GET/PATCH + règle 403 client_propriétaire)
 - **Fichiers** : `app/routes/commandes.py` (créé), `app/app.py` (blueprint enregistré)
-- **Commandes** : smoke test `./venv/bin/python` (script inline `app.test_client()` : login admin/client, POST catégorie+produit, POST commande, GET liste/détail, PATCH statut, vérif 201/400/401/403/404 + stock) · `./venv/bin/python -m pytest tests/ -q`
+- **Commandes** : smoke test `./venv/bin/python` (script inline `app.test_client()` : login admin/client, POST catégorie+produit, POST commande, GET liste/détail, PATCH statut, → 201/400/401/403/404 OK, stock 5→3→5 · `./venv/bin/python -m pytest tests/ -q` → **14 passed**
 - **Résultat** : POST 201 (total 20.0, en_attente) · 400 stock insuffisant/qte 0 · 401 sans token · GET liste 200 · autre client 403 · admin 200 · inconnu 404 · PATCH validée 200 (stock 5→3) · transition interdite 400 · client non-proprio 403 · client proprio annule 200 (stock restitué 5)
 - **Tests exécutés** : `pytest` → **14 passed** (🥉 1 + 🥈 13) — régression OK
 - **Nouveaux tests 🥇** : aucun (prévus tâche 6)
