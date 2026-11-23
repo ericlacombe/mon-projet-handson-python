@@ -10,7 +10,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 | [ ] | 4 | Gestionnaire d'erreurs global 4.10 : `@app.errorhandler(404/405/500)` en JSON | étape 4 🥇 §4.10 · **global** | 4 | `app/app.py` | route inconnue → 404 JSON ; mauvaise méthode → 405 JSON |
 | [ ] | 5 | `conftest.py` : brancher la session de test dans `routes/commandes.py` (`cmd_module.session = S`) — sinon les tests écrivent dans la vraie base | étape 5 🥇 · **F3** (infra tests) | 1 | `tests/conftest.py` | import de `app.routes.commandes` OK, session remplacée |
 | [ ] | 6 | Les ~12 tests 🥇 écrits (`test_commandes.py`) + régression : tout `pytest` rejoué | étape 5 🥇 · **F3+F4** | 1, 3, 4, 5 | `tests/test_commandes.py` | `pytest` tout vert (14 + ~12) |
-| [ ] | 7 | Données de démo 🥇 : 1 commande (`Order` + `OrderItem`) exemple pour le client de démo | étape 4 🥇 §4.7 · **F3** | 4 | `app/app.py` | `python -m app.app` → commande en base |
+| [ ] | 7 | Données de démo 🥇 : 1 commande (`Order` + `OrderItem`) exemple pour le client de démo (**indépendant des tests** : base en mémoire) | étape 4 🥇 §4.7 · **F3** | 4 | `app/app.py` | `python -m app.app` → commande en base |
 | [ ] | 8 | README + canva 🥇 à jour (sans écraser les précédents) + matrice de traçabilité CDC complète | étapes 4 🥇 §4.8 + 5 🥇 · **doc** | 6 | `README.md`, `docs/canva-structure-confirme.mmd` | relecture OK, traçabilité complète |
 
 > 📝 §4.2 (panier) : donnée temporaire **côté client**, pas de table → rien à coder côté API.
