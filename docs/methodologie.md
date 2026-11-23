@@ -306,7 +306,7 @@ Les étapes 0 à 3 viennent d'être faites **une seule fois, globalement**. À p
 💡 **Explications** :
 - Règle du test : **un test = une fonction Python/classe testée + UN scénario + le résultat attendu** — un seul comportement par test, nom explicite.
 - **Ordre d'écriture** : d'abord les unitaires (chaque élément isolé), puis l'intégration (ensemble), et la régression se rejoue automatiquement à chaque modification.
-👉 **Sortie** : la liste des tests à écrire, associés aux fichiers de code.
+👉 **Sortie** : la liste des tests à écrire, associés aux fichiers de code. + le **canva des interactions tests** (`docs/canva-tests-<niveau>.mmd` : fixtures conftest ↔ fichiers de tests ↔ app) et son descriptif écrit.
 
 ✅ **Checklist étape 5** :
 - [ ] chaque fonction Python/classe créée a au moins un test unitaire prévu ;
