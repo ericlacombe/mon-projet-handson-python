@@ -23,7 +23,7 @@
 - PascalCase pour les classes
 - routes au pluriel : /api/produits, /api/commandes
 
-## Fonctionnalités — cas d'utilisation (étape 1, avec niveau)
+## Rôles et cas d'utilisation (étape 1, avec niveau)
 - **Visiteur** : s'inscrire 🥉 ✅ · se connecter 🥈 🚧 · consulter le catalogue / rechercher / détail produit 🥈 🚧
 - **Client** : passer une commande, historique, suivre l'état 🥇 ⏳
 - **Administrateur** : gérer les produits et stocks 🥈 🚧 · voir toutes les commandes, changer le statut 🥇 ⏳
