@@ -1,6 +1,6 @@
 %% Canva visuel de la methodologie — a rendre sur https://mermaid.live
 %% Phase 1 (etapes 0-3, une seule fois) -> boucle x3 niveaux (a chaque niveau : 4 -> 5 -> 6 -> CODE)
-flowchart TB
+flowchart LR
     classDef petit font-size:11px;
 
     subgraph PHASE1["ETAPES 0-3 : faites UNE SEULE FOIS (conception globale)"]
@@ -12,7 +12,7 @@ flowchart TB
         E0 --> E1 --> E2 --> E3
     end
 
-    subgraph BOUCLE["BOUCLE x3 NIVEAUX — a chaque niveau : 4 -> 5 -> 6 -> CODE (le code des niveaux precedents reste fonctionnel)"]
+    subgraph BOUCLE["BOUCLE x3 NIVEAUX — 4 -> 5 -> 6 -> CODE (code des niveaux précédents fonctionnel)"]
         direction LR
         B1["🥉 NIVEAU DEBUTANT<br/>4 : 4.1 base, 4.4 objets simples, 4.7 (1 route), 4.8 (1 module), 4.10 erreurs basiques<br/>5 : 1 test unitaire<br/>6 : backlog 🥉 -> CODE -> DoD ✅"]
         B2["🥈 NIVEAU INTERMEDIAIRE<br/>4 : + 4.3 contraintes, 4.5 relations 1-N, 4.11 securite JWT<br/>5 : + tests d'integration (401/403, 400/409)<br/>6 : backlog 🥈 -> CODE -> DoD ✅"]
