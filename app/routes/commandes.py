@@ -30,6 +30,9 @@ from app.utils import calculer_total, verifier_stock
 commandes_bp = Blueprint("commandes", __name__, url_prefix="/api")
 
 
+# ------------------------------------------------------------------
+# Fonctions auxiliaires (helpers internes au blueprint)
+# ------------------------------------------------------------------
 def _peut_voir(order, user) -> bool:
     """Règle 4.11 étendue (🥇) : on voit une commande si on est admin OU son propriétaire.
     `user` = payload du token JWT (dict : {"user_id":..., "role":...}), pas un objet User."""
