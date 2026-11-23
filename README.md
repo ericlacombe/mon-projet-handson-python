@@ -59,7 +59,8 @@ mon-projet-handson-python/
 │   ├── modelsSQLAlchemy.py     # 🥉 User · 🥈 Category, Product · 🥇 Order, OrderItem (🥇 à venir)
 │   └── routes/
 │       ├── auth.py             # 🥉 register · 🥈 login (token JWT)
-│       └── produits.py       # 🥈 F2 : CRUD /api/produits + /api/categories
+│       ├── produits.py         # 🥈 F2 : CRUD /api/produits + /api/categories
+│       └── commandes.py        # 🥇 F3 : POST/GET/PATCH /api/commandes
 ├── tests/                      # 🧪 dossier dédié aux tests
 │   ├── test_auth.py            # 🥉 test_register_email_deja_utilise (409)
 │   ├── conftest.py             # 🥈 fixtures communes (base en mémoire, tokens)
