@@ -9,7 +9,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 | [x] | 3 | Blueprint `routes/commandes.py` manipulant `Order`, `OrderItem`, `Product` : POST (vérif stock, lignes, total), GET liste/détail/lignes, PATCH statut + règle 403 client_propriétaire (4.11) ; transitions 4.6 ; stock décrémenté/restitué | étapes 4 🥇 §4.7/4.3/4.11 + 5 🥇 · **F3+F4** | 1, 3 | `app/routes/commandes.py`, `app/app.py` | 201/400/401/403/404 sur chaque route (tests d'intégration) |
 | [x] | 4 | Gestionnaire d'erreurs global 4.10 : `@app.errorhandler(404/405/500)` en JSON | étape 4 🥇 §4.10 · **global** | 4 | `app/app.py` | route inconnue → 404 JSON ; mauvaise méthode → 405 JSON |
 | [x] | 5 | `conftest.py` : brancher la session de test dans `routes/commandes.py` (`cmd_module.session = S`) — sinon les tests écrivent dans la vraie base | étape 5 🥇 · **F3** (infra tests) | 1 | `tests/conftest.py` | import de `app.routes.commandes` OK, session remplacée |
-| [ ] | 6 | Les ~12 tests 🥇 écrits (`test_commandes.py`) + régression : tout `pytest` rejoué | étape 5 🥇 · **F3+F4** | 1, 3, 4, 5 | `tests/test_commandes.py` | `pytest` tout vert (14 + ~12) |
+| [x] | 6 | Les ~12 tests 🥇 écrits (`test_commandes.py`) + régression : tout `pytest` rejoué | étape 5 🥇 · **F3+F4** | 1, 3, 4, 5 | `tests/test_commandes.py` | `pytest` tout vert (14 + ~12) |
 | [ ] | 7 | Données de démo 🥇 : 1 commande (`Order` + `OrderItem`) exemple pour le client de démo (**indépendant des tests** : base en mémoire) | étape 4 🥇 §4.7 · **F3** | 4 | `app/app.py` | `python -m app.app` → commande en base |
 | [ ] | 8 | README + **canva 🥇 à jour** (structure : `docs/canva-structure-confirme.mmd` · tests : `docs/canva-tests.mmd` — sans écraser les précédents) + matrice de traçabilité CDC complète | étapes 4 🥇 §4.8 + 5 🥇 · **doc** | 6 | `README.md`, `docs/canva-structure-confirme.mmd`, `docs/canva-tests.mmd` | relecture OK, traçabilité complète |
 
@@ -71,8 +71,12 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Nouveaux tests 🥇** : aucun (tâche 6)
 - **Backlog** : tâche 5 cochée `[x]`, commit `08f08a8`
 
-### ⬜ Tâche 6 — `tests/test_commandes.py` (~12 tests + régression)
-…
+### ✅ Tâche 6 — `tests/test_commandes.py` (tests 🥇 + régression)
+- **Fichiers** : `tests/test_commandes.py` (créé, 14 tests F3) · fix `tests/conftest.py` (`cmd_module.session = S`)
+- **Commandes** : `./venv/bin/python -m pytest tests/ -q` → **32 passed**
+- **Résultat** : unitaires 4.6/4.9 (transitions, calculer_total, verifier_stock) + intégration POST 201/400/401, GET 200/403/404, PATCH 200/400/403 + stock 5→3→5 — tout vert
+- **Tests exécutés** : `pytest` → **32 passed** (🥉 1 + 🥈 13 + 🥇 18) — régression complète OK
+- **Backlog** : tâche 6 cochée `[x]`, commits `0594f03` (tests) + `a947a13` (fix conftest)
 
 ### ⬜ Tâche 7 — Données de démo (indépendant des tests)
 …
