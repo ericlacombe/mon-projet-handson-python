@@ -150,7 +150,8 @@ pytest            # depuis la racine : lance tous les tests (32 tests : 🥉 1 +
 | 🥇 | `docs/etape5-tests-confirme.md` | Étape 5 niveau 🥇 : matrice complète + régression + canva des tests |
 | 🥇 | `docs/etape6-backlog-confirme.md` | Étape 6 niveau 🥇 : backlog 8 tâches cochées + résultats d'exécution |
 | 🥇 | `docs/canva-structure-confirme.mmd` | Canva de la structure niveau 🥇 (commandes.py, utils.py, Order/OrderItem) |
-| 🥇 | `docs/canva-tests.mmd` (+ -debutant/-intermediaire) | Canva des interactions tests (fixtures conftest ↔ fichiers de tests ↔ app) |
+| 🥇 | `docs/canva-tests.mmd` | Canva des interactions tests (tous niveaux, avec `test_commandes.py`) |
+| 🥉/🥈 | `docs/canva-tests-debutant.mmd` / `docs/canva-tests-intermediaire.mmd` | Canva des tests par niveau |
 | 🥇 | `app/utils.py` | Fonctions pures 4.9 : calculer_total, verifier_stock |
 | 🥇 | `app/routes/commandes.py` | F3 : POST/GET/PATCH /api/commandes, règle client_propriétaire 403 |
 | 🥇 | `tests/test_commandes.py` | 14 tests F3 (unitaires 4.6/4.9 + intégration + stock) |
