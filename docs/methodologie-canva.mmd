@@ -21,7 +21,11 @@ flowchart LR
         B2 -->|"code 🥈 reste fonctionnel"| B3
         B3 -->|"projet complet ✅"| FIN["🎉 LIVRAISON"]
     end
+    ETAPE4 --> BOUCLE
+    end
 
+    subgraph COL["CONCEPTION PAR NIVEAU"]
+        direction TB
     subgraph ETAPE4["ETAPE 4 — les 11 parties (analyse -> condition -> si positif, ACTION) — appelee UNE FOIS PAR NIVEAU"]
         direction TB
         subgraph GA["Groupe A — DONNEES (d'apres l'etape 3)"]
@@ -56,7 +60,6 @@ flowchart LR
 
     E3 --> B1
     PHASE1 -.-> ETAPE4
-    ETAPE4 -.-> BOUCLE
     TRANS -.-> BOUCLE
 
     class E0,E1,E2,E3,B1,B2,B3,FIN,A41,A42,A43,A44,A45,A46,B47,B48,B49,B410,B411,T1,T2,T3,T4,T5,T6 petit;
