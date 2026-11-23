@@ -55,25 +55,14 @@ flowchart TB
         ETAPE4 --> BOUCLE
     end
 
-    subgraph TRANS["TRANSVERSAL — a toute etape"]
-        direction TB
-        T1["📓 carnet de bord (compris / bloque)"]
-        T2["🔗 tracabilite (chaque element vient de l'etape precedente)"]
-        T3["✅ checklist + Definition of Ready (livrable precedent commite)"]
-        T4["🚨 signaux d'alerte : bloque 20-30 min -> relire l'exemple / demander de l'aide"]
-        T5["🧰 bonnes pratiques propres a chaque etape"]
-        T6["🧵 fil rouge : un utilisateur s'inscrit, suivi de bout en bout"]
-    end
 
     E3 --> B1
     PHASE1 --> ETAPE4
     ETAPE4 --> BOUCLE
-    TRANS -.-> BOUCLE
 
-    class E0,E1,E2,E3,B1,B2,B3,FIN,A41,A42,A43,A44,A45,A46,B47,B48,B49,B410,B411,T1,T2,T3,T4,T5,T6 petit;
+    class E0,E1,E2,E3,B1,B2,B3,FIN,A41,A42,A43,A44,A45,A46,B47,B48,B49,B410,B411 petit;
     style PHASE1 fill:#e8f4ff,stroke:#3b82f6
     style COL fill:#fff7e6,stroke:#f59e0b
     style BOUCLE fill:#fff7e6,stroke:#f59e0b
     style ETAPE4 fill:#f0fdf4,stroke:#22c55e
-    style TRANS fill:#fdf2f8,stroke:#ec4899
     style FIN fill:#fef3c7,stroke:#d97706
