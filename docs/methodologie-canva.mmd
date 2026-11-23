@@ -1,68 +1,54 @@
 %% Canva visuel de la methodologie — a rendre sur https://mermaid.live
-%% Phase 1 (etapes 0-3, une seule fois) -> ETAPE 4 -> BOUCLE x3 niveaux (sous l'etape 4) : 4 -> 5 -> 6 -> CODE
-flowchart TB
+%% Layout : racine LR (horizontal de base) ; le bloc COL est en TB pour empiler ETAPE 4 au-dessus de BOUCLE.
+flowchart LR
     classDef petit font-size:11px;
 
-    subgraph PHASE1["ETAPES 0-3 : faites UNE SEULE FOIS (conception globale)"]
+    subgraph PHASE1["ETAPES 0-3 : faites UNE SEULE FOIS"]
         direction LR
         E0["(0) AFB<br/>besoins + contraintes<br/>30 min"]
-        E1["(1) USE CASES<br/>acteurs + cas + matrice des roles<br/>45 min"]
-        E2["(2) FONCTIONS METIER<br/>diagramme fonctionnel + 1 flux detaille<br/>1 h"]
+        E1["(1) USE CASES<br/>acteurs + cas<br/>45 min"]
+        E2["(2) FONCTIONS METIER<br/>diagramme + 1 flux<br/>1 h"]
         E3["(3) OBJETS<br/>schema ER + cycle de vie<br/>1 h"]
         E0 --> E1 --> E2 --> E3
     end
 
-    subgraph COL["CONCEPTION PAR NIVEAU"]
+    subgraph COL[" "]
         direction TB
 
-        subgraph ETAPE4["ETAPE 4 — les 11 parties (analyse -> condition -> si positif, ACTION) — appelee UNE FOIS PAR NIVEAU"]
+        subgraph ETAPE4["ETAPE 4 — les 11 parties (analyse -> condition -> ACTION) — une fois par niveau"]
             direction LR
-            subgraph GA["Groupe A — DONNEES (d'apres l'etape 3)"]
-                direction LR
-                A41["4.1 Base de donnees — tables a creer ? -> ACTION"]
-                A42["4.2 Donnees temporaires — donnee non persistante ? -> dict/objet leger"]
-                A43["4.3 Contraintes metier — regle de validite ? -> contrainte + code erreur"]
-                A44["4.4 Objets simples — etat persistant ? -> classe + table"]
-                A45["4.5 Relations 1-N — deux objets lies ? -> FK + relationship"]
-                A46["4.6 Transitions d'etat — cycle de vie ? -> methodes + controle (🥇)"]
-            end
-            subgraph GB["Groupe B — COMPORTEMENT (d'apres etapes 1-2)"]
-                direction LR
-                B47["4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
-                B48["4.8 Organisation du code — 1 module/blueprint par fonction metier"]
-                B49["4.9 Fonctions Python pures — transformation sans etat ?"]
-                B410["4.10 Gestion des erreurs — branches d'erreur ? -> codes HTTP + gestionnaire"]
-                B411["4.11 Securite — auth/autorisation ? -> token JWT, 401/403"]
-            end
+            A41["4.1 Base — tables a creer ? -> ACTION"]
+            A42["4.2 Temporaires — non persistant ? -> dict"]
+            A43["4.3 Contraintes — regle de validite ? -> contrainte + code"]
+            A44["4.4 Objets simples — etat persistant ? -> classe + table"]
+            A45["4.5 Relations 1-N — objets lies ? -> FK + relationship"]
+            A46["4.6 Transitions — cycle de vie ? -> methodes + controle (🥇)"]
+            B47["4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
+            B48["4.8 Modules — 1 blueprint par fonction metier"]
+            B49["4.9 Fonctions pures — transformation sans etat ?"]
+            B410["4.10 Erreurs — branches d'erreur ? -> codes HTTP"]
+            B411["4.11 Securite — auth ? -> token JWT, 401/403"]
             A41 --> A42 --> A43 --> A44 --> A45 --> A46
-            B47 --> B48 --> B49 --> B410 --> B411
-            GA --> GB
-            %% force Groupe B SOUS Groupe A (vertical)
             A46 --> B47
+            B47 --> B48 --> B49 --> B410 --> B411
         end
 
-        subgraph BOUCLE["BOUCLE x3 NIVEAUX — 4 -> 5 -> 6 -> CODE (code des niveaux précédents fonctionnel)"]
+        subgraph BOUCLE["BOUCLE x3 NIVEAUX — 4 -> 5 -> 6 -> CODE"]
             direction LR
-            B1["🥉 NIVEAU DEBUTANT<br/>4 : 4.1 base, 4.4 objets simples, 4.7 (1 route), 4.8 (1 module), 4.10 erreurs basiques<br/>5 : 1 test unitaire<br/>6 : backlog 🥉 -> CODE -> DoD ✅"]
-            B2["🥈 NIVEAU INTERMEDIAIRE<br/>4 : + 4.3 contraintes, 4.5 relations 1-N, 4.11 securite JWT<br/>5 : + tests d'integration (401/403, 400/409)<br/>6 : backlog 🥈 -> CODE -> DoD ✅"]
-            B3["🥇 NIVEAU CONFIRME<br/>4 : 4.1 a 4.11 TOUTES (dont 4.6 transitions)<br/>5 : + regression, matrice complete<br/>6 : backlog 🥇 -> CODE -> DoD ✅"]
+            B1["🥉 DEBUTANT<br/>4: 4.1/4.4/4.7/4.8/4.10 · 5: 1 test unitaire · 6: backlog -> CODE -> DoD ✅"]
+            B2["🥈 INTERMEDIAIRE<br/>4: +4.3/4.5/4.11 · 5: + integration · 6: backlog -> CODE -> DoD ✅"]
+            B3["🥇 CONFIRME<br/>4: 4.1-4.11 toutes · 5: + regression · 6: backlog -> CODE -> DoD ✅"]
             FIN["🎉 LIVRAISON"]
-            B1 -->|"code 🥉 reste fonctionnel"| B2
-            B2 -->|"code 🥈 reste fonctionnel"| B3
-            B3 -->|"projet complet ✅"| FIN
+            B1 --> B2 --> B3 --> FIN
         end
 
         ETAPE4 --> BOUCLE
     end
 
+    PHASE1 --> COL
 
-    E3 --> B1
-    PHASE1 --> ETAPE4
-    ETAPE4 --> BOUCLE
-
-    class E0,E1,E2,E3,B1,B2,B3,FIN,A41,A42,A43,A44,A45,A46,B47,B48,B49,B410,B411 petit;
+    class E0,E1,E2,E3,A41,A42,A43,A44,A45,A46,B47,B48,B49,B410,B411,B1,B2,B3,FIN petit;
     style PHASE1 fill:#e8f4ff,stroke:#3b82f6
-    style COL fill:#fff7e6,stroke:#f59e0b
-    style BOUCLE fill:#fff7e6,stroke:#f59e0b
     style ETAPE4 fill:#f0fdf4,stroke:#22c55e
+    style BOUCLE fill:#fff7e6,stroke:#f59e0b
     style FIN fill:#fef3c7,stroke:#d97706
