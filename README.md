@@ -1,6 +1,6 @@
 # Mon projet handson — DigiMarket (API REST Flask)
 
-📖 **Méthode suivie** : ce projet suit la méthode décrite dans **[methodologie.md](docs/methodologie.md)** (étapes 0–6 + niveaux 🥉🥈🥇). Chaque fichier ci-dessous est **le résultat d'une étape, par niveau** (conception puis code) :
+📖 **Méthode suivie** : ce projet suit la méthode résumée dans **[methodologie-canva.mmd](docs/methodologie-canva.mmd)** (schéma visuel) et détaillée dans **[methodologie.md](docs/methodologie.md)** (étapes 0–6 + niveaux 🥉🥈🥇). Chaque fichier ci-dessous est **le résultat d'une étape, par niveau** (conception puis code) :
 
 - Étape 0 — AFB (besoins) → [docs/etape0-AFB.md](docs/etape0-AFB.md)
 - Étape 1 — use cases → [docs/etape1-use-cases.md](docs/etape1-use-cases.md)
