@@ -100,10 +100,15 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 8 cochée `[x]`, commit `c8b7d39`
 
-**DoD niveau 🥇** :
-- [x] code 🥇 fonctionnel (tout le CDC : étapes 1+2+3) ;
-- [x] `pytest` tout vert : **32 passed** (unitaires + intégration + régression) ;
-- [x] README complet (livrable CDC) + canva 🥇 + matrice de traçabilité ;
-- [x] commits clairs · démo au lancement (admin + client + catalogue + 1 commande).
+**DoD niveau 🥇** (Definition of Done = « c'est fini quand… ») :
 
-✅ **Niveau 🥇 terminé** quand tout est coché.
+- [x] **code 🥇 fonctionnel (tout le CDC : étapes 1+2+3)** ;
+  > *Vérifié par* : le smoke test des routes `/api/commandes` (POST 201 · GET 200/403/404 · PATCH 200/400/403) + la démo au lancement. « Tout le CDC » = F1 (comptes) + F2 (catalogue) + F3 (commandes) + F4 (sécurité JWT) marchent de bout en bout.
+- [x] **`pytest` tout vert : 32 passed (unitaires + intégration + régression)** ;
+  > *Vérifié par* : `./venv/bin/python -m pytest tests/ -q` → `32 passed` = 🥉 1 (`test_auth.py`) + 🥈 13 (`test_security.py`, `test_produits.py`) + 🥇 18 (`test_commandes.py`). Unitaire = fonction/classe seule (4.6/4.9) · intégration = route HTTP complète avec codes · régression = toute la suite rejouée à chaque incrément.
+- [x] **README complet (livrable CDC) + canva 🥇 + matrice de traçabilité** ;
+  > *Vérifié par* : relecture de `README.md` (méthode, arborescence, API avec colonne Fichier, sécurité, install, tests, traçabilité CDC exigence→réalisation→test) + canva à jour (`canva-structure-confirme.mmd`, `canva-tests.mmd`) sans écraser les niveaux précédents.
+- [x] **commits clairs · démo au lancement (admin + client + catalogue + 1 commande)** ;
+  > *Vérifié par* : `git log` (un commit par tâche, message explicite) + `python -m app.app` → `init_sample_data()` crée `admin@digimarket.fr`, `client@digimarket.fr`, 1 catégorie + 2 produits + 1 commande exemple en base.
+
+✅ **Niveau 🥇 terminé** quand tout est coché — c'est le cas : 8/8 tâches ✅, DoD ✅, 32 tests ✅.
