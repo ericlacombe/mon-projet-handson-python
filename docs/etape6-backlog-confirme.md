@@ -11,7 +11,7 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 | [x] | 5 | `conftest.py` : brancher la session de test dans `routes/commandes.py` (`cmd_module.session = S`) — sinon les tests écrivent dans la vraie base | étape 5 🥇 · **F3** (infra tests) | 1 | `tests/conftest.py` | import de `app.routes.commandes` OK, session remplacée |
 | [x] | 6 | Les ~12 tests 🥇 écrits (`test_commandes.py`) + régression : tout `pytest` rejoué | étape 5 🥇 · **F3+F4** | 1, 3, 4, 5 | `tests/test_commandes.py` | `pytest` tout vert (14 + ~12) |
 | [x] | 7 | Données de démo 🥇 : 1 commande (`Order` + `OrderItem`) exemple pour le client de démo (**indépendant des tests** : base en mémoire) | étape 4 🥇 §4.7 · **F3** | 4 | `app/app.py` | `python -m app.app` → commande en base |
-| [ ] | 8 | README + **canva 🥇 à jour** (structure : `docs/canva-structure-confirme.mmd` · tests : `docs/canva-tests.mmd` — sans écraser les précédents) + matrice de traçabilité CDC complète | étapes 4 🥇 §4.8 + 5 🥇 · **doc** | 6 | `README.md`, `docs/canva-structure-confirme.mmd`, `docs/canva-tests.mmd` | relecture OK, traçabilité complète |
+| [x] | 8 | README + **canva 🥇 à jour** (structure : `docs/canva-structure-confirme.mmd` · tests : `docs/canva-tests.mmd` — sans écraser les précédents) + matrice de traçabilité CDC complète | étapes 4 🥇 §4.8 + 5 🥇 · **doc** | 6 | `README.md`, `docs/canva-structure-confirme.mmd`, `docs/canva-tests.mmd` | relecture OK, traçabilité complète |
 
 > 📝 §4.2 (panier) : donnée temporaire **côté client**, pas de table → rien à coder côté API.
 
@@ -92,13 +92,18 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
 - **Cohérence des commentaires explicatifs du code** : vérifiée ✅
 - **Backlog** : tâche 7 cochée `[x]`, commit `2c2e749`
 
-### ⬜ Tâche 8 — README + canva 🥇 + traçabilité
-…
+### ✅ Tâche 8 — README + canva 🥇 (structure + tests) + traçabilité CDC
+- **Fichiers** : `README.md` (statut 🥇 ✅, 32 tests, routes F3, arborescence, canva 🥇, traçabilité CDC) · canva déjà à jour (`canva-structure-confirme.mmd` : commandes.py/utils.py · `canva-tests.mmd` : test_commandes.py)
+- **Commandes** : `./venv/bin/python -m pytest tests/ -q` → **32 passed** · relecture README
+- **Résultat** : README complet (livrable CDC) + canva 🥇 + matrice de traçabilité exigence→réalisation→test
+- **Tests exécutés** : `pytest` → **32 passed** (🥉 1 + 🥈 13 + 🥇 18) — régression finale OK
+- **Cohérence des commentaires explicatifs du code** : vérifiée ✅
+- **Backlog** : tâche 8 cochée `[x]`, commit `c8b7d39`
 
 **DoD niveau 🥇** :
-- [ ] code 🥇 fonctionnel (tout le CDC : étapes 1+2+3) ;
-- [ ] `pytest` tout vert (unitaires + intégration + régression) ;
-- [ ] README complet (livrable CDC) + canva 🥇 + matrice de traçabilité ;
-- [ ] commits clairs · démo au lancement.
+- [x] code 🥇 fonctionnel (tout le CDC : étapes 1+2+3) ;
+- [x] `pytest` tout vert : **32 passed** (unitaires + intégration + régression) ;
+- [x] README complet (livrable CDC) + canva 🥇 + matrice de traçabilité ;
+- [x] commits clairs · démo au lancement (admin + client + catalogue + 1 commande).
 
 ✅ **Niveau 🥇 terminé** quand tout est coché.
