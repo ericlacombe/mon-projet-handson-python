@@ -6,9 +6,9 @@
 - Étape 1 — use cases → [docs/etape1-use-cases.md](docs/etape1-use-cases.md)
 - Étape 2 — fonctions métier → [docs/etape2-fonctions-metier.md](docs/etape2-fonctions-metier.md)
 - Étape 3 — objets (schéma ER) → [docs/etape3-objets.md](docs/etape3-objets.md)
-- Étape 4 — conception → 🥉 [docs/etape4-conception-debutant.md](docs/etape4-conception-debutant.md) · 🥈 [docs/etape4-intermediaire.md](docs/etape4-intermediaire.md)
-- Étape 5 — tests → 🥉 [docs/etape5-tests-debutant.md](docs/etape5-tests-debutant.md) · 🥈 [docs/etape5-tests-intermediaire.md](docs/etape5-tests-intermediaire.md)
-- Étape 6 — backlog + code → 🥉 [docs/etape6-backlog-debutant.md](docs/etape6-backlog-debutant.md) · 🥈 etape6-backlog-intermediaire.md (à venir)
+- Étape 4 — conception → 🥉 [docs/etape4-conception-debutant.md](docs/etape4-conception-debutant.md) · 🥈 [docs/etape4-intermediaire.md](docs/etape4-intermediaire.md) · 🥇 [docs/etape4-confirme.md](docs/etape4-confirme.md)
+- Étape 5 — tests → 🥉 [docs/etape5-tests-debutant.md](docs/etape5-tests-debutant.md) · 🥈 [docs/etape5-tests-intermediaire.md](docs/etape5-tests-intermediaire.md) · 🥇 [docs/etape5-tests-confirme.md](docs/etape5-tests-confirme.md)
+- Étape 6 — backlog + code → 🥉 [docs/etape6-backlog-debutant.md](docs/etape6-backlog-debutant.md) · 🥈 [docs/etape6-backlog-intermediaire.md](docs/etape6-backlog-intermediaire.md) · 🥇 [docs/etape6-backlog-confirme.md](docs/etape6-backlog-confirme.md)
 
 ## Niveaux de réalisation (répartition par complexité — règle dans methodologie.md)
 
@@ -145,6 +145,15 @@ pytest            # depuis la racine : lance tous les tests (32 tests : 🥉 1 +
 | 🥉 | `app/routes/auth.py` | Route POST /api/auth/register |
 | 🥉 | `tests/test_auth.py` | 🧪 Test 409 email déjà pris |
 | 🥉 | `README.md` | Ce fichier |
+
+| 🥇 | `docs/etape4-confirme.md` | Étape 4 niveau 🥇 : conception F3 (Order/OrderItem, cycle de vie, contrat /api/commandes, erreurs globales) |
+| 🥇 | `docs/etape5-tests-confirme.md` | Étape 5 niveau 🥇 : matrice complète + régression + canva des tests |
+| 🥇 | `docs/etape6-backlog-confirme.md` | Étape 6 niveau 🥇 : backlog 8 tâches cochées + résultats d'exécution |
+| 🥇 | `docs/canva-structure-confirme.mmd` | Canva de la structure niveau 🥇 (commandes.py, utils.py, Order/OrderItem) |
+| 🥇 | `docs/canva-tests.mmd` (+ -debutant/-intermediaire) | Canva des interactions tests (fixtures conftest ↔ fichiers de tests ↔ app) |
+| 🥇 | `app/utils.py` | Fonctions pures 4.9 : calculer_total, verifier_stock |
+| 🥇 | `app/routes/commandes.py` | F3 : POST/GET/PATCH /api/commandes, règle client_propriétaire 403 |
+| 🥇 | `tests/test_commandes.py` | 14 tests F3 (unitaires 4.6/4.9 + intégration + stock) |
 
 ## Traçabilité CDC (exigence → réalisation → test)
 
