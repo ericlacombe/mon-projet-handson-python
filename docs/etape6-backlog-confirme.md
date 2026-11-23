@@ -114,3 +114,22 @@ Règle : Avant la 1ʳᵉ ligne de code, on valide ce backlog 🥇 et, on reprend
   > *Vérifié par* : `git log` (un commit par tâche, message explicite) + `python -m app.app` → `init_sample_data()` crée `admin@digimarket.fr`, `client@digimarket.fr`, 1 catégorie + 2 produits + 1 commande exemple en base.
 
 ✅ **Niveau 🥇 terminé** quand tout est coché — c'est le cas : 8/8 tâches ✅, DoD ✅, 32 tests ✅.
+
+---
+
+🎉 **NIVEAU 🥇 CONFIRMÉ — TERMINÉ !**
+
+Backlog 🥇 : 8/8 tâches cochées ✅ (`0afe05b`), DoD cochée, `pytest` = **32 passed** (🥉 1 + 🥈 13 + 🥇 18).
+
+| # | Tâche | Commit code |
+|---|---|---|
+| 1 | Modèles `Order`/`OrderItem` + cycle de vie 4.6 | `e0c0b59` |
+| 2 | `utils.py` : `calculer_total`, `verifier_stock` | `b06d4fe` |
+| 3 | `routes/commandes.py` (POST/GET/PATCH, 403 client_propriétaire) | `06cfa6e` + fix `a31b8fb` |
+| 4 | Errorhandlers globaux 404/405/500 | `b9958c3` |
+| 5 | `conftest.py` branche `commandes_module` | `08f08a8` + fix `a947a13` |
+| 6 | `test_commandes.py` (14 tests F3) + régression | `0594f03` |
+| 7 | Données de démo (client + commande) | `2c2e749` |
+| 8 | README + canva 🥇 + traçabilité CDC | `c8b7d39` |
+
+Le projet DigiMarket est maintenant complet : F1 comptes 🥉, F2 catalogue + F4 sécurité 🥈, F3 commandes 🥇 — avec conception (étapes 4–5 par niveau), code commenté, 32 tests, canva par niveau, README avec traçabilité CDC. 🚀
