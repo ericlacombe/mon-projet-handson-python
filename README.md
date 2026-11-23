@@ -82,16 +82,16 @@ mon-projet-handson-python/
 
 ## API — routes des niveaux 🥈+🥇 (contrat complet : docs/etape4-intermediaire.md §4.7, docs/etape4-confirme.md §4.7)
 
-| Fonction métier | Objet(s) | Méthode | Route | Accès | Codes |
-|---|---|---|---|---|---|
-| F1 | `User` | POST | `/api/auth/register` | Public | 201 · 400 · 409 (🥉 ✅ fait) |
-| F1+F4 | `User` → token | POST | `/api/auth/login` | Public | 200 + JWT · 401 (🥈 🚧) |
-| F2 | `Product` | GET | `/api/produits` (`?q=` recherche) | Public | 200 (🥈 🚧) |
-| F2 | `Product` | GET | `/api/produits/<id>` | Public | 200 · 404 (🥈 🚧) |
-| F2+F4 | `Product`, `Category` | POST/PUT/DELETE | `/api/produits[/<id>]` | **Admin** (Bearer token) | 201/200/204 · 400 · 401 · 403 (🥈 ✅) |
-| F3+F4 | `Order`, `OrderItem` | POST | `/api/commandes` | Client (Bearer) | 201 · 400 (stock/qte) · 401 (🥇 ✅) |
-| F3+F4 | `Order` | GET | `/api/commandes[/<id>[/lignes]]` | Client **propriétaire** ou admin | 200 · 403 · 404 (🥇 ✅) |
-| F3+F4 | `Order.statut` | PATCH | `/api/commandes/<id>/statut` | Admin (tout) / client_propriétaire (annulée) | 200 · 400 (transition 4.6) · 403 · 404 (🥇 ✅) |
+| Fonction métier | Objet(s) | Méthode | Route | Accès | Codes | Fichier |
+|---|---|---|---|---|---|---|
+| F1 | `User` | POST | `/api/auth/register` | Public | 201 · 400 · 409 (🥉 ✅ fait) | `routes/auth.py` |
+| F1+F4 | `User` → token | POST | `/api/auth/login` | Public | 200 + JWT · 401 (🥈 ✅) | `routes/auth.py` |
+| F2 | `Product` | GET | `/api/produits` (`?q=` recherche) | Public | 200 (🥈 ✅) | `routes/produits.py` |
+| F2 | `Product` | GET | `/api/produits/<id>` | Public | 200 · 404 (🥈 ✅) | `routes/produits.py` |
+| F2+F4 | `Product`, `Category` | POST/PUT/DELETE | `/api/produits[/<id>]` | **Admin** (Bearer token) | 201/200/204 · 400 · 401 · 403 (🥈 ✅) | `routes/produits.py` |
+| F3+F4 | `Order`, `OrderItem` | POST | `/api/commandes` | Client (Bearer) | 201 · 400 (stock/qte) · 401 (🥇 ✅) | `routes/commandes.py` |
+| F3+F4 | `Order` | GET | `/api/commandes[/<id>[/lignes]]` | Client **propriétaire** ou admin | 200 · 403 · 404 (🥇 ✅) | `routes/commandes.py` |
+| F3+F4 | `Order.statut` | PATCH | `/api/commandes/<id>/statut` | Admin (tout) / client_propriétaire (annulée) | 200 · 400 (transition 4.6) · 403 · 404 (🥇 ✅) | `routes/commandes.py` |
 
 ## Sécurité — la chaîne de protection de bout en bout
 
