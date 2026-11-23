@@ -6,6 +6,7 @@ puis on lance le serveur.
 
 Niveau 🥉 : blueprint auth (POST /api/auth/register).
 Niveau 🥈 : + blueprint produits (F2 : /api/produits, /api/categories) + données de démo catalogue.
+Niveau 🥇 : + blueprint commandes (F3 : /api/commandes) + gestionnaires d'erreurs globaux (4.10) + démo commande.
 
 Lancer depuis la racine du projet :  python -m app.app
 
@@ -20,7 +21,8 @@ comme l'exige le CDC) — ainsi app.py reste petit et chaque domaine a son fichi
 # Importations
 # ------------------------------------------------------------------
 # Flask : sert à créer l'application, UNE SEULE FOIS, ici : app = Flask(__name__)
-from flask import Flask
+# jsonify : renvoie une réponse JSON (utilisé par les gestionnaires d'erreurs 4.10)
+from flask import Flask, jsonify
 
 # session partagée (module db.py — tout le monde passe par db.py pour éviter
 # l'import circulaire : app.py importe routes/auth.py, donc auth.py ne peut pas
@@ -47,7 +49,10 @@ from app.routes.auth import auth_bp
 #   Pourquoi un 2e blueprint ? Chaque domaine fonctionnel a son fichier (CDC) :
 #   app.py ne fait qu'assembler.
 from app.routes.produits import produits_bp
-from app.routes.commandes import commandes_bp   # 🥇 F3
+# commandes_bp : blueprint de routes/commandes.py — F3 « Gérer les commandes » (AJOUT 🥇)
+#   POST /api/commandes · GET /api/commandes[/<id>(/lignes)] · PATCH /api/commandes/<id>/statut
+#   Même principe : un domaine fonctionnel = un fichier, app.py assemble.
+from app.routes.commandes import commandes_bp
 # register_blueprint : enregistre les routes du blueprint dans l'app
 # → accessibles sous /api/auth/... et /api/produits, /api/categories
 app.register_blueprint(auth_bp)
@@ -58,22 +63,21 @@ app.register_blueprint(commandes_bp)   # 🥇 F3
 # Gestionnaires d'erreurs GLOBAUX (partie 4.10, niveau 🥇)
 # ------------------------------------------------------------------
 # Ils attrapent les erreurs de TOUTE l'app et renvoient du JSON (comme les routes).
-from flask import jsonify as _jsonify  # jsonify déjà importé plus haut si besoin
 
 @app.errorhandler(404)
 def _err_404(e):
     """Route inconnue → 404 en JSON (ex. GET /api/inexistant)."""
-    return _jsonify({"error": "ressource introuvable"}), 404
+    return jsonify({"error": "ressource introuvable"}), 404
 
 @app.errorhandler(405)
 def _err_405(e):
     """Mauvaise méthode HTTP sur une route existante → 405 en JSON (ex. DELETE /api/auth/login)."""
-    return _jsonify({"error": "méthode non autorisée"}), 405
+    return jsonify({"error": "méthode non autorisée"}), 405
 
 @app.errorhandler(500)
 def _err_500(e):
     """Erreur interne non gérée → 500 en JSON (sans fuiter de détails internes)."""
-    return _jsonify({"error": "erreur interne du serveur"}), 500
+    return jsonify({"error": "erreur interne du serveur"}), 500
 
 # ------------------------------------------------------------------
 # Données de DÉMO (si la base est vide) : 🥉 compte admin · 🥈 + catalogue
