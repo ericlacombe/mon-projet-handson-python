@@ -35,7 +35,7 @@ from werkzeug.security import generate_password_hash
 from app.app import app
 # Base (métadonnée des tables, pour create_all/drop_all) + modèles User, Category
 from app.modelsSQLAlchemy import Base, User, Category
-# auth_module / prod_module = les modules routes/*.py importés sous ce nom.
+# auth_module / prod_module / cmd_module = les modules routes/*.py importés sous ce nom.
 # Ils servent de « poignée » : on va remplacer LEUR session (celle de db.py, liée à la
 # vraie base digimarket.db) par une session de test en mémoire — comme ça, les
 # session.add/commit des routes écrivent dans la base de TEST, jamais dans la vraie base.
