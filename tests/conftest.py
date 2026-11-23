@@ -58,6 +58,7 @@ def session_test():
     # on remplace la session des modules par CELLE DE TEST (base en mémoire)
     auth_module.session = S
     prod_module.session = S
+    cmd_module.session = S      # 🥇 F3 : idem pour routes/commandes.py
     yield S
     Base.metadata.drop_all(engine)                    # nettoyage après le test
 
