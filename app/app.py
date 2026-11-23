@@ -55,6 +55,27 @@ app.register_blueprint(produits_bp)
 app.register_blueprint(commandes_bp)   # 🥇 F3
 
 # ------------------------------------------------------------------
+# Gestionnaires d'erreurs GLOBAUX (partie 4.10, niveau 🥇)
+# ------------------------------------------------------------------
+# Ils attrapent les erreurs de TOUTE l'app et renvoient du JSON (comme les routes).
+from flask import jsonify as _jsonify  # jsonify déjà importé plus haut si besoin
+
+@app.errorhandler(404)
+def _err_404(e):
+    """Route inconnue → 404 en JSON (ex. GET /api/inexistant)."""
+    return _jsonify({"error": "ressource introuvable"}), 404
+
+@app.errorhandler(405)
+def _err_405(e):
+    """Mauvaise méthode HTTP sur une route existante → 405 en JSON (ex. DELETE /api/auth/login)."""
+    return _jsonify({"error": "méthode non autorisée"}), 405
+
+@app.errorhandler(500)
+def _err_500(e):
+    """Erreur interne non gérée → 500 en JSON (sans fuiter de détails internes)."""
+    return _jsonify({"error": "erreur interne du serveur"}), 500
+
+# ------------------------------------------------------------------
 # Données de DÉMO (si la base est vide) : 🥉 compte admin · 🥈 + catalogue
 # ------------------------------------------------------------------
 def init_sample_data():
