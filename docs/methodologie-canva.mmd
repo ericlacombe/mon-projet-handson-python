@@ -18,6 +18,7 @@ flowchart LR
         subgraph ETAPE4["ETAPE 4 — les 11 parties (analyse -> condition -> si positif, ACTION) — appelee UNE FOIS PAR NIVEAU"]
             direction TB
             subgraph GA["Groupe A — DONNEES (d'apres l'etape 3)"]
+                direction TB
                 A41["4.1 Base de donnees — tables a creer ? -> ACTION"]
                 A42["4.2 Donnees temporaires — donnee non persistante ? -> dict/objet leger"]
                 A43["4.3 Contraintes metier — regle de validite ? -> contrainte + code erreur"]
@@ -26,6 +27,7 @@ flowchart LR
                 A46["4.6 Transitions d'etat — cycle de vie ? -> methodes + controle (🥇)"]
             end
             subgraph GB["Groupe B — COMPORTEMENT (d'apres etapes 1-2)"]
+                direction TB
                 B47["4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
                 B48["4.8 Organisation du code — 1 module/blueprint par fonction metier"]
                 B49["4.9 Fonctions Python pures — transformation sans etat ?"]
@@ -35,6 +37,7 @@ flowchart LR
             A41 --> A42 --> A43 --> A44 --> A45 --> A46
             B47 --> B48 --> B49 --> B410 --> B411
             GA --> GB
+            A46 --> B47   %% force Groupe B SOUS Groupe A (vertical)
         end
 
         subgraph BOUCLE["BOUCLE x3 NIVEAUX — 4 -> 5 -> 6 -> CODE (code des niveaux précédents fonctionnel)"]
