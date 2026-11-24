@@ -220,6 +220,113 @@ curl -X POST http://127.0.0.1:5000/api/produits \
 ```
 → 403 OK : un client sur une route admin → « réservé aux administrateurs ».
 
+**3.15 — 🛒 Créer une 2ᵉ commande (1 × PC portable id=1)** — `$TOKEN_CLIENT` encore en mémoire :
+```bash
+curl -X POST http://127.0.0.1:5000/api/commandes \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN_CLIENT" \
+  -d '{"address_livraison":"12 rue des Lilas, Paris","items":[{"product_id":1,"quantite":1}]}'
+```
+✅ Réponse attendue (201) : commande `en_attente`, `total` = prix actuel du PC portable, `prix_unitaire` figé :
+```json
+{"id": 4, "statut": "en_attente", "total": 899.99,
+ "lignes": [{"product_id": 1, "quantite": 1, "prix_unitaire": 899.99}], "user_id": 2, ...}
+```
+
+**3.16 — 🔐 Récupérer le token ADMIN dans une variable** (même pattern que `TOKEN_CLIENT`) :
+```bash
+TOKEN_ADMIN=$(curl -s -X POST http://127.0.0.1:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@digimarket.fr","password":"admin123"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+```
+
+**3.17 — ✅ Admin passe la commande 4 en « validée »** (cycle : en_attente → validée → expédiée) :
+```bash
+curl -X PATCH http://127.0.0.1:5000/api/commandes/4/statut \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN_ADMIN" \
+  -d '{"statut":"validée"}'
+```
+✅ Réponse attendue (200) : `"statut": "validée"` (et le stock du PC portable est décrémenté).
+
+**3.18 — ✅ Admin passe la commande 4 en « expédiée »**
+```bash
+curl -X PATCH http://127.0.0.1:5000/api/commandes/4/statut \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN_ADMIN" \
+  -d '{"statut":"expédiée"}'
+```
+✅ Réponse attendue (200) : `"statut": "expédiée"` → cycle complet en_attente → validée → expédiée ✅.
+
+**3.19 — ❌ Transition INTERDITE (expédiée → en_attente) → 400**
+```bash
+curl -X PATCH http://127.0.0.1:5000/api/commandes/4/statut \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN_ADMIN" \
+  -d '{"statut":"en_attente"}'
+```
+✅ Réponse attendue (400) :
+```json
+{"error": "transition interdite : expédiée → en_attente"}
+```
+
+**3.20 — 📦 Vérifier le stock du PC portable (id 1) après validation**
+```bash
+curl http://127.0.0.1:5000/api/produits/1
+```
+✅ Le stock a été décrémenté à la validation (ex. 10 → 9) :
+```json
+{"id": 1, "name": "PC portable", "price": 899.99, "stock": 9, "categorie": "Informatique", ...}
+```
+
+**3.21 — ❌ Le CLIENT essaie de valider SA commande (en_attente → validée) → 403**
+```bash
+curl -X PATCH http://127.0.0.1:5000/api/commandes/4/statut \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN_CLIENT" \
+  -d '{"statut":"validée"}'
+```
+✅ Réponse attendue (403) — seul l'admin peut valider :
+```json
+{"error": "un client ne peut qu'annuler sa commande"}
+```
+
+**3.22 — 👤 Créer un 2ᵉ client et récupérer son token**
+```bash
+curl -X POST http://127.0.0.1:5000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"email":"client2@exemple.fr","password":"mdp1234","first_name":"Jean","last_name":"Dupont"}'
+
+TOKEN_CLIENT2=$(curl -s -X POST http://127.0.0.1:5000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"client2@exemple.fr","password":"mdp1234"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+
+echo ${TOKEN_CLIENT2:0:30}    # vérif : affiche le début du token (eyJhbGciOiJIUzI1NiIs...)
+```
+✅ Réponse register (201) : `{"email": "client2@exemple.fr", "message": "utilisateur créé"}`.
+
+**3.23 — ❌ client2 essaie de LIRE puis MODIFIER la commande d'un autre client → 403**
+```bash
+curl http://127.0.0.1:5000/api/commandes/4 -H "Authorization: Bearer $TOKEN_CLIENT2"
+
+curl -X PATCH http://127.0.0.1:5000/api/commandes/4/statut \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $TOKEN_CLIENT2" \
+  -d '{"statut":"annulée"}'
+```
+✅ Réponse attendue (403) les 2 fois — règle client_propriétaire :
+```json
+{"error": "accès interdit à cette commande"}
+```
+
+**3.24 — ✅ L'ADMIN, lui, voit la commande 4 (il voit tout)**
+```bash
+curl http://127.0.0.1:5000/api/commandes/4 -H "Authorization: Bearer $TOKEN_ADMIN"
+```
+✅ Réponse attendue (200) : la commande complète (propriétaire `user_id: 2`).
+
 ## 🧪 ÉTAPE 4 — Lancer les tests automatisés (dans n'importe quel terminal)
 ```bash
 cd /home/blent/mon-projet-handson-python && source venv/bin/activate && pytest
