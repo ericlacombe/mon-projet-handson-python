@@ -387,10 +387,10 @@ Pour arrêter le serveur : retourne dans le **Terminal 1** et fais **Ctrl+C**.
 | Terminal 1 🟢 | Serveur Flask | `python -m app.app` → écoute sur http://127.0.0.1:5000 |
 | Terminal 2 🔵 | Requêtes HTTP | `curl ...` → teste l'API |
 
-## Installer et lancer (version courte)
+## Installer et lancer (version courte) — dans le **Terminal 1 🟢** (celui du serveur)
 ```bash
 python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
-./venv/bin/python -m app.app          # serveur sur http://127.0.0.1:5000
+./venv/bin/python -m app.app          # serveur sur http://127.0.0.1:5000 — Terminal 1 🟢
 ```
 
 ## Se connecter (obtenir un token JWT, valable 24 h)
