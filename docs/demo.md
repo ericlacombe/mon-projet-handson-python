@@ -87,6 +87,7 @@ curl -X POST http://127.0.0.1:5000/api/produits \
 {"id": 5, "message": "produit créé"}
 ```
 → Produit id 5 créé (le nom n'est pas unique, donc le doublon est accepté — seule la catégorie a un nom unique, 409).
+
 **3.6 — Se connecter en CLIENT**
 ```bash
 curl -X POST http://127.0.0.1:5000/api/auth/login \
