@@ -144,6 +144,24 @@ curl -X POST http://127.0.0.1:5000/api/commandes \
   -H "Authorization: Bearer $TOKEN_CLIENT" \
   -d '{"address_livraison":"12 rue des Lilas, Paris","items":[{"product_id":2,"quantite":2}]}'
 ```
+✅ Réponse attendue (201) :
+```json
+{
+  "address_livraison": "12 rue des Lilas, Paris",
+  "date_creation": "2026-11-24T11:36:56.485580",
+  "id": 3,
+  "lignes": [
+    {
+      "prix_unitaire": 79.9,
+      "product_id": 2,
+      "quantite": 2
+    }
+  ],
+  "statut": "en_attente",
+  "total": 159.8,
+  "user_id": 2
+}
+```
 **3.11 — Voir son historique de commandes**
 ```bash
 curl http://127.0.0.1:5000/api/commandes \
