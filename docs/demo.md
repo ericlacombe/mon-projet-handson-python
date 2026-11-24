@@ -393,7 +393,7 @@ python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
 ./venv/bin/python -m app.app          # serveur sur http://127.0.0.1:5000 — Terminal 1 🟢
 ```
 
-## Se connecter (obtenir un token JWT, valable 24 h)
+## Se connecter (obtenir un token JWT, valable 24 h) — Terminal 2 🔵
 ```bash
 # curl = client HTTP en ligne de commande (ici contre notre API locale sur le port 5000)
 # -X POST                          : méthode HTTP POST (envoi de données)
@@ -407,7 +407,7 @@ curl -X POST http://127.0.0.1:5000/api/auth/login \
 #                          "Authorization: Bearer <token>" de toutes les requêtes protégées)
 ```
 
-## Scénario « passer une commande » (fil rouge)
+## Scénario « passer une commande » (fil rouge) — Terminal 2 🔵
 ```bash
 TOKEN="eyJ..."   # token du login
 
@@ -428,7 +428,7 @@ curl http://127.0.0.1:5000/api/commandes/2 -H "Authorization: Bearer $TOKEN"
 curl http://127.0.0.1:5000/api/commandes/2/lignes -H "Authorization: Bearer $TOKEN"
 ```
 
-## Côté admin : valider la commande (stock décrémenté)
+## Côté admin : valider la commande (stock décrémenté) — Terminal 2 🔵
 ```bash
 TOKEN_ADMIN=$(curl -s -X POST http://127.0.0.1:5000/api/auth/login \
   -H "Content-Type: application/json" \
@@ -444,7 +444,7 @@ curl -X PATCH http://127.0.0.1:5000/api/commandes/2/statut \
      -d '{"statut":"annulée"}'
 ```
 
-## Montrer la sécurité (codes d'erreur)
+## Montrer la sécurité (codes d'erreur) — Terminal 2 🔵
 | Cas | Requête | Résultat |
 |---|---|---|
 | Sans token | `POST /api/commandes` sans header | **401** |
@@ -454,7 +454,7 @@ curl -X PATCH http://127.0.0.1:5000/api/commandes/2/statut \
 | Transition interdite | PATCH `en_attente` → `livrée` | **400** (cycle de vie 4.6) |
 | Stock insuffisant / quantité 0 | POST commande qté 99 ou 0 | **400** |
 
-## Montrer les tests
+## Montrer les tests — Terminal 1 🟢 ou Terminal 2 🔵 (au choix)
 ```bash
 ./venv/bin/python -m pytest tests/ -q     # → 32 passed (🥉 1 + 🥈 13 + 🥇 18)
 ```

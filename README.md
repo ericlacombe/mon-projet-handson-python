@@ -108,6 +108,8 @@ mon-projet-handson-python/
 Détail complet : `docs/etape4-intermediaire.md` §4.11 (tableau des protections + conformité CDC).
 
 ## Installation et lancement (étape 6)
+
+🎬 **Démo pas à pas (2 terminaux VS Code, commandes curl, comptes de démo, scénarios 200/201/204/400/401/403/404) → [docs/demo.md](docs/demo.md)**
 ```bash
 python -m venv venv                # crée un environnement virtuel isolé (dossier venv/) : les bibliothèques du projet n'installent PAS dans ton Python global
 source venv/bin/activate           # active cet environnement (Windows : venv\Scripts\activate) — toutes les commandes suivantes (pip, python) l'utilisent
