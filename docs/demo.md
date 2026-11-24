@@ -16,10 +16,16 @@ Au lancement, `init_sample_data()` crée automatiquement :
 
 ## 2. Se connecter (obtenir un token JWT, valable 24 h)
 ```bash
+# curl = client HTTP en ligne de commande (ici contre notre API locale sur le port 5000)
+# -X POST                          : méthode HTTP POST (envoi de données)
+# http://127.0.0.1:5000/...        : 127.0.0.1 = la machine locale, 5000 = port de Flask
+# -H "Content-Type: application/json" : on envoie du JSON (le serveur lit request.get_json())
+# -d '{...}'                       : le corps de la requête = les identifiants de démo
 curl -X POST http://127.0.0.1:5000/api/auth/login \
      -H "Content-Type: application/json" \
      -d '{"email":"client@digimarket.fr","password":"client123"}'
-# → {"token": "eyJ..."}
+# → {"token": "eyJ..."}   : réponse 200, le token JWT signé (à mettre ensuite dans le header
+#                          "Authorization: Bearer <token>" de toutes les requêtes protégées)
 ```
 
 ## 3. Scénario « passer une commande » (fil rouge)
