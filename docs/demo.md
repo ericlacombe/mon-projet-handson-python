@@ -1,6 +1,7 @@
 # 🎬 Démo pas à pas dans VS Code (2 terminaux) — DigiMarket (API REST Flask)
 
 ## 🟢 ÉTAPE 1 — Préparation (dans un terminal VS Code, à la racine du projet)
+Dans VS Code : Terminal → New Terminal (ou Ctrl+Shift+`), puis :
 ```bash
 cd /home/blent/mon-projet-handson-python
 python3 -m venv venv
@@ -12,10 +13,10 @@ pip install -r requirements.txt
 echo 'SECRET_KEY=ma-cle-secrete-de-demo-123456' > .env
 ```
 
-## 🟢 ÉTAPE 2 — TERMINAL 1 : lancer le serveur Flask
-Dans VS Code : Terminal → New Terminal (ou Ctrl+Shift+`), puis :
+## 🟢 ÉTAPE 2 — Même terminal (TERMINAL 1) : lancer le serveur Flask
+Le venv est déjà activé (étape 1), il suffit de lancer :
 ```bash
-cd /home/blent/mon-projet-handson-python && source venv/bin/activate && python -m app.app
+python -m app.app
 ```
 ✅ Tu dois voir apparaître :
 ```
