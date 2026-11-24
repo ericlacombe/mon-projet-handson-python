@@ -48,6 +48,7 @@ Dans VS Code : Terminal → New Terminal (un 2ᵉ terminal s'ouvre à côté), p
 ```bash
 cd /home/blent/mon-projet-handson-python && source venv/bin/activate
 ```
+💡 Anatomie d'une commande `curl` ci-dessous : `curl -X <MÉTHODE> <URL> -H "<header>" -d '<body JSON>'` — `-X` = méthode HTTP (GET par défaut, donc omis ici), `-H` = header (ex. `Authorization: Bearer <token>` pour les routes protégées, `Content-Type: application/json`), `-d` = corps JSON envoyé. Chaque requête tape l'API du serveur du terminal 1 (http://127.0.0.1:5000) et renvoie le JSON de réponse + le code HTTP.
 
 **3.1 — Tester une route publique (catalogue)**
 ```bash
