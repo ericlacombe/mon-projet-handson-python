@@ -25,11 +25,13 @@ Données de démo initialisées (admin + client + catalogue + 1 commande).
 ```
 Laisse ce terminal ouvert — c'est le serveur qui tourne.
 
-⚠️ **Erreur « Address already in use / Port 5000 is in use »** (un ancien serveur tourne encore) :
+⚠️ **Erreur « Address already in use / Port 5000 is in use »** (un ancien serveur tourne encore).
+Le port est configurable : lance sur un autre port (ex. 5001) et adapte les URL des curl en `:5001` :
 ```bash
-fuser -k 5000/tcp     # tue le processus qui occupe le port 5000
-python -m app.app     # puis relance le serveur
+PORT=5001 python -m app.app        # serveur sur http://127.0.0.1:5001
+# ex. : curl http://127.0.0.1:5001/api/produits
 ```
+(Alternative pour tuer l'ancien processus si `fuser`/`lsof` manquent : `ss -ltnp | grep 5000` puis `kill <PID>`.)
 
 ## 🔵 ÉTAPE 3 — TERMINAL 2 : envoyer les requêtes HTTP
 Dans VS Code : Terminal → New Terminal (un 2ᵉ terminal s'ouvre à côté), puis :

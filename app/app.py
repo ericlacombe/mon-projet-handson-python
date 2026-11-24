@@ -22,6 +22,7 @@ comme l'exige le CDC) — ainsi app.py reste petit et chaque domaine a son fichi
 # ------------------------------------------------------------------
 # Flask : sert à créer l'application, UNE SEULE FOIS, ici : app = Flask(__name__)
 # jsonify : renvoie une réponse JSON (utilisé par les gestionnaires d'erreurs 4.10)
+import os
 from flask import Flask, jsonify
 
 # session partagée (module db.py — tout le monde passe par db.py pour éviter
@@ -147,4 +148,5 @@ if __name__ == "__main__":
     # → les données de démo sont créées dans la vraie base UNIQUEMENT au
     #   démarrage du serveur, jamais pendant les tests (base en mémoire).
     init_sample_data()
-    app.run(debug=True)
+    # port configurable (par défaut 5000) : PORT=5001 python -m app.app
+    app.run(debug=True, port=int(os.environ.get("PORT", "5000")))
