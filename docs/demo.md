@@ -53,6 +53,7 @@ cd /home/blent/mon-projet-handson-python && source venv/bin/activate
 ```bash
 curl http://127.0.0.1:5000/api/produits
 ```
+💡 `curl` fait un **GET par défaut** (pas besoin de `-X GET` : `curl -X GET "..."` marche pareil). `-X POST/PUT/PATCH/DELETE` sert uniquement à changer la méthode par défaut.
 **3.2 — Rechercher un produit**
 ```bash
 curl "http://127.0.0.1:5000/api/produits?q=clavier"
