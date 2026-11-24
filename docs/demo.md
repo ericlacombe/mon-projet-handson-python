@@ -137,7 +137,7 @@ TOKEN_CLIENT=$(curl -s -X POST http://127.0.0.1:5000/api/auth/login \
 # Ensuite, dans les étapes suivantes, utilise la variable dans le header :
 #   -H "Authorization: Bearer $TOKEN_CLIENT"
 ```
-**3.10 — Passer une commande (client, avec son token)** — remplace `$TOKEN_CLIENT` :
+**3.10 — Passer une commande (client, avec son token `$TOKEN_CLIENT`)** :
 ```bash
 curl -X POST http://127.0.0.1:5000/api/commandes \
   -H "Content-Type: application/json" \
