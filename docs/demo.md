@@ -102,7 +102,11 @@ cd /home/blent/mon-projet-handson-python && source venv/bin/activate && pytest
 | Terminal 1 🟢 | Serveur Flask | `python -m app.app` → écoute sur http://127.0.0.1:5000 |
 | Terminal 2 🔵 | Requêtes HTTP | `curl ...` → teste l'API |
 
-## Comptes de démo créés automatiquement au lancement
+## Données de démo créées automatiquement au lancement (`init_sample_data()`)
+
+- **Comptes** : admin@digimarket.fr / admin123 (rôle admin) · client@digimarket.fr / client123 (rôle client)
+- **Catalogue** : 1 catégorie « Informatique » + 2 produits (PC portable 899,99 € stock 10 · Clavier mécanique 79,90 € stock 25)
+- **1 commande exemple** (en_attente) pour le client de démo
 
 | Rôle | Email | Mot de passe |
 |---|---|---|
