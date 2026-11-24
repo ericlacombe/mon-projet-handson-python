@@ -32,6 +32,8 @@ echo 'SECRET_KEY=ma-cle-secrete-de-demo-123456' > .env
 ## 🟢 ÉTAPE 2 — Même terminal (TERMINAL 1) : lancer le serveur Flask
 Le venv est déjà activé (étape 1), il suffit de lancer :
 ```bash
+# -m app.app = exécute le module app/app.py depuis la racine (le package app/ devient importable)
+# → ouvre/crée digimarket.db, enregistre les routes, lance le serveur sur http://127.0.0.1:5000
 python -m app.app
 ```
 ✅ Tu dois voir apparaître :
@@ -40,6 +42,13 @@ python -m app.app
 Données de démo initialisées (admin + client + catalogue + 1 commande).
 ```
 Laisse ce terminal ouvert — c'est le serveur qui tourne.
+
+💡 **Que se passe-t-il au lancement de `python -m app.app` ?** (dans l'ordre, en suivant `app/app.py`) :
+1. **`-m app.app`** : Python exécute `app/app.py` comme programme principal (`__name__ == "__main__"`), depuis la racine du projet — c'est ce qui rend les imports `from app.db import …` possibles. (`python app/app.py` directement échouerait : le dossier `app/` serait pris pour la racine.)
+2. **Base de données** : l'import de `app/db.py` crée le moteur SQLite (`sqlite:///digimarket.db` → le fichier `digimarket.db` est créé automatiquement à la racine du projet), puis `Base.metadata.create_all(engine)` crée les tables (`users`, `categories`, `products`, `orders`, `order_items`) si elles n'existent pas encore.
+3. **Assemblage de l'app** : `app = Flask(__name__)`, puis enregistrement des 3 blueprints (`auth_bp` → /api/auth/…, `produits_bp` → /api/produits + /api/categories, `commandes_bp` → /api/commandes) et des gestionnaires d'erreurs globaux 404/405/500 (réponses en JSON, comme les routes).
+4. **Données de démo** : le bloc `if __name__ == "__main__":` ne s'exécute QUE au lancement direct (pas quand les tests importent l'app) → `init_sample_data()` remplit la base UNIQUEMENT si elle est vide : d'où le message « Données de démo initialisées… » au 1ᵉʳ lancement seulement.
+5. **Serveur** : `app.run(debug=True, port=5000)` écoute sur http://127.0.0.1:5000 (d'où « Running on … »). `debug=True` = rechargement automatique à chaque modification du code + debugger interactif (pratique en démo, à désactiver en production). Port alternatif : `PORT=5001 python -m app.app`.
 
 ⚠️ **Erreur « Address already in use / Port 5000 is in use »** (un ancien serveur tourne encore). Sans toucher au code, lance sur un autre port (ex. 5001) et adapte les URL des curl en `:5001` :
 ```bash
