@@ -3,15 +3,31 @@
 ## 🟢 ÉTAPE 1 — Préparation (dans un terminal VS Code, à la racine du projet)
 Dans VS Code : Terminal → New Terminal (ou Ctrl+Shift+`), puis :
 ```bash
+# 1. Va à la racine du projet (adapte le chemin si ton clone est ailleurs) :
 cd /home/blent/mon-projet-handson-python
-python3 -m venv venv
-source venv/bin/activate
-# Tu dois voir (venv) apparaître au début de ta ligne de commande.
 
+# 2. Crée un environnement virtuel Python dans le dossier venv/ :
+#    - "python3 -m venv venv" exécute le module "venv" qui construit cet environnement isolé
+#    - avantage : les bibliothèques du projet ne s'installent PAS dans ton Python global
+python3 -m venv venv
+
+# 3. Active le venv (Linux/macOS) — sous Windows : venv\Scripts\activate
+#    - "source venv/bin/activate" charge le script d'activation dans TON shell courant
+source venv/bin/activate
+# Tu dois voir (venv) apparaître au début de ta ligne de commande :
+# c'est la preuve que le venv est actif — toutes les commandes suivantes (pip, python) l'utiliseront.
+
+# 4. Installe les dépendances listées dans requirements.txt
+#    (flask, sqlalchemy, pytest, PyJWT : la "liste de courses" du projet, mêmes versions pour tout le monde) :
 pip install -r requirements.txt
-# Crée le fichier .env (clé secrète pour signer les tokens JWT) :
+
+# 5. Crée le fichier .env : il contient la clé secrète qui sert à SIGNER les tokens JWT
+#    - elle est lue au démarrage par app/security.py : SECRET_KEY = os.environ["SECRET_KEY"]
+#    - .env est dans .gitignore : ne le commite JAMAIS, sinon n'importe qui peut forger un token admin
 echo 'SECRET_KEY=ma-cle-secrete-de-demo-123456' > .env
 ```
+
+💡 **Objectif de l'étape 1** : avoir un environnement propre et reproductible (venv + dépendances) plus la config secrète (.env) — sans ça, le serveur ne démarre pas ou les tokens JWT ne peuvent pas être signés. Vérification rapide : `git status` ne doit PAS lister `.env` (merci le .gitignore).
 
 ## 🟢 ÉTAPE 2 — Même terminal (TERMINAL 1) : lancer le serveur Flask
 Le venv est déjà activé (étape 1), il suffit de lancer :
