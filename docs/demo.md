@@ -88,32 +88,52 @@ curl -X POST http://127.0.0.1:5000/api/produits \
 ```
 → Produit id 5 créé (le nom n'est pas unique, donc le doublon est accepté — seule la catégorie a un nom unique, 409).
 
-**3.6 — Se connecter en CLIENT**
+**3.6 — ✏️ Modifier le prix du produit id 4 (admin)** — remplace `COLLE_TON_TOKEN_ICI` :
+```bash
+curl -X PUT http://127.0.0.1:5000/api/produits/4 \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer COLLE_TON_TOKEN_ICI" \
+  -d '{"price":299.99,"stock":20}'
+```
+✅ Réponse attendue (200) :
+```json
+{"id": 4, "message": "produit modifié"}
+```
+
+**3.7 — 🗑️ Supprimer le produit id 5 (admin)**
+```bash
+curl -X DELETE http://127.0.0.1:5000/api/produits/5 \
+  -H "Authorization: Bearer COLLE_TON_TOKEN_ICI"
+```
+✅ 1ʳᵉ fois : **204** (corps vide). Si tu la rejoues : `{"error": "produit introuvable"}` (**404**, il n'existe plus).
+Vérif : `curl http://127.0.0.1:5000/api/produits` → l'id 5 n'apparaît plus dans la liste.
+
+**3.8 — Se connecter en CLIENT**
 ```bash
 curl -X POST http://127.0.0.1:5000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"client@digimarket.fr","password":"client123"}'
 ```
-**3.7 — Passer une commande (client, avec son token)** — remplace `COLLE_TON_TOKEN_CLIENT_ICI` :
+**3.9 — Passer une commande (client, avec son token)** — remplace `COLLE_TON_TOKEN_CLIENT_ICI` :
 ```bash
 curl -X POST http://127.0.0.1:5000/api/commandes \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer COLLE_TON_TOKEN_CLIENT_ICI" \
   -d '{"address_livraison":"12 rue des Lilas, Paris","items":[{"product_id":2,"quantite":2}]}'
 ```
-**3.8 — Voir son historique de commandes**
+**3.10 — Voir son historique de commandes**
 ```bash
 curl http://127.0.0.1:5000/api/commandes \
   -H "Authorization: Bearer COLLE_TON_TOKEN_CLIENT_ICI"
 ```
-**3.9 — Annuler sa commande (PATCH statut)**
+**3.11 — Annuler sa commande (PATCH statut)**
 ```bash
 curl -X PATCH http://127.0.0.1:5000/api/commandes/1/statut \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer COLLE_TON_TOKEN_CLIENT_ICI" \
   -d '{"statut":"annulée"}'
 ```
-**3.10 — Tester les erreurs (sans token → 401)**
+**3.12 — Tester les erreurs (sans token → 401)**
 ```bash
 curl -X POST http://127.0.0.1:5000/api/produits \
   -H "Content-Type: application/json" \
