@@ -376,16 +376,16 @@ tests/test_security.py ....                                [100%]
 🚀 Ton API DigiMarket est **fully opérationnelle** !
 Pour arrêter le serveur : retourne dans le **Terminal 1** et fais **Ctrl+C**.
 
-## 📊 Récapitulatif des 2 terminaux
+---
+
+# 🧭 Rappel rapide (résumé des commandes essentielles)
+
+📊 **Récapitulatif des 2 terminaux** — **Terminal 1 🟢** = serveur Flask (`python -m app.app`, écoute sur http://127.0.0.1:5000) · **Terminal 2 🔵** = requêtes HTTP (`curl ...` qui testent l'API). Donc : les étapes 3.x (tous les `curl`) se font dans le **Terminal 2 🔵**, le serveur tourne dans le **Terminal 1 🟢**, et les tests (étape 4, `python -m pytest`) peuvent se lancer dans l'un ou l'autre.
 
 | Terminal | Rôle | Commande |
 |---|---|---|
 | Terminal 1 🟢 | Serveur Flask | `python -m app.app` → écoute sur http://127.0.0.1:5000 |
 | Terminal 2 🔵 | Requêtes HTTP | `curl ...` → teste l'API |
-
----
-
-# 🧭 Rappel rapide (résumé des commandes essentielles)
 
 ## Installer et lancer (version courte)
 ```bash
