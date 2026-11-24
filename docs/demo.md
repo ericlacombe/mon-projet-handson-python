@@ -36,7 +36,7 @@ python -c "from app.app import app; app.run(debug=True, port=5001)"   # serveur 
 
 - **Comptes** : admin@digimarket.fr / admin123 (rôle admin) · client@digimarket.fr / client123 (rôle client)
 - **Catalogue** : 1 catégorie « Informatique » + 2 produits (PC portable 899,99 € stock 10 · Clavier mécanique 79,90 € stock 25)
-- **1 commande exemple** (en_attente) pour le client de démo
+- **1 commande exemple** pour le client de démo : 1 × PC portable (id=1), total **899,99 €**, adresse « 12 rue des Lilas, Paris », statut **en_attente**
 
 | Rôle | Email | Mot de passe |
 |---|---|---|
