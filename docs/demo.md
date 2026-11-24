@@ -120,29 +120,40 @@ curl -X POST http://127.0.0.1:5000/api/produits \
 ```
 → 401 : sans token, l'API refuse l'accès (sécurité OK ✅).
 
-**3.9 — Se connecter en CLIENT**
+**3.9 — 🔐 Se connecter en CLIENT et stocker son token dans une variable**
 ```bash
-curl -X POST http://127.0.0.1:5000/api/auth/login \
+# TOKEN_CLIENT=$(...)  : exécute la commande entre $( ) et stocke le résultat dans la variable TOKEN_CLIENT
+# curl -s -X POST ...  : appelle le login (réponse JSON {"token": "eyJ..."}) — -s = silencieux (pas de barre de progression)
+# | python3 -c "..."    : pipe (|) → envoie la réponse JSON dans ce mini-script Python qui extrait le token :
+#     import sys,json            : importe sys (entrée standard) et json (parse le JSON)
+#     json.load(sys.stdin)       : lit la réponse JSON reçue sur l'entrée standard (le pipe)
+#     ['token']                  : récupère la valeur de la clé "token"
+#     print(...)                 : l'affiche → c'est ce que contiendra la variable TOKEN_CLIENT
+TOKEN_CLIENT=$(curl -s -X POST http://127.0.0.1:5000/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"client@digimarket.fr","password":"client123"}'
+  -d '{"email":"client@digimarket.fr","password":"client123"}' \
+  | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+
+# Ensuite, dans les étapes suivantes, utilise la variable dans le header :
+#   -H "Authorization: Bearer $TOKEN_CLIENT"
 ```
-**3.10 — Passer une commande (client, avec son token)** — remplace `COLLE_TON_TOKEN_CLIENT_ICI` :
+**3.10 — Passer une commande (client, avec son token)** — remplace `$TOKEN_CLIENT` :
 ```bash
 curl -X POST http://127.0.0.1:5000/api/commandes \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer COLLE_TON_TOKEN_CLIENT_ICI" \
+  -H "Authorization: Bearer $TOKEN_CLIENT" \
   -d '{"address_livraison":"12 rue des Lilas, Paris","items":[{"product_id":2,"quantite":2}]}'
 ```
 **3.11 — Voir son historique de commandes**
 ```bash
 curl http://127.0.0.1:5000/api/commandes \
-  -H "Authorization: Bearer COLLE_TON_TOKEN_CLIENT_ICI"
+  -H "Authorization: Bearer $TOKEN_CLIENT"
 ```
 **3.12 — Annuler sa commande (PATCH statut)**
 ```bash
 curl -X PATCH http://127.0.0.1:5000/api/commandes/1/statut \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer COLLE_TON_TOKEN_CLIENT_ICI" \
+  -H "Authorization: Bearer $TOKEN_CLIENT" \
   -d '{"statut":"annulée"}'
 ```
 **3.13 — Tester les erreurs (sans token → 401)**
