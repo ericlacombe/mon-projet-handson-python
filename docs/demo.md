@@ -167,13 +167,34 @@ curl -X POST http://127.0.0.1:5000/api/commandes \
 curl http://127.0.0.1:5000/api/commandes \
   -H "Authorization: Bearer $TOKEN_CLIENT"
 ```
-**3.12 — Annuler sa commande (PATCH statut)**
+**3.12 — 🔄 Annuler la commande id 3 (PATCH statut)**
 ```bash
-curl -X PATCH http://127.0.0.1:5000/api/commandes/1/statut \
+curl -X PATCH http://127.0.0.1:5000/api/commandes/3/statut \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN_CLIENT" \
   -d '{"statut":"annulée"}'
 ```
+✅ Réponse attendue (200) — la commande passe à `annulée` :
+```json
+{
+  "address_livraison": "12 rue des Lilas, Paris",
+  "id": 3,
+  "lignes": [{"prix_unitaire": 79.9, "product_id": 2, "quantite": 2}],
+  "statut": "annulée",
+  "total": 159.8,
+  "user_id": 2
+}
+```
+✅ Commande 3 annulée — le stock du clavier a dû être **restitué**. Vérifions :
+```bash
+curl http://127.0.0.1:5000/api/produits/2
+```
+✅ Le stock doit être remonté à **27** (25 + 2 restitués) :
+```json
+{"categorie": "Informatique", "description": "Switchs silencieux", "id": 2,
+ "name": "Clavier mécanique", "price": 79.9, "stock": 27}
+```
+→ Stock restitué : 25 → 27 après annulation. La mécanique de stock fonctionne ✅.
 **3.13 — Tester les erreurs (sans token → 401)**
 ```bash
 curl -X POST http://127.0.0.1:5000/api/produits \
