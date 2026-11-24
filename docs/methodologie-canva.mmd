@@ -1,5 +1,5 @@
 %% Canva visuel de la methodologie — a rendre sur https://mermaid.live
-%% Layout : racine TB (vertical) : ETAPES 0-3 au-dessus, puis COL (ETAPE 4 au-dessus de BOUCLE) ; internes des blocs en LR (horizontal).
+%% Layout : racine TB (vertical) : ETAPES 0-3 au-dessus, puis bloc violet ETAPES 4-6 (ETAPE 4 au-dessus de BOUCLE) ; internes en LR (horizontal).
 flowchart TB
     classDef petit font-size:11px;
 
@@ -17,22 +17,24 @@ flowchart TB
 
         subgraph ETAPE4["ETAPE 4 — Conception: Analyse étapes 0-3 -> Condition ? -> Action — par niveau"]
             direction TB
-            subgraph GA["DONNEES (étape 3)"]
+            subgraph GA["DONNEES (etape 3)"]
                 direction LR
-            A41["🥉 4.1 Base — tables a creer ? -> ACTION"]
-            A42["🥇 4.2 Temporaires — non persistant ? -> dict"]
-            A43["🥈 4.3 Contraintes — regle de validite ? -> contrainte + code"]
-            A44["🥉 4.4 Objets simples — etat persistant ? -> classe + table"]
-            A45["🥈 4.5 Relations 1-N — objets lies ? -> FK + relationship"]
-            A46["🥇 4.6 Transitions — cycle de vie ? -> methodes + controle (🥇)"]
-            B47["🥉 4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
-            B48["🥉 4.8 Modules — 1 blueprint par fonction metier"]
-            B49["🥇 4.9 Fonctions pures — transformation sans etat ?"]
-            B410["🥉 4.10 Erreurs — branches d'erreur ? -> codes HTTP"]
-            B411["🥈 4.11 Securite — auth ? -> token JWT, 401/403"]
-            A41 --> A42 --> A43 --> A44 --> A45 --> A46
-            A46 --> B47
-            B47 --> B48 --> B49 --> B410 --> B411
+                A41["🥉 4.1 Base — tables a creer ? -> ACTION"]
+                A42["🥇 4.2 Temporaires — non persistant ? -> dict"]
+                A43["🥈 4.3 Contraintes — regle de validite ? -> contrainte + code"]
+                A44["🥉 4.4 Objets simples — etat persistant ? -> classe + table"]
+                A45["🥈 4.5 Relations 1-N — objets lies ? -> FK + relationship"]
+                A46["🥇 4.6 Transitions — cycle de vie ? -> methodes + controle"]
+                A41 --> A42 --> A43 --> A44 --> A45 --> A46
+            end
+            subgraph GB["COMPORTEMENTS (etapes 1-2)"]
+                direction LR
+                B47["🥉 4.7 Routes API — contrat (methode, entrees, sorties, codes)"]
+                B48["🥉 4.8 Modules — 1 blueprint par fonction metier"]
+                B49["🥇 4.9 Fonctions pures — transformation sans etat ?"]
+                B410["🥉 4.10 Erreurs — branches d'erreur ? -> codes HTTP"]
+                B411["🥈 4.11 Securite — auth ? -> token JWT, 401/403"]
+                B47 --> B48 --> B49 --> B410 --> B411
             end
             GA --> GB
         end
@@ -53,6 +55,9 @@ flowchart TB
 
     class E0,E1,E2,E3,A41,A42,A43,A44,A45,A46,B47,B48,B49,B410,B411,B1,B2,B3,FIN petit;
     style PHASE1 fill:#e8f4ff,stroke:#3b82f6
+    style COL fill:#fdf2f8,stroke:#ec4899
     style ETAPE4 fill:#f0fdf4,stroke:#22c55e
+    style GA fill:#dcfce7,stroke:#22c55e
+    style GB fill:#dcfce7,stroke:#16a34a
     style BOUCLE fill:#fff7e6,stroke:#f59e0b
     style FIN fill:#fef3c7,stroke:#d97706
