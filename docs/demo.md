@@ -25,6 +25,12 @@ Données de démo initialisées (admin + client + catalogue + 1 commande).
 ```
 Laisse ce terminal ouvert — c'est le serveur qui tourne.
 
+⚠️ **Erreur « Address already in use / Port 5000 is in use »** (un ancien serveur tourne encore) :
+```bash
+fuser -k 5000/tcp     # tue le processus qui occupe le port 5000
+python -m app.app     # puis relance le serveur
+```
+
 ## 🔵 ÉTAPE 3 — TERMINAL 2 : envoyer les requêtes HTTP
 Dans VS Code : Terminal → New Terminal (un 2ᵉ terminal s'ouvre à côté), puis :
 ```bash
