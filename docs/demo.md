@@ -401,6 +401,29 @@ tests/test_security.py ....                                [100%]
 🚀 Ton API DigiMarket est **fully opérationnelle** !
 Pour arrêter le serveur : retourne dans le **Terminal 1** et fais **Ctrl+C**.
 
+### 🔌 Laisser le serveur tourner : quelles conséquences ?
+
+Si tu ne l'arrêtes pas, voici ce qui se passe :
+
+| Aspect | Conséquence |
+|---|---|
+| 🔌 Port 5000 occupé | Tu ne pourras pas relancer `python -m app.app` → erreur « Address already in use » (déjà vue à l'étape 2 ⚠️) |
+| 💻 Ressources CPU / mémoire | Le processus Python continue de tourner en arrière-plan (quelques dizaines de Mo de RAM) |
+| 🔄 Mode debug actif | À chaque modification d'un fichier `.py`, Flask redémarre automatiquement le serveur (c'est le `* Restarting with stat` affiché au lancement) |
+| ⚠️ Sécurité | Le serveur de dev Flask ne doit PAS être exposé en production (le warning rouge au lancement l'indiquait) : il n'est pas conçu pour encaisser du trafic réel |
+| 🔋 Batterie / session | Tant que VS Code est ouvert, le processus tourne ; si tu fermes VS Code, le terminal se ferme et le processus meurt avec |
+
+**En résumé** : pour un projet local de dev, ce n'est pas grave de laisser le serveur tourner — c'est même pratique, comme ça tu peux relancer tes `curl` quand tu veux sans attendre.
+
+Mais si tu veux relancer le serveur proprement (après un changement de code qui a mal tourné, ou pour repartir à zéro), il faut d'abord tuer l'ancien processus :
+
+```bash
+# Depuis n'importe quel terminal : trouver et tuer le processus qui écoute sur le port 5000
+kill $(lsof -t -i:5000) 2>/dev/null || pkill -f "app.app"
+# (si lsof/fuser manquent : ss -ltnp | grep 5000 → repère le PID → kill <PID>, comme à l'étape 2)
+# Le plus simple reste : Ctrl+C dans le Terminal 1 où tourne le serveur → arrêt propre de Flask.
+```
+
 ---
 
 # 🧭 Rappel rapide (résumé des commandes essentielles)
