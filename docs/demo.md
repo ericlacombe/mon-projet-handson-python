@@ -77,6 +77,15 @@ curl -X POST http://127.0.0.1:5000/api/produits \
   -H "Authorization: Bearer COLLE_TON_TOKEN_ICI" \
   -d '{"name":"Souris sans fil","description":"Silencieuse","price":29.99,"stock":50,"category_id":1}'
 ```
+✅ Réponse attendue (201) :
+```json
+{"id": 4, "message": "produit créé"}
+```
+💡 Si tu rejoues la même commande, un **2ᵉ produit** est créé :
+```json
+{"id": 5, "message": "produit créé"}
+```
+→ Produit id 5 créé (le nom n'est pas unique, donc le doublon est accepté — seule la catégorie a un nom unique, 409).
 **3.6 — Se connecter en CLIENT**
 ```bash
 curl -X POST http://127.0.0.1:5000/api/auth/login \
