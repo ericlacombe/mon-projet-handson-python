@@ -327,11 +327,54 @@ curl http://127.0.0.1:5000/api/commandes/4 -H "Authorization: Bearer $TOKEN_ADMI
 ```
 ✅ Réponse attendue (200) : la commande complète (propriétaire `user_id: 2`).
 
-## 🧪 ÉTAPE 4 — Lancer les tests automatisés (dans n'importe quel terminal)
+## 🧪 ÉTAPE 4 — Lancer les tests automatisés (dans n'importe quel terminal, ex. Terminal 2)
 ```bash
-cd /home/blent/mon-projet-handson-python && source venv/bin/activate && pytest
-# Tu dois voir : 32 passed.
+cd /home/blent/mon-projet-handson-python && source venv/bin/activate
 ```
+⚠️ Piège classique : `pytest` seul plante avec `ModuleNotFoundError: No module named 'app'` (pytest n'ajoute pas la racine au PYTHONPATH). Il faut lancer avec :
+```bash
+python -m pytest
+```
+✅ Tu dois voir la suite complète puis la dernière ligne :
+```
+tests/test_auth.py .                                       [  3%]
+tests/test_commandes.py ..................                 [ 59%]
+tests/test_produits.py .........                           [ 87%]
+tests/test_security.py ....                                [100%]
+======================= 32 passed in 7.01s =======================
+```
+🎉 **32 passed** — tous les tests passent !
+
+## 📊 Récapitulatif de la session de démo
+
+| Action | Résultat |
+|---|---|
+| 🟢 Serveur Flask | http://127.0.0.1:5000 ✅ |
+| 📦 Liste catalogue (public) | 200 ✅ |
+| 🔍 Recherche `?q=clavier` | 200 ✅ |
+| 📦 Détail produit | 200 ✅ |
+| 🔐 Login admin → JWT | 200 ✅ |
+| 🔐 Login client → JWT | 200 ✅ |
+| 📝 Register nouveau compte | 201 ✅ |
+| ➕ Créer produit (admin) | 201 ✅ |
+| ✏️ Modifier produit (admin) | 200 ✅ |
+| 🗑️ Supprimer produit (admin) | 204 ✅ |
+| ❌ Créer produit sans token | 401 ✅ |
+| ❌ Créer produit avec token client | 403 ✅ |
+| 🛒 Passer commande (client) | 201 ✅ |
+| 📋 Historique commandes | 200 ✅ |
+| 🔄 en_attente → validée (admin) | 200 ✅ |
+| 🔄 validée → expédiée (admin) | 200 ✅ |
+| ❌ expédiée → en_attente (interdit) | 400 ✅ |
+| ❌ Client valide sa commande | 403 ✅ |
+| 🔄 Annulation client → stock restitué | 200 ✅ |
+| ❌ Client2 voit commande d'un autre | 403 ✅ |
+| ❌ Client2 modifie commande d'un autre | 403 ✅ |
+| ✅ Admin voit toutes les commandes | 200 ✅ |
+| 🧪 Suite de tests automatisés | 32 passed ✅ |
+
+🚀 Ton API DigiMarket est **fully opérationnelle** !
+Pour arrêter le serveur : retourne dans le **Terminal 1** et fais **Ctrl+C**.
 
 ## 📊 Récapitulatif des 2 terminaux
 
