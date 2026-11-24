@@ -195,12 +195,30 @@ curl http://127.0.0.1:5000/api/produits/2
  "name": "Clavier mécanique", "price": 79.9, "stock": 27}
 ```
 → Stock restitué : 25 → 27 après annulation. La mécanique de stock fonctionne ✅.
-**3.13 — Tester les erreurs (sans token → 401)**
+**3.13 — ❌ Tester le 401 sur les commandes (sans token)**
+```bash
+curl -X POST http://127.0.0.1:5000/api/commandes \
+  -H "Content-Type: application/json" \
+  -d '{"address_livraison":"test","items":[{"product_id":1,"quantite":1}]}'
+```
+✅ Réponse attendue (401) :
+```json
+{"error": "token requis ou invalide"}
+```
+→ 401 OK : sans token, l'API refuse l'accès.
+
+**3.14 — ❌ Tester le 403 (un CLIENT essaie de créer un produit → réservé admin)**
 ```bash
 curl -X POST http://127.0.0.1:5000/api/produits \
   -H "Content-Type: application/json" \
-  -d '{"name":"Test","price":10,"stock":1,"category_id":1}'
+  -H "Authorization: Bearer $TOKEN_CLIENT" \
+  -d '{"name":"Test client","price":10,"stock":1,"category_id":1}'
 ```
+✅ Réponse attendue (403) :
+```json
+{"error": "réservé aux administrateurs"}
+```
+→ 403 OK : un client sur une route admin → « réservé aux administrateurs ».
 
 ## 🧪 ÉTAPE 4 — Lancer les tests automatisés (dans n'importe quel terminal)
 ```bash
