@@ -16,7 +16,9 @@ flowchart TB
         direction TB
 
         subgraph ETAPE4["ETAPE 4 — Conception: Analyse étapes 0-3 -> Condition ? -> Action — par niveau"]
-            direction LR
+            direction TB
+            subgraph GA["DONNEES (étape 3)"]
+                direction LR
             A41["🥉 4.1 Base — tables a creer ? -> ACTION"]
             A42["🥇 4.2 Temporaires — non persistant ? -> dict"]
             A43["🥈 4.3 Contraintes — regle de validite ? -> contrainte + code"]
@@ -31,6 +33,8 @@ flowchart TB
             A41 --> A42 --> A43 --> A44 --> A45 --> A46
             A46 --> B47
             B47 --> B48 --> B49 --> B410 --> B411
+            end
+            GA --> GB
         end
 
         subgraph BOUCLE["BOUCLE x3 NIVEAUX : 4 - Conception -> 5 - Tests -> 6 Backlog -> 6 CODE"]
