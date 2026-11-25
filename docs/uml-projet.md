@@ -67,7 +67,7 @@ classDiagram
         +__repr__() string
     }
 
-    note for Order "STATUTS = (en_attente, validée, expédiée, livrée, annulée)\nTRANSITIONS : en_attente → {validée, annulée} · validée → {expédiée, annulée} · expédiée → {livrée}"
+    note for Order "STATUTS = (en_attente, validée, expédiée, livrée, annulée)<br/>TRANSITIONS : en_attente → {validée, annulée} · validée → {expédiée, annulée} · expédiée → {livrée}"
 
     User "1" --> "*" Order : passe >
     Category "1" --> "*" Product : contient >
@@ -182,21 +182,21 @@ flowchart TB
 %% LÉGENDE : subgraph externe = acteur UML · subgraph interne = frontière du système (API DigiMarket) · nœud arrondi = cas d'utilisation
 flowchart LR
     subgraph ACT_V["👤 Visiteur (non inscrit)"]
-        UC1((S'inscrire))
-        UC2((Se connecter))
-        UC3((Consulter le catalogue))
-        UC4((Rechercher un produit ?q=))
-        UC5((Voir le détail d'un produit))
+        UC1(("S'inscrire"))
+        UC2(("Se connecter"))
+        UC3(("Consulter le catalogue"))
+        UC4(("Rechercher un produit ?q="))
+        UC5(("Voir le détail d'un produit"))
     end
     subgraph SYS["🖥️ Système : API DigiMarket (Flask)"]
-        UC6((Passer une commande))
-        UC7((Voir son historique))
-        UC8((Voir détail + lignes d'une commande))
-        UC9((Annuler sa commande))
-        UC10((Créer / modifier / supprimer un produit))
-        UC11((Créer une catégorie))
-        UC12((Voir toutes les commandes))
-        UC13((Changer le statut d'une commande))
+        UC6(("Passer une commande"))
+        UC7(("Voir son historique"))
+        UC8(("Voir détail + lignes d'une commande"))
+        UC9(("Annuler sa commande"))
+        UC10(("Créer / modifier / supprimer un produit"))
+        UC11(("Créer une catégorie"))
+        UC12(("Voir toutes les commandes"))
+        UC13(("Changer le statut d'une commande"))
     end
     subgraph ACT_C["👤 Client (connecté, rôle client)"]
         UC6
@@ -229,7 +229,7 @@ flowchart TB
         TOK{Token JWT valide ?}
         BODY{address_livraison non vide<br/>et items non vide ?}
         ITEM{Produit existe et<br/>quantité > 0 et stock suffisant ?}
-        CRE[Order en_attente + OrderItem (prix figé)<br/>+ total = calculer_total<br/>session.commit()]
+        CRE["Order en_attente + OrderItem (prix figé)<br/>+ total = calculer_total<br/>session.commit()]"
     end
     subgraph SW_DB["🗄️ Base SQLite (digimarket.db)"]
         INS[(INSERT orders + order_items)]
@@ -284,16 +284,16 @@ sequenceDiagram
     participant R as routes/auth.py
     participant S as security.py
     participant D as db.py (session)
-    C->>F: POST /api/auth/login {email, password}
+    C->>F: POST /api/auth/login (JSON email, password)
     F->>R: dispatch (blueprint auth)
     R->>D: session.query(User).filter_by(email)
     D-->>R: user (ou None)
     alt mauvais identifiants
-        R-->>C: 401 {"error": "identifiants invalides"}
+        R-->>C: 401 (error: identifiants invalides)
     else identifiants OK
         R->>S: check_password_hash + creer_token(user)
-        S-->>R: token JWT signé HS256 (payload {user_id, role, exp=24h})
-        R-->>C: 200 {"message": "connexion réussie", "token": "eyJ..."}
+        S-->>R: token JWT signé HS256 (payload user_id, role, exp 24h)
+        R-->>C: 200 (message + token JWT eyJ...)
     end
 ```
 
@@ -315,18 +315,18 @@ sequenceDiagram
     F->>R: dispatch (blueprint commandes)
     R->>S: verifier_token() (décorateur @login_required)
     alt token absent/invalide/expiré
-        S-->>C: 401 {"error": "token requis ou invalide"}
+        S-->>C: 401 (error: token requis ou invalide)
     else token valide
         S-->>R: payload {user_id, role}
         R->>D: session.get(Product, product_id) + verifier_stock()
         D-->>R: produit / stock
         alt stock insuffisant ou quantité ≤ 0
-            R-->>C: 400 {"error": "stock insuffisant..."}
+            R-->>C: 400 (error: stock insuffisant...)
         else
             R->>M: new Order(en_attente) + OrderItem(prix figé) + calculer_total
             R->>D: session.add(order) + session.commit()
             D-->>R: INSERT OK
-            R-->>C: 201 commande JSON {id, statut, total, lignes[]}
+            R-->>C: 201 (commande JSON: id, statut, total, lignes)
         end
     end
 ```
