@@ -1,0 +1,57 @@
+%% Canva CLASSES UML - mon-projet-handson-python - NIVEAU CONFIRME (🥇)
+%% Créé à l'étape 4 🥇 (§4.5 relations 1—N, §4.6 cycle de vie), fidèle à app/modelsSQLAlchemy.py
+%% Rendu : copier ce bloc sur https://mermaid.live
+%% Diagramme UML de classes (classDiagram) : visibilité + (public), annotations PK/FK/UK,
+%% multiplicités 1—* sur les associations, méthode métier Order.changer_statut()
+%% Le cycle de vie de Order.statut est déjà un diagramme UML (stateDiagram-v2) dans docs/etape3-objets.md
+%% Canva des niveaux précédents (structure 🥉/🥈) non touchés.
+classDiagram
+    class User {
+        +Integer id PK
+        +String email UK
+        +String password_hash
+        +String first_name
+        +String last_name
+        +Text address
+        +String role = "client"
+        +__repr__() string
+    }
+    class Category {
+        +Integer id PK
+        +String name UK
+        +__repr__() string
+    }
+    class Product {
+        +Integer id PK
+        +String name
+        +Text description
+        +Float price
+        +Integer stock = 0
+        +Integer category_id FK
+        +__repr__() string
+    }
+    class Order {
+        +Integer id PK
+        +Integer user_id FK
+        +Text address_livraison
+        +DateTime date_creation
+        +String statut = "en_attente"
+        +Float total = 0.0
+        +changer_statut(nouveau: string) void
+        +__repr__() string
+    }
+    class OrderItem {
+        +Integer id PK
+        +Integer order_id FK
+        +Integer product_id FK
+        +Integer quantite
+        +Float prix_unitaire
+        +__repr__() string
+    }
+
+    note for Order "STATUTS = (en_attente, validée, expédiée, livrée, annulée)\nTRANSITIONS : en_attente → {validée, annulée} · validée → {expédiée, annulée} · expédiée → {livrée}\nHors TRANSITIONS → ValueError (400 côté route)"
+
+    User "1" --> "*" Order : passe >
+    Category "1" --> "*" Product : contient >
+    Order "1" --> "*" OrderItem : comporte >
+    Product "1" --> "*" OrderItem : est référencé par >
