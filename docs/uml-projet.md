@@ -229,7 +229,7 @@ flowchart TB
         TOK{Token JWT valide ?}
         BODY{address_livraison non vide<br/>et items non vide ?}
         ITEM{Produit existe et<br/>quantité > 0 et stock suffisant ?}
-        CRE["Order en_attente + OrderItem, prix figé<br/>+ total = calculer_total<br/>session.commit()]"
+        CRE["Order en_attente + OrderItem, prix figé<br/>+ total = calculer_total<br/>session.commit]"
     end
     subgraph SW_DB["🗄️ Base SQLite - digimarket.db"]
         INS[(INSERT orders + order_items)]
