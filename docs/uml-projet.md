@@ -1,3 +1,5 @@
+<!-- historique : rendu Mermaid fiabilisé — plus aucune parenthèse dans les étiquettes des diagrammes (commits 6cc61c1, 17f3060) -->
+
 # 📐 Vue UML complète du projet DigiMarket (API Flask)
 
 Ce document regroupe **tous les diagrammes UML du projet**, organisés selon les **3 familles officielles de l'UML** (standard OMG) :
