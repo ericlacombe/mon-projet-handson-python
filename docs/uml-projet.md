@@ -259,17 +259,17 @@ Fidèle à `Order.TRANSITIONS` dans `app/modelsSQLAlchemy.py` (4.6). Version aus
 %% LÉGENDE machine à états UML : [*] = état initial/final · A --> B : événement/déclencheur = PATCH /api/commandes/<id>/statut
 %% Effets de bord : validée → stock décrémenté · annulée → stock restitué
 stateDiagram-v2
-    [*] --> en_attente : création - POST /api/commandes
+    [*] --> en_attente : création POST /api/commandes
     en_attente --> validee : PATCH statut admin, stock décrémenté
     en_attente --> annulee : PATCH statut client propriétaire ou admin, stock restitué
     validee --> expediee : PATCH statut admin
-    validee --> annulee : PATCH statut → stock restitué
+    validee --> annulee : PATCH statut, stock restitué
     expediee --> livree : PATCH statut admin
     livree --> [*]
     annulee --> [*]
 ```
 
-**Légende** : `en_attente` est l'état initial (création). `livrée` et `annulée` sont finaux (`[*]`). Toute transition hors de ce graphe → `ValueError` → **400** « transition interdite : X → Y ». Un client non admin ne peut déclencher que `annulée` sur **sa** commande (sinon 403).
+**Légende** : `en_attente` est l'état initial (création). (ID d'états sans accents et étiquettes sans caractères spéciaux `→`/`-`, pour compatibilité avec le rendu Mermaid de GitHub.) `livrée` et `annulée` sont finaux (`[*]`). Toute transition hors de ce graphe → `ValueError` → **400** « transition interdite : X → Y ». Un client non admin ne peut déclencher que `annulée` sur **sa** commande (sinon 403).
 
 ---
 
