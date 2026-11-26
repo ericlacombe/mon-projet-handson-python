@@ -8,7 +8,7 @@ Ce document regroupe **tous les diagrammes UML du projet**, organisés selon les
 |---|---|---|
 | 🏗️ **Structure** | *De quoi le système est-il fait ?* (classes, composants, données) | classes, ER, composants/packages |
 | ⚙️ **Comportement** | *Comment le système évolue-t-il / s'enchaîne-t-il ?* (cas d'utilisation, activités, états) | cas d'utilisation, activité, machine à états |
-| 🔁 **Interaction** | *Qui échange quoi avec qui, et dans quel ordre ?* | 3 séquences |
+| 🔁 **Interaction** | *Qui échange quoi avec qui, et dans quel ordre ?* | 4 séquences |
 
 > 💡 **Pourquoi ce fichier est en `.md`** : GitHub rend automatiquement les blocs ` ```mermaid ` **uniquement dans les fichiers Markdown** (vue fichier, README, onglet « Files changed » d'une PR). Les canva `.mmd` du projet (`canva-*.mmd`) restent du texte brut sur GitHub → rendu via [mermaid.live](https://mermaid.live). Ce doc `.md` est donc la version « rendue nativement sur GitHub ».
 >
@@ -337,9 +337,9 @@ sequenceDiagram
 
 **Légende** : trois `alt` UML imbriqués = les trois niveaux de contrôle (authentification 401 → validation métier 400 → succès 201). C'est exactement le contrat documenté dans `docs/docAPI.md` (chapitre 1).
 
-### 3.3 Diagramme de séquence — `security.py` au centre : toutes ses interactions
+### 3.3 Diagramme de séquence — `security.py` au centre : Inscription et Login
 
-Ce diagramme regroupe **tous les échanges de `security.py`** avec le reste du système : hachage/vérification du mot de passe, création et vérification du token JWT, et les contrôles d'accès 401/403 des décorateurs.
+Phases 1 et 2 : hachage du mot de passe à l'inscription, vérification du hash et émission du token JWT au login (la revérification du token à chaque requête protégée est en §3.4).
 
 ```mermaid
 %% LÉGENDE séquence : participant = ligne de vie · ->> appel synchrone · -->> retour · Note over = phase · alt/else = branche UML · autonumber = ordre des messages
@@ -349,7 +349,6 @@ sequenceDiagram
     participant C as Client curl
     participant F as app.py Flask
     participant RA as routes/auth.py
-    participant RP as routes/produits.py
     participant S as security.py
     participant W as werkzeug.security
     participant J as PyJWT jwt
@@ -382,7 +381,25 @@ sequenceDiagram
         RA-->>C: 200 - message + token JWT
     end
 
-    Note over C,D: Phase 3 - ROUTE PROTÉGÉE : le token est revérifié à chaque appel
+```
+
+**Légende** : à l'inscription le mot de passe est haché via werkzeug (`generate_password_hash`, PBKDF2 + sel) avant stockage ; au login `check_password_hash` compare le hash soumis au hash stocké, puis `creer_token` signe le payload `user_id, role, exp 24h` avec `SECRET_KEY` lu dans `.env` via PyJWT HS256.
+
+### 3.4 Diagramme de séquence — `security.py` au centre : Route protégée
+
+Phase 3 : à **chaque** appel d'une route protégée, le décorateur rappelle `verifier_token` — lecture du header `Authorization: Bearer`, puis décodage PyJWT avec vérification de la signature et de l'expiration.
+
+```mermaid
+%% LÉGENDE : idem 3.3 · aucune parenthèse dans les étiquettes
+sequenceDiagram
+    autonumber
+    participant C as Client curl + header Bearer
+    participant F as app.py Flask
+    participant RP as routes/produits.py
+    participant S as security.py
+    participant J as PyJWT jwt
+    participant D as db.py session
+
     C->>F: POST /api/produits + header Authorization Bearer token
     F->>RP: dispatch blueprint produits
     RP->>S: @admin_required appelle verifier_token
@@ -404,7 +421,7 @@ sequenceDiagram
     end
 ```
 
-**Légende** : `security.py` est le point de passage obligé de la sécurité — hachage à l'inscription via werkzeug, vérification du hash au login, signature du token avec `SECRET_KEY` lu dans `.env`, et à chaque requête protégée le décorateur `login_required`/`admin_required` rappelle `verifier_token` qui décode et vérifie signature + expiration via PyJWT. 401 = pas authentifié · 403 = authentifié mais rôle insuffisant.
+**Légende** : 401 = pas authentifié (token absent, invalide ou expiré) · 403 = authentifié mais rôle insuffisant. Le rôle est embarqué dans le token signé : un client ne peut pas le modifier. Le token est revérifié à chaque requête — jamais mis en cache côté serveur.
 
 ---
 
@@ -420,6 +437,7 @@ sequenceDiagram
 | Comportement | machine à états `Order.statut` | `stateDiagram-v2` | §2.3 = `Order.TRANSITIONS` (`modelsSQLAlchemy.py`) |
 | Interaction | séquence login → token | `sequenceDiagram` | §3.1 = `routes/auth.py` + `security.py` |
 | Interaction | séquence requête protégée | `sequenceDiagram` | §3.2 = `routes/commandes.py` + contrat `docs/docAPI.md` |
-| Interaction | séquence security.py centrale - hachage, token, 401, 403 | `sequenceDiagram` | §3.3 = `app/security.py` + werkzeug + PyJWT |
+| Interaction | séquence security.py - inscription et login | `sequenceDiagram` | §3.3 = `app/security.py` + werkzeug + PyJWT + `routes/auth.py` |
+| Interaction | séquence security.py - route protégée 401, 403 | `sequenceDiagram` | §3.4 = `app/security.py` + PyJWT + `routes/produits.py` |
 
-> 💡 Pour la démo orale : projeter §1.1 (structure), §2.3 (machine à états) et §3.3 (séquence security.py) — ce sont les diagrammes UML les plus parlants pour expliquer le fonctionnement de l'API.
+> 💡 Pour la démo orale : projeter §1.1 (structure), §2.3 (machine à états) et §3.3/§3.4 (séquences security.py) — ce sont les diagrammes UML les plus parlants pour expliquer le fonctionnement de l'API.
