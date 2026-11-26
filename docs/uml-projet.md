@@ -286,16 +286,18 @@ sequenceDiagram
     participant R as routes/auth.py
     participant S as security.py
     participant D as db.py session
-    C->>F: POST /api/auth/login - JSON email, password
-    F->>R: dispatch - blueprint auth
+    C->>F: POST /api/auth/login + body JSON email, password
+    F->>R: dispatch blueprint auth
     R->>D: session.query User filter_by email
-    D-->>R: user ou None
-    alt mauvais identifiants
+    D-->>R: User ou None
+    R->>S: check_password_hash password_hash, password
+    S-->>R: true ou false
+    alt mot de passe incorrect ou email inconnu
         R-->>C: 401 - error identifiants invalides
-    else identifiants OK
-        R->>S: check_password_hash + creer_token user
+    else hash vérifié
+        R->>S: creer_token user
         S-->>R: token JWT signé HS256 - payload user_id, role, exp 24h
-        R-->>C: 200 - message + token JWT eyJ...
+        R-->>C: 200 - body JSON message + token JWT
     end
 ```
 
@@ -313,15 +315,15 @@ sequenceDiagram
     participant S as security.py
     participant D as db.py session
     participant M as modelsSQLAlchemy.py
-    C->>F: POST /api/commandes + Authorization: Bearer <token>
-    F->>R: dispatch - blueprint commandes
-    R->>S: verifier_token - décorateur @login_required
+    C->>F: POST /api/commandes + header Authorization Bearer token
+    F->>R: dispatch blueprint commandes
+    R->>S: @login_required appelle verifier_token
     alt token absent/invalide/expiré
         S-->>C: 401 - error token requis ou invalide
     else token valide
-        S-->>R: payload {user_id, role}
+        S-->>R: payload user_id, role, exp
         R->>D: session.get Product product_id + verifier_stock
-        D-->>R: produit / stock
+        D-->>R: Product + stock
         alt stock insuffisant ou quantité ≤ 0
             R-->>C: 400 - error stock insuffisant...
         else
@@ -354,7 +356,7 @@ sequenceDiagram
     participant D as db.py session
 
     Note over C,D: Phase 1 - INSCRIPTION : le mot de passe est haché avant stockage
-    C->>F: POST /api/auth/register - JSON email, password
+    C->>F: POST /api/auth/register + body JSON email, password
     F->>RA: dispatch blueprint auth
     RA->>W: generate_password_hash password - PBKDF2 + sel
     W-->>RA: password_hash
@@ -362,12 +364,12 @@ sequenceDiagram
     D-->>C: 201 - utilisateur créé
 
     Note over C,D: Phase 2 - LOGIN : vérification du hash + émission du token signé
-    C->>F: POST /api/auth/login - JSON email, password
-    F->>RA: dispatch
-    RA->>D: query User by email
-    D-->>RA: user + password_hash stocké
-    RA->>S: check_password_hash hash, password
-    S->>W: check_password_hash hash, password
+    C->>F: POST /api/auth/login + body JSON email, password
+    F->>RA: dispatch blueprint auth
+    RA->>D: session.query User filter_by email
+    D-->>RA: User + password_hash
+    RA->>S: check_password_hash password_hash, password
+    S->>W: check_password_hash password_hash, password
     W-->>S: true ou false
     S-->>RA: true ou false
     alt mot de passe incorrect
@@ -383,7 +385,7 @@ sequenceDiagram
     Note over C,D: Phase 3 - ROUTE PROTÉGÉE : le token est revérifié à chaque appel
     C->>F: POST /api/produits + header Authorization Bearer token
     F->>RP: dispatch blueprint produits
-    RP->>S: décorateur admin_required appelle verifier_token
+    RP->>S: @admin_required appelle verifier_token
     S->>S: lit le header Authorization Bearer
     S->>J: jwt.decode token, SECRET_KEY, HS256 - vérifie signature + exp
     alt token absent, invalide ou expiré
