@@ -230,7 +230,7 @@ flowchart TB
     subgraph SW_API["🖥️ API Flask - routes commandes.py + security.py"]
         TOK{Token JWT valide ?}
         BODY{address_livraison non vide<br/>et items non vide ?}
-        ITEM{Produit existe et<br/>quantité > 0 et stock suffisant ?}
+        ITEM{"Produit existe et<br/>quantité > 0 et stock suffisant ?"}
         CRE["Order en_attente + OrderItem, prix figé<br/>+ total = calculer_total<br/>session.commit"]
     end
     subgraph SW_DB["🗄️ Base SQLite - digimarket.db"]
@@ -260,13 +260,13 @@ Fidèle à `Order.TRANSITIONS` dans `app/modelsSQLAlchemy.py` (4.6). Version aus
 %% Effets de bord : validée → stock décrémenté · annulée → stock restitué
 stateDiagram-v2
     [*] --> en_attente : création - POST /api/commandes
-    en_attente --> validée : PATCH statut admin, stock décrémenté
-    en_attente --> annulée : PATCH statut client propriétaire ou admin, stock restitué
-    validée --> expédiée : PATCH statut admin
-    validée --> annulée : PATCH statut → stock restitué
-    expédiée --> livrée : PATCH statut admin
-    livrée --> [*]
-    annulée --> [*]
+    en_attente --> validee : PATCH statut admin, stock décrémenté
+    en_attente --> annulee : PATCH statut client propriétaire ou admin, stock restitué
+    validee --> expediee : PATCH statut admin
+    validee --> annulee : PATCH statut → stock restitué
+    expediee --> livree : PATCH statut admin
+    livree --> [*]
+    annulee --> [*]
 ```
 
 **Légende** : `en_attente` est l'état initial (création). `livrée` et `annulée` sont finaux (`[*]`). Toute transition hors de ce graphe → `ValueError` → **400** « transition interdite : X → Y ». Un client non admin ne peut déclencher que `annulée` sur **sa** commande (sinon 403).
